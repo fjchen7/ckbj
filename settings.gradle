@@ -1,0 +1,5 @@
+rootProject.name = 'ckbj'
+include 'core'
+include 'script'  // Script implementation
+include 'crypto'  // Crypto method
+
