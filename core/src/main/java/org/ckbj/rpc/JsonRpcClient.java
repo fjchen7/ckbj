@@ -1,7 +1,7 @@
-package org.ckbj;
+package org.ckbj.rpc;
 
-import org.ckbj.protocol.rpc.type.Request;
-import org.ckbj.protocol.rpc.type.Response;
+import org.ckbj.rpc.Request;
+import org.ckbj.rpc.Response;
 
 import java.io.IOException;
 

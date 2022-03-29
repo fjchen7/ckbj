@@ -1,6 +1,4 @@
-package org.ckbj.protocol.rpc.type;
-
-import org.ckbj.JsonRpcClient;
+package org.ckbj.rpc;
 
 import java.io.IOException;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package org.ckbj.protocol.rpc.type;
+package org.ckbj.rpc;
 
 public class Response<T> {
     private long id;

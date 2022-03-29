@@ -1,4 +1,4 @@
-package org.ckbj;
+package org.ckbj.rpc;
 
 import java.io.IOException;
 
