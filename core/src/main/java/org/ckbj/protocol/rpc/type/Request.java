@@ -1,23 +1,34 @@
 package org.ckbj.protocol.rpc.type;
 
-import org.ckbj.RpcClient;
+import org.ckbj.JsonRpcClient;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
-public class Request<S, T extends Response> {
+public class Request<T extends Response> {
+    private static AtomicLong nextId = new AtomicLong(0);
     private String jsonrpc = "2.0";
     private String method;
-    private List<S> params;
+    private List params;
     private long id;
 
-    private RpcClient rpcClient;
+    private JsonRpcClient rpcClient;
     private Class<T> responseType;
 
-    public Request() {}
+    public Request(String method, List params, Class<T> responseType) {
+        this.method = method;
+        this.params = params;
+        this.id = nextId.getAndIncrement();
+        this.responseType = responseType;
+    }
 
+    public Request(String method, Class<T> responseType) {
+        this(method, Collections.emptyList(), responseType);
+    }
 
-    public T send() throws IOException {
-        return rpcClient.send(this, responseType);
+    public T send(JsonRpcClient client) throws IOException {
+        return client.send(this, responseType);
     }
 }

@@ -25,6 +25,7 @@ public class ScriptInfo {
     public ScriptInfo() {
 
     }
+
     public ScriptInfo(List<CellDep> cellDeps, byte[] codeHash, Script.HashType hashType) {
         CellDeps = cellDeps;
         this.codeHash = codeHash;
@@ -35,7 +36,7 @@ public class ScriptInfo {
 
         public ScriptInfoBuilder() {
             super();
-        };
+        }
 
         public ScriptInfoBuilder(List<CellDep> cellDeps, byte[] codeHash, Script.HashType hashType) {
             super(cellDeps, codeHash, hashType);
@@ -57,6 +58,5 @@ public class ScriptInfo {
         public ScriptInfo build() {
             return this;
         }
-
     }
 }
