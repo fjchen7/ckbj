@@ -1,5 +1,7 @@
 package org.ckbj.type;
 
+import org.ckbj.utils.Hex;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +60,10 @@ public class Transaction {
         return this;
     }
 
+    public Transaction addHeaderDep(String headerDep) {
+        return addHeaderDep(Hex.decode(headerDep));
+    }
+
     public Transaction addHeaderDep(byte[] headerDep) {
         if (headerDep.length != 32) {
             throw new IllegalArgumentException("headerDep should be 32 bytes");
@@ -106,6 +112,10 @@ public class Transaction {
         return this;
     }
 
+    public Transaction addOutputData(String outputData) {
+        return addOutputData(Hex.decode(outputData));
+    }
+
     public Transaction addOutputData(byte[] outputData) {
         this.outputsData.add(outputData);
         return this;
@@ -114,6 +124,10 @@ public class Transaction {
     public Transaction setOutputsData(List<byte[]> outputsData) {
         this.outputsData = outputsData;
         return this;
+    }
+
+    public Transaction addWitness(String witness) {
+        return addWitness(Hex.decode(witness));
     }
 
     public Transaction addWitness(byte[] witness) {

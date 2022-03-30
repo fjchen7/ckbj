@@ -1,6 +1,7 @@
 package org.ckbj.type;
 
 import org.ckbj.utils.Hash;
+import org.ckbj.utils.Hex;
 
 public final class OutPoint {
     private byte[] txHash;
@@ -11,12 +12,21 @@ public final class OutPoint {
         setIndex(index);
     }
 
+    public OutPoint(String txHash, int index) {
+        setTxHash(txHash);
+        setIndex(index);
+    }
+
     public byte[] getTxHash() {
         return txHash;
     }
 
     public int getIndex() {
         return index;
+    }
+
+    public OutPoint setTxHash(String txHash) {
+        return setTxHash(Hex.decode(txHash));
     }
 
     public OutPoint setTxHash(byte[] txHash) {

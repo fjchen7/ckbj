@@ -3,6 +3,7 @@ package org.ckbj.type;
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import org.ckbj.utils.Hex;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -73,6 +74,10 @@ public class DetailedTransaction {
         return this;
     }
 
+    public DetailedTransaction setBlockHash(String blockHash) {
+        return setBlockHash(Hex.decode(blockHash));
+    }
+
     public DetailedTransaction setBlockHash(byte[] blockHash) {
         this.blockHash = blockHash;
         return this;
@@ -87,7 +92,7 @@ public class DetailedTransaction {
         PENDING,
         @SerializedName("proposed")
         PROPOSED,
-        @SerializedName("proposed")
+        @SerializedName("committed")
         COMMITTED,
         @SerializedName("unknown")
         UNKNOWN,

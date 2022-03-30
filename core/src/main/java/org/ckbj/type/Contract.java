@@ -1,5 +1,7 @@
 package org.ckbj.type;
 
+import org.ckbj.utils.Hex;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +10,11 @@ public class Contract {
     protected byte[] codeHash;
 
     public Contract(byte[] codeHash) {
-        this.codeHash = codeHash;
+        setCodeHash(codeHash);
+    }
+
+    public Contract(String codeHash) {
+        setCodeHash(codeHash);
     }
 
     public List<CellDep> getCellDeps() {
@@ -32,5 +38,9 @@ public class Contract {
     public Contract setCodeHash(byte[] codeHash) {
         this.codeHash = codeHash;
         return this;
+    }
+
+    public Contract setCodeHash(String codeHash) {
+        return setCodeHash(Hex.decode(codeHash));
     }
 }

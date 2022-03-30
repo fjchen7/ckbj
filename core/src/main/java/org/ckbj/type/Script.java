@@ -2,6 +2,7 @@ package org.ckbj.type;
 
 import com.google.gson.annotations.SerializedName;
 import org.ckbj.utils.Hash;
+import org.ckbj.utils.Hex;
 
 import java.math.BigInteger;
 
@@ -9,10 +10,6 @@ public final class Script {
     private byte[] codeHash;
     private byte[] args;
     private HashType hashType = HashType.TYPE;
-
-    public Script(byte[] codeHash) {
-        setCodeHash(codeHash);
-    }
 
     public byte[] getCodeHash() {
         return codeHash;
@@ -26,12 +23,20 @@ public final class Script {
         return hashType;
     }
 
+    public Script setCodeHash(String codeHash) {
+        return setCodeHash(Hex.decode(codeHash));
+    }
+
     public Script setCodeHash(byte[] codeHash) {
         if (!Hash.isHash(codeHash)) {
             throw new IllegalArgumentException("codeHash should be 32 bytes");
         }
         this.codeHash = codeHash;
         return this;
+    }
+
+    public Script setArgs(String args) {
+        return setArgs(Hex.decode(args));
     }
 
     public Script setArgs(byte[] args) {
@@ -93,5 +98,4 @@ public final class Script {
             return value;
         }
     }
-
 }

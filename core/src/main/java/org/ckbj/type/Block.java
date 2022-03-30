@@ -28,7 +28,6 @@ public class Block {
         return uncleBlocks;
     }
 
-
     public Block setHeader(Header header) {
         this.header = header;
         return this;

@@ -3,6 +3,7 @@ package org.ckbj.type;
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import org.ckbj.utils.Hex;
 
 import java.lang.reflect.Type;
 import java.math.BigInteger;
@@ -60,6 +61,10 @@ public class DetailedCell {
     public DetailedCell setData(byte[] data) {
         this.data = data;
         return this;
+    }
+
+    public DetailedCell setData(String data) {
+        return setData(Hex.decode(data));
     }
 
     public DetailedCell setStatus(Status status) {
