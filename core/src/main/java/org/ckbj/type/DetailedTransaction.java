@@ -10,12 +10,9 @@ import java.util.List;
 @JsonAdapter(DetailedTransaction.TypeAdapter.class)
 public class DetailedTransaction {
     private Transaction transaction;
-    private Status status;
+    private Status status = Status.UNKNOWN;
     private String statusReason;
     private byte[] blockHash;
-
-    private DetailedTransaction() {
-    }
 
     public Transaction getTransaction() {
         return transaction;
@@ -59,6 +56,26 @@ public class DetailedTransaction {
 
     public List<byte[]> getWitnesses() {
         return transaction.getWitnesses();
+    }
+
+    public DetailedTransaction setTransaction(Transaction transaction) {
+        this.transaction = transaction;
+        return this;
+    }
+
+    public DetailedTransaction setStatus(Status status) {
+        this.status = status;
+        return this;
+    }
+
+    public DetailedTransaction setStatusReason(String statusReason) {
+        this.statusReason = statusReason;
+        return this;
+    }
+
+    public DetailedTransaction setBlockHash(byte[] blockHash) {
+        this.blockHash = blockHash;
+        return this;
     }
 
     public byte[] hash() {

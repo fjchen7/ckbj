@@ -3,7 +3,7 @@ package org.ckbj.type;
 import java.math.BigInteger;
 
 public class Header {
-    private int version;
+    private int version = 0;
     private long compactTarget;
     private long timestamp;
     private int number;
@@ -15,10 +15,7 @@ public class Header {
     // TODO: implement class to parse dao
     private byte[] dao;
     private BigInteger nonce;
-
-    private Header() {
-    }
-
+    
     public int getVersion() {
         return version;
     }
@@ -63,4 +60,58 @@ public class Header {
         return nonce;
     }
 
+    public Header setVersion(int version) {
+        this.version = version;
+        return this;
+    }
+
+    public Header setCompactTarget(long compactTarget) {
+        this.compactTarget = compactTarget;
+        return this;
+    }
+
+    public Header setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+        return this;
+    }
+
+    public Header setNumber(int number) {
+        this.number = number;
+        return this;
+    }
+
+    public Header setEpoch(EpochFraction epoch) {
+        this.epoch = epoch;
+        return this;
+    }
+
+    public Header setParentHash(byte[] parentHash) {
+        this.parentHash = parentHash;
+        return this;
+    }
+
+    public Header setTransactionsRoot(byte[] transactionsRoot) {
+        this.transactionsRoot = transactionsRoot;
+        return this;
+    }
+
+    public Header setProposalsHash(byte[] proposalsHash) {
+        this.proposalsHash = proposalsHash;
+        return this;
+    }
+
+    public Header setExtraHash(byte[] extraHash) {
+        this.extraHash = extraHash;
+        return this;
+    }
+
+    public Header setDao(byte[] dao) {
+        this.dao = dao;
+        return this;
+    }
+
+    public Header setNonce(BigInteger nonce) {
+        this.nonce = nonce;
+        return this;
+    }
 }

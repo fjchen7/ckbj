@@ -1,24 +1,17 @@
 package org.ckbj.type;
 
 import com.google.gson.annotations.SerializedName;
+import org.ckbj.utils.Hash;
 
 import java.math.BigInteger;
-import java.util.Objects;
 
 public final class Script {
     private byte[] codeHash;
     private byte[] args;
-    private HashType hashType;
+    private HashType hashType = HashType.TYPE;
 
-    private Script() {
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static Builder builder(Script clone) {
-        return new Builder(clone);
+    public Script(byte[] codeHash) {
+        setCodeHash(codeHash);
     }
 
     public byte[] getCodeHash() {
@@ -31,6 +24,24 @@ public final class Script {
 
     public HashType getHashType() {
         return hashType;
+    }
+
+    public Script setCodeHash(byte[] codeHash) {
+        if (!Hash.isHash(codeHash)) {
+            throw new IllegalArgumentException("codeHash should be 32 bytes");
+        }
+        this.codeHash = codeHash;
+        return this;
+    }
+
+    public Script setArgs(byte[] args) {
+        this.args = args;
+        return this;
+    }
+
+    public Script setHashType(HashType hashType) {
+        this.hashType = hashType;
+        return this;
     }
 
     // TODO
@@ -62,51 +73,6 @@ public final class Script {
     // TODO
     public static org.ckbj.protocol.type.Script fromAddress(String address) {
         return null;
-    }
-
-    public static final class Builder {
-        public byte[] codeHash;
-        public byte[] args;
-        public HashType hashType;
-
-        private Builder() {
-            args = new byte[]{};
-            hashType = HashType.TYPE;
-        }
-
-        private Builder(Script clone) {
-            codeHash = clone.codeHash;
-            args = clone.args;
-            hashType = clone.hashType;
-        }
-
-        public Builder setCodeHash(byte[] codeHash) {
-            if (codeHash.length != 32) {
-                throw new IllegalArgumentException("codeHash should be 32 bytes");
-            }
-            this.codeHash = codeHash;
-            return this;
-        }
-
-        public Builder setArgs(byte[] args) {
-            Objects.requireNonNull(args);
-            this.args = args;
-            return this;
-        }
-
-        public Builder setHashType(HashType hashType) {
-            Objects.requireNonNull(hashType);
-            this.hashType = hashType;
-            return this;
-        }
-
-        public Script build() {
-            Script script = new Script();
-            script.codeHash = this.codeHash;
-            script.hashType = this.hashType;
-            script.args = this.args;
-            return script;
-        }
     }
 
     public enum HashType {

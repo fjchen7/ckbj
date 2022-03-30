@@ -9,19 +9,18 @@ public class CellInput {
     // TODO: implement class to parse since
     /**
      * 8-byte length field to prevent {@link Transaction} to be mined before an absolute or relative time.
+     *
      * @see <a href="https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0017-tx-valid-since/0017-tx-valid-since.md">RFC17 Transaction valid since</a>
      */
     private byte[] since;
 
-    private CellInput() {
+    public CellInput(OutPoint previousOutput, byte[] since) {
+        this.previousOutput = previousOutput;
+        this.since = since;
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static Builder builder(CellInput clone) {
-        return new Builder(clone);
+    public CellInput(OutPoint previousOutput) {
+        this(previousOutput, new byte[]{0});
     }
 
     public OutPoint getPreviousOutput() {
@@ -32,44 +31,18 @@ public class CellInput {
         return since;
     }
 
-    public static final class Builder {
-        private OutPoint previousOutput;
-        // TODO: implement class to parse since
-        private byte[] since;
+    public CellInput setPreviousOutput(OutPoint previousOutput) {
+        this.previousOutput = previousOutput;
+        return this;
+    }
 
-        private Builder() {
-            since = new byte[]{};
-        }
+    public CellInput setPreviousOutput(byte[] txHash, int index) {
+        this.previousOutput = new OutPoint(txHash, index);
+        return this;
+    }
 
-        public Builder(CellInput clone) {
-            this.previousOutput = clone.previousOutput;
-            this.since = clone.since;
-        }
-
-        public Builder setPreviousOutput(OutPoint previousOutput) {
-            this.previousOutput = previousOutput;
-            return this;
-        }
-
-        public Builder setPreviousOutput(byte[] txHash, int index) {
-            OutPoint previousOutput = OutPoint.build()
-                    .setTxHash(txHash)
-                    .setIndex(index)
-                    .build();
-            this.previousOutput = previousOutput;
-            return this;
-        }
-
-        public Builder setSince(byte[] since) {
-            this.since = since;
-            return this;
-        }
-
-        public CellInput build() {
-            CellInput cellInput = new CellInput();
-            cellInput.since = this.since;
-            cellInput.previousOutput = this.previousOutput;
-            return cellInput;
-        }
+    public CellInput setSince(byte[] since) {
+        this.since = since;
+        return this;
     }
 }

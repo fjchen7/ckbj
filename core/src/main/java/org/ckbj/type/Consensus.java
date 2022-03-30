@@ -28,9 +28,6 @@ public class Consensus {
     private boolean permanentDifficultyInDummy;
     private List<HardForkFeature> hardforkFeatures;
 
-    private Consensus() {
-    }
-
     public String getId() {
         return id;
     }
@@ -125,6 +122,121 @@ public class Consensus {
 
     public List<HardForkFeature> getHardforkFeatures() {
         return hardforkFeatures;
+    }
+
+    public Consensus setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public Consensus setGenesisHash(byte[] genesisHash) {
+        this.genesisHash = genesisHash;
+        return this;
+    }
+
+    public Consensus setDaoTypeHash(byte[] daoTypeHash) {
+        this.daoTypeHash = daoTypeHash;
+        return this;
+    }
+
+    public Consensus setSecp256k1Blake160SighashAllTypeHash(byte[] secp256k1Blake160SighashAllTypeHash) {
+        this.secp256k1Blake160SighashAllTypeHash = secp256k1Blake160SighashAllTypeHash;
+        return this;
+    }
+
+    public Consensus setSecp256k1Blake160MultisigAllTypeHash(byte[] secp256k1Blake160MultisigAllTypeHash) {
+        this.secp256k1Blake160MultisigAllTypeHash = secp256k1Blake160MultisigAllTypeHash;
+        return this;
+    }
+
+    public Consensus setInitialPrimaryEpochReward(BigInteger initialPrimaryEpochReward) {
+        this.initialPrimaryEpochReward = initialPrimaryEpochReward;
+        return this;
+    }
+
+    public Consensus setSecondaryEpochReward(BigInteger secondaryEpochReward) {
+        this.secondaryEpochReward = secondaryEpochReward;
+        return this;
+    }
+
+    public Consensus setMaxUnclesNum(int maxUnclesNum) {
+        this.maxUnclesNum = maxUnclesNum;
+        return this;
+    }
+
+    public Consensus setOrphanRateTarget(Ratio orphanRateTarget) {
+        this.orphanRateTarget = orphanRateTarget;
+        return this;
+    }
+
+    public Consensus setEpochDurationTarget(long epochDurationTarget) {
+        this.epochDurationTarget = epochDurationTarget;
+        return this;
+    }
+
+    public Consensus setTxProposalWindow(ProposalWindow txProposalWindow) {
+        this.txProposalWindow = txProposalWindow;
+        return this;
+    }
+
+    public Consensus setProposerRewardRatio(Ratio proposerRewardRatio) {
+        this.proposerRewardRatio = proposerRewardRatio;
+        return this;
+    }
+
+    public Consensus setCellbaseMaturity(EpochFraction cellbaseMaturity) {
+        this.cellbaseMaturity = cellbaseMaturity;
+        return this;
+    }
+
+    public Consensus setMedianTimeBlockCount(int medianTimeBlockCount) {
+        this.medianTimeBlockCount = medianTimeBlockCount;
+        return this;
+    }
+
+    public Consensus setMaxBlockCycles(long maxBlockCycles) {
+        this.maxBlockCycles = maxBlockCycles;
+        return this;
+    }
+
+    public Consensus setMaxBlockBytes(int maxBlockBytes) {
+        this.maxBlockBytes = maxBlockBytes;
+        return this;
+    }
+
+    public Consensus setBlockVersion(int blockVersion) {
+        this.blockVersion = blockVersion;
+        return this;
+    }
+
+    public Consensus setTxVersion(int txVersion) {
+        this.txVersion = txVersion;
+        return this;
+    }
+
+    public Consensus setTypeIdCodeHash(byte[] typeIdCodeHash) {
+        this.typeIdCodeHash = typeIdCodeHash;
+        return this;
+    }
+
+    public Consensus setMaxBlockProposalsLimit(int maxBlockProposalsLimit) {
+        this.maxBlockProposalsLimit = maxBlockProposalsLimit;
+        return this;
+    }
+
+    public Consensus setPrimaryEpochRewardHalvingInterval(int primaryEpochRewardHalvingInterval) {
+        this.primaryEpochRewardHalvingInterval = primaryEpochRewardHalvingInterval;
+        return this;
+    }
+
+    public Consensus setPermanentDifficultyInDummy(boolean permanentDifficultyInDummy) {
+        this.permanentDifficultyInDummy = permanentDifficultyInDummy;
+        return this;
+    }
+
+    public Consensus setHardforkFeatures(List<HardForkFeature> hardforkFeatures) {
+        this.hardforkFeatures = hardforkFeatures;
+        return this;
     }
 
     public static class Ratio {

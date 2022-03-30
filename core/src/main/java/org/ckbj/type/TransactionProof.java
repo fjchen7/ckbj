@@ -9,9 +9,6 @@ public class TransactionProof {
     private byte[] witnessesRoot;
     private byte[] blockHash;
 
-    private TransactionProof() {
-    }
-
     public MerkleProof getProof() {
         return proof;
     }
@@ -22,6 +19,21 @@ public class TransactionProof {
 
     public byte[] getBlockHash() {
         return blockHash;
+    }
+
+    public TransactionProof setProof(MerkleProof proof) {
+        this.proof = proof;
+        return this;
+    }
+
+    public TransactionProof setWitnessesRoot(byte[] witnessesRoot) {
+        this.witnessesRoot = witnessesRoot;
+        return this;
+    }
+
+    public TransactionProof setBlockHash(byte[] blockHash) {
+        this.blockHash = blockHash;
+        return this;
     }
 
     public static class MerkleProof {

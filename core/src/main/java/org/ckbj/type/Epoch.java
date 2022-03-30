@@ -9,9 +9,6 @@ public class Epoch {
     private int length;
     private long compactTarget;
 
-    private Epoch() {
-    }
-
     public int getNumber() {
         return number;
     }
@@ -26,5 +23,25 @@ public class Epoch {
 
     public long getCompactTarget() {
         return compactTarget;
+    }
+
+    public Epoch setNumber(int number) {
+        this.number = number;
+        return this;
+    }
+
+    public Epoch setStartBlockNumber(int startBlockNumber) {
+        this.startBlockNumber = startBlockNumber;
+        return this;
+    }
+
+    public Epoch setLength(int length) {
+        this.length = length;
+        return this;
+    }
+
+    public Epoch setCompactTarget(long compactTarget) {
+        this.compactTarget = compactTarget;
+        return this;
     }
 }

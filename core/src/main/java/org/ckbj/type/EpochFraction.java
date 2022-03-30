@@ -12,9 +12,6 @@ public class EpochFraction {
     private int blockIndex;
     private int length;
 
-    private EpochFraction() {
-    }
-
     public int getNumber() {
         return number;
     }
@@ -27,8 +24,22 @@ public class EpochFraction {
         return length;
     }
 
-    protected class TypeAdapter implements JsonSerializer<EpochFraction>, JsonDeserializer<EpochFraction> {
+    public EpochFraction setNumber(int number) {
+        this.number = number;
+        return this;
+    }
 
+    public EpochFraction setBlockIndex(int blockIndex) {
+        this.blockIndex = blockIndex;
+        return this;
+    }
+
+    public EpochFraction setLength(int length) {
+        this.length = length;
+        return this;
+    }
+
+    protected class TypeAdapter implements JsonSerializer<EpochFraction>, JsonDeserializer<EpochFraction> {
         @Override
         public JsonElement serialize(EpochFraction src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject obj = new JsonObject();

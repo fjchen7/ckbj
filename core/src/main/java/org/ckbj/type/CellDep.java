@@ -7,14 +7,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class CellDep {
     private OutPoint outPoint;
-    private DepType depType;
-
-    private CellDep() {
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
+    private DepType depType = DepType.DEP_GROUP;
 
     public OutPoint getOutPoint() {
         return outPoint;
@@ -24,39 +17,20 @@ public class CellDep {
         return depType;
     }
 
-    public static final class Builder {
-        private OutPoint outPoint;
-        private DepType depType;
+    public CellDep setOutPoint(byte[] txHash, int index) {
+        OutPoint outPoint = new OutPoint(txHash, index);
+        this.outPoint = outPoint;
+        return this;
+    }
 
-        private Builder() {
-            setDepType(DepType.DEP_GROUP);
-        }
+    public CellDep setOutPoint(OutPoint outPoint) {
+        this.outPoint = outPoint;
+        return this;
+    }
 
-        public Builder setOutPoint(byte[] txHash, int index) {
-            OutPoint outPoint = OutPoint.build()
-                    .setTxHash(txHash)
-                    .setIndex(index)
-                    .build();
-            this.outPoint = outPoint;
-            return this;
-        }
-
-        public Builder setOutPoint(OutPoint outPoint) {
-            this.outPoint = outPoint;
-            return this;
-        }
-
-        public Builder setDepType(DepType depType) {
-            this.depType = depType;
-            return this;
-        }
-
-        public CellDep build() {
-            CellDep cellDep = new CellDep();
-            cellDep.outPoint = this.outPoint;
-            cellDep.depType = this.depType;
-            return cellDep;
-        }
+    public CellDep setDepType(DepType depType) {
+        this.depType = depType;
+        return this;
     }
 
     public enum DepType {
