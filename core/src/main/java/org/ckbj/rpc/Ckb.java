@@ -5,10 +5,7 @@ import org.ckbj.rpc.type.RpcBlockHash;
 import java.util.Arrays;
 
 public class Ckb {
-    public static Request<RpcBlockHash> getBlock(byte[] blockHash) {
-        return new Request("get_block", Arrays.asList(blockHash), RpcBlockHash.class);
+    public static Request<RpcBlockHash> getBlockHash(int blockNumber) {
+        return new Request("get_block_hash", Arrays.asList(blockNumber), RpcBlockHash.class);
     }
-//    public ExampleC getE() {
-//        return null;
-//    }
 }
