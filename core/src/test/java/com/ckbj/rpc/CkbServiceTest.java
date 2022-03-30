@@ -1,6 +1,7 @@
-package com.ckbj;
+package com.ckbj.rpc;
 
 import org.ckbj.rpc.CkbService;
+import org.ckbj.rpc.exception.JsonRpcException;
 import org.ckbj.type.*;
 import org.ckbj.utils.Hex;
 import org.junit.jupiter.api.Assertions;
@@ -85,5 +86,12 @@ public class CkbServiceTest {
         Assertions.assertEquals(Script.HashType.TYPE, detailedCell.getType().getHashType());
         Assertions.assertArrayEquals(new byte[]{}, detailedCell.getType().getArgs());
         Assertions.assertArrayEquals(Hex.decode("0x0000000000000000"), detailedCell.getData());
+    }
+
+    @Test
+    public void testException() {
+        Assertions.assertThrows(JsonRpcException.class, () -> {
+            service.getBlock("0x");
+        });
     }
 }

@@ -1,6 +1,10 @@
 package org.ckbj.rpc;
 
+import com.google.gson.*;
+import com.google.gson.annotations.JsonAdapter;
 import org.ckbj.rpc.exception.JsonRpcException;
+
+import java.lang.reflect.Type;
 
 public class Response<T> {
     private long id;
@@ -51,6 +55,7 @@ public class Response<T> {
         this.error = error;
     }
 
+    @JsonAdapter(Error.TypeAdapter.class)
     public static class Error {
         private int code;
         private String message;
@@ -77,6 +82,17 @@ public class Response<T> {
 
         public void setMessage(String message) {
             this.message = message;
+        }
+
+        protected class TypeAdapter implements JsonDeserializer<Error> {
+            @Override
+            public Error deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                JsonObject obj = json.getAsJsonObject();
+                Error error = new Error();
+                error.setMessage(obj.get("message").getAsString());
+                error.setCode(obj.get("code").getAsInt());
+                return error;
+            }
         }
     }
 }
