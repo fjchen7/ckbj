@@ -10,11 +10,14 @@ public class BigIntegerTypeAdapter implements JsonSerializer<BigInteger>, JsonDe
 
     @Override
     public JsonElement serialize(BigInteger src, Type typeOfSrc, JsonSerializationContext context) {
+        if (src == null) {
+            return null;
+        }
         return new JsonPrimitive(Hex.encode(src.toByteArray()));
     }
 
     @Override
     public BigInteger deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return new BigInteger(json.getAsString());
+        return new BigInteger(Hex.decode(json.getAsString()));
     }
 }

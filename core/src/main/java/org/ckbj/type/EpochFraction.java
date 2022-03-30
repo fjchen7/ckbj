@@ -56,10 +56,10 @@ public class EpochFraction {
         @Override
         public EpochFraction deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             byte[] bytes = Hex.decode(json.getAsString());
-            if (bytes.length == 6) {
+            if (bytes.length < 7) {
                 byte[] copied = bytes;
                 bytes = new byte[7];
-                System.arraycopy(copied, 0, bytes, 1, 6);
+                System.arraycopy(copied, 0, bytes, 7 - copied.length, copied.length);
             }
             EpochFraction epoch = new EpochFraction();
             epoch.number = decode(bytes, 4, 6);
