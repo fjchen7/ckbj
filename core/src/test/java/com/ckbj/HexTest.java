@@ -1,4 +1,4 @@
-package com.nervos.ckbj;
+package com.ckbj;
 
 import org.ckbj.utils.Hex;
 import org.junit.jupiter.api.Assertions;
@@ -13,9 +13,10 @@ public class HexTest {
         bytes = new byte[]{0x12, 0x34};
         Assertions.assertEquals("0x1234", Hex.encode(bytes));
 
-        Assertions.assertEquals("0x", Hex.encode((byte[]) null));
+        Assertions.assertEquals("0x", Hex.encode(null));
         Assertions.assertEquals("0x", Hex.encode(new byte[]{}));
-        Assertions.assertEquals("0x", Hex.encode(new byte[]{0x0, 0x0, 0x0}));
+        Assertions.assertEquals("0x0", Hex.encode(new byte[]{0x0}));
+        Assertions.assertEquals("0x0", Hex.encode(new byte[]{0x0, 0x0, 0x0}));
     }
 
     @Test
