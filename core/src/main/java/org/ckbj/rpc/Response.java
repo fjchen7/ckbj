@@ -2,7 +2,7 @@ package org.ckbj.rpc;
 
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
-import org.ckbj.rpc.exception.JsonRpcException;
+import org.ckbj.exception.JsonRpcException;
 
 import java.lang.reflect.Type;
 

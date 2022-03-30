@@ -1,7 +1,7 @@
 package com.ckbj.rpc;
 
 import org.ckbj.rpc.CkbService;
-import org.ckbj.rpc.exception.JsonRpcException;
+import org.ckbj.exception.JsonRpcException;
 import org.ckbj.type.*;
 import org.ckbj.utils.Hex;
 import org.junit.jupiter.api.Assertions;
