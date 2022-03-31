@@ -10,10 +10,7 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NetworkDetail {
     private Network network;
@@ -44,6 +41,7 @@ public class NetworkDetail {
     }
 
     public static NetworkDetail defaultInstance(Network network) {
+        Objects.requireNonNull(network);
         switch (network) {
             case LINA:
                 return LINA_NETWORK_DETAIL;

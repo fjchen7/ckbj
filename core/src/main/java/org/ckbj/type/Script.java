@@ -4,7 +4,8 @@ import com.google.gson.annotations.SerializedName;
 import org.ckbj.utils.Hash;
 import org.ckbj.utils.Hex;
 
-import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Objects;
 
 public final class Script {
     private byte[] codeHash;
@@ -28,6 +29,7 @@ public final class Script {
     }
 
     public Script setCodeHash(byte[] codeHash) {
+        Objects.requireNonNull(codeHash);
         if (!Hash.isHash(codeHash)) {
             throw new IllegalArgumentException("codeHash should be 32 bytes");
         }
@@ -40,11 +42,13 @@ public final class Script {
     }
 
     public Script setArgs(byte[] args) {
+        Objects.requireNonNull(args);
         this.args = args;
         return this;
     }
 
     public Script setHashType(HashType hashType) {
+        Objects.requireNonNull(hashType);
         this.hashType = hashType;
         return this;
     }
@@ -57,27 +61,24 @@ public final class Script {
 //    return blake2b.doFinalBytes();
     }
 
-    // TODO
-    public BigInteger occupiedCapacity() {
-        return null;
-//    int byteSize = 1;
-//    if (!Strings.isEmpty(codeHash)) {
-//      byteSize += Hex.encode(codeHash).length;
-//    }
-//    if (!Strings.isEmpty(args)) {
-//      byteSize += Hex.encode(args).length;
-//    }
-//    return Utils.ckbToShannon(byteSize);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Script script = (Script) o;
+
+        if (!Arrays.equals(codeHash, script.codeHash)) return false;
+        if (!Arrays.equals(args, script.args)) return false;
+        return hashType == script.hashType;
     }
 
-    // TODO
-    public String toAddress() {
-        return null;
-    }
-
-    // TODO
-    public static Script fromAddress(String address) {
-        return null;
+    @Override
+    public int hashCode() {
+        int result = Arrays.hashCode(codeHash);
+        result = 31 * result + Arrays.hashCode(args);
+        result = 31 * result + hashType.hashCode();
+        return result;
     }
 
     public enum HashType {
@@ -94,8 +95,21 @@ public final class Script {
             this.value = (byte) value;
         }
 
-        public byte toByte() {
+        public byte value() {
             return value;
+        }
+
+        public static HashType valueOf(byte value) {
+            switch (value) {
+                case 0x00:
+                    return DATA;
+                case 0x01:
+                    return TYPE;
+                case 0x02:
+                    return DATA1;
+                default:
+                    throw new NullPointerException();
+            }
         }
     }
 }
