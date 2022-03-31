@@ -17,9 +17,8 @@ public class LongTypeAdapter implements JsonDeserializer<Long>, JsonSerializer<L
     public Long deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         if (json.getAsJsonPrimitive().isNumber()) {
             return json.getAsLong();
-        } else {
-            byte[] bytes = Hex.decode(json.getAsString());
-            return new BigInteger(bytes).longValue();
         }
+        byte[] bytes = Hex.decode(json.getAsString());
+        return new BigInteger(bytes).longValue();
     }
 }

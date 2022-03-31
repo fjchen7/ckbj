@@ -21,6 +21,9 @@ public class IntegerTypeAdapter implements JsonSerializer<Integer>, JsonDeserial
 
     @Override
     public Integer deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (json.getAsJsonPrimitive().isNumber()) {
+            return json.getAsInt();
+        }
         BigInteger value = new BigInteger(Hex.decode(json.getAsString()));
         // deserialize 0xffffffff to -1 for outpoint index in coinbase transaction
         if (value.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) == 1) {
