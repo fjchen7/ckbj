@@ -8,7 +8,7 @@ import java.math.BigInteger;
 
 public final class Script {
     private byte[] codeHash;
-    private byte[] args;
+    private byte[] args = new byte[0];
     private HashType hashType = HashType.TYPE;
 
     public byte[] getCodeHash() {
@@ -76,7 +76,7 @@ public final class Script {
     }
 
     // TODO
-    public static org.ckbj.protocol.type.Script fromAddress(String address) {
+    public static Script fromAddress(String address) {
         return null;
     }
 

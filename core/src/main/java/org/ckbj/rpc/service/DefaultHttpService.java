@@ -1,4 +1,4 @@
-package org.ckbj.rpc;
+package org.ckbj.rpc.service;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;

@@ -1,4 +1,4 @@
-package org.ckbj.type.adapter;
+package org.ckbj.rpc.adapter;
 
 import com.google.gson.*;
 import org.ckbj.utils.Hex;

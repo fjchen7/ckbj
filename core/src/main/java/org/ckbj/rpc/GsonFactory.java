@@ -1,10 +1,13 @@
-package org.ckbj;
+package org.ckbj.rpc;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.ToNumberPolicy;
-import org.ckbj.type.adapter.*;
+import org.ckbj.rpc.adapter.BigIntegerTypeAdapter;
+import org.ckbj.rpc.adapter.ByteArrayTypeAdapter;
+import org.ckbj.rpc.adapter.IntegerTypeAdapter;
+import org.ckbj.rpc.adapter.LongTypeAdapter;
 
 import java.math.BigInteger;
 

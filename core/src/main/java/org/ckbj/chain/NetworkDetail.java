@@ -2,7 +2,7 @@ package org.ckbj.chain;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.ckbj.GsonFactory;
+import org.ckbj.rpc.GsonFactory;
 import org.ckbj.type.Script;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class NetworkDetail {
         }
     }
 
-    public static NetworkDetail getInstance(Network network) {
+    public static NetworkDetail defaultInstance(Network network) {
         switch (network) {
             case LINA:
                 return LINA_NETWORK_DETAIL;

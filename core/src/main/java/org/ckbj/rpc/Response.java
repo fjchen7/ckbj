@@ -1,7 +1,5 @@
 package org.ckbj.rpc;
 
-import org.ckbj.exception.JsonRpcException;
-
 public class Response<T> {
     private long id;
     private String jsonrpc;

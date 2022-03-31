@@ -10,13 +10,12 @@ import java.io.IOException;
 
 public class NetworkDetailTest {
     @Test
-    public void loadContracts() throws IOException {
-        NetworkDetail lina = NetworkDetail.getInstance(Network.LINA);
-        NetworkDetail aggron = NetworkDetail.getInstance(Network.AGGRON);
+    public void loadContracts() {
+        NetworkDetail lina = NetworkDetail.defaultInstance(Network.LINA);
+        NetworkDetail aggron = NetworkDetail.defaultInstance(Network.AGGRON);
         for (ContractName contractName: ContractName.values()) {
             Assertions.assertNotNull(lina.get(contractName));
             Assertions.assertNotNull(aggron.get(contractName));
         }
-
     }
 }

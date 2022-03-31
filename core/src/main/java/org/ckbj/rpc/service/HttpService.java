@@ -1,7 +1,9 @@
-package org.ckbj.rpc;
+package org.ckbj.rpc.service;
 
 import com.google.gson.Gson;
-import org.ckbj.GsonFactory;
+import org.ckbj.rpc.GsonFactory;
+import org.ckbj.rpc.Request;
+import org.ckbj.rpc.Response;
 
 import java.io.IOException;
 

@@ -1,5 +1,9 @@
-package org.ckbj.rpc;
+package org.ckbj;
 
+import org.ckbj.chain.Network;
+import org.ckbj.rpc.Ckb;
+import org.ckbj.rpc.service.DefaultHttpService;
+import org.ckbj.rpc.service.JsonRpcService;
 import org.ckbj.type.*;
 import org.ckbj.utils.Hex;
 
@@ -7,6 +11,8 @@ import java.io.IOException;
 
 public class CkbService {
     private JsonRpcService jsonRpcService;
+    private static CkbService LINA_SERVICE;
+    private static CkbService AGGRON_SERVICE;
 
     public CkbService(JsonRpcService jsonRpcService) {
         this.jsonRpcService = jsonRpcService;
@@ -16,12 +22,21 @@ public class CkbService {
         this(new DefaultHttpService(url));
     }
 
-    public static CkbService testNetService() {
-        return new CkbService("https://testnet.ckb.dev");
-    }
-
-    public static CkbService mainNetService() {
-        return new CkbService("https://mainnet.ckb.dev");
+    public static CkbService defaultInstance(Network network) {
+        switch (network) {
+            case LINA:
+                if (LINA_SERVICE == null) {
+                    LINA_SERVICE = new CkbService("https://mainnet.ckb.dev");
+                }
+                return LINA_SERVICE;
+            case AGGRON:
+                if (AGGRON_SERVICE == null) {
+                    AGGRON_SERVICE = new CkbService("https://testnet.ckb.dev");
+                }
+                return AGGRON_SERVICE;
+            default:
+                throw new UnsupportedOperationException("Unknown network");
+        }
     }
 
     public Block getBlock(byte[] blockHash) throws IOException {

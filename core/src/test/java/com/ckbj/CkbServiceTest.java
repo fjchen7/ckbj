@@ -1,7 +1,8 @@
-package com.ckbj.rpc;
+package com.ckbj;
 
-import org.ckbj.rpc.CkbService;
-import org.ckbj.exception.JsonRpcException;
+import org.ckbj.CkbService;
+import org.ckbj.chain.Network;
+import org.ckbj.rpc.JsonRpcException;
 import org.ckbj.type.*;
 import org.ckbj.utils.Hex;
 import org.junit.jupiter.api.Assertions;
@@ -13,7 +14,7 @@ import java.math.BigInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CkbServiceTest {
-    private CkbService service = CkbService.testNetService();
+    private CkbService service = CkbService.defaultInstance(Network.AGGRON);
 
     @Test
     public void testGetBlockHash() throws IOException {

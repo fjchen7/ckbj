@@ -1,6 +1,4 @@
-package org.ckbj.exception;
-
-import org.ckbj.rpc.Response;
+package org.ckbj.rpc;
 
 public class JsonRpcException extends RuntimeException {
     protected final int code;
