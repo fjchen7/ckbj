@@ -2,32 +2,50 @@ package org.ckbj.utils;
 
 public class Hex {
     private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
+    private static final String HEX_PREFIX = "0x";
 
     /**
-     * Convert byte array to hex string with 0x prefix.
-     *
-     * @param in byte array
-     * @return hex string
+     * Convert byte array to hex string with 0x and with 0 padded
      */
     public static String encode(byte[] in) {
-        if (in == null || in.length == 0) {
-            return "0x";
+        return encode(in, true, true);
+    }
+
+    /**
+     * Convert byte array to hex string
+     *
+     * @param in        byte array.
+     * @param hasPrefix whether the returned hex string has "0x" prefix.
+     * @param isPadded  whether the returned hex string has "0" padded in the beginning if needed.
+     *                  For example, it returns "0x0123" for [0x01, 0x23] when isPadded is true, but "0x123" when false;
+     * @return hex string
+     */
+    public static String encode(byte[] in, boolean hasPrefix, boolean isPadded) {
+        if (in == null) {
+            return null;
         }
-        char[] hexChars;
-        int i = 0, j = 0;
-        if (in[0] >>> 4 == 0) {
-            hexChars = new char[in.length * 2 - 1];
-            hexChars[0] = HEX_ARRAY[in[0] & 0x0F];
-            i = j = 1;
+        String hex;
+        if (in.length == 0) {
+            hex = "";
         } else {
-            hexChars = new char[in.length * 2];
+            char[] hexChars;
+            int i = 0, j = 0;
+            if (!isPadded && in[0] >>> 4 == 0) {
+                hexChars = new char[in.length * 2 - 1];
+                hexChars[0] = HEX_ARRAY[in[0] & 0x0F];
+                i = j = 1;
+            } else {
+                hexChars = new char[in.length * 2];
+            }
+
+            for (; j < in.length; i += 2, j++) {
+                int v = in[j] & 0xFF;
+                hexChars[i] = HEX_ARRAY[v >>> 4];
+                hexChars[i + 1] = HEX_ARRAY[v & 0x0F];
+            }
+            hex = String.valueOf(hexChars);
         }
-        for (; j < in.length; i += 2, j++) {
-            int v = in[j] & 0xFF;
-            hexChars[i] = HEX_ARRAY[v >>> 4];
-            hexChars[i + 1] = HEX_ARRAY[v & 0x0F];
-        }
-        return "0x" + String.valueOf(hexChars);
+        return (hasPrefix ? HEX_PREFIX : "") + hex;
     }
 
     /**
@@ -37,23 +55,26 @@ public class Hex {
      * @return byte array
      */
     public static byte[] decode(String in) {
+        if (in == null) {
+            return null;
+        }
         in = formatHexString(in);
         if (!isHexString(in)) {
             throw new IllegalArgumentException("Illegal hex string");
         }
         int len = in.length();
-        byte[] data = new byte[(len + 1) / 2];
+        byte[] bytes = new byte[(len + 1) / 2];
         int i = 0, j = 0;
         if (len % 2 != 0) {
-            data[i] = (byte) Character.digit(in.charAt(j), 16);
+            bytes[i] = (byte) Character.digit(in.charAt(j), 16);
             i++;
             j++;
         }
         for (; j < len; i++, j += 2) {
-            data[i] = (byte) ((Character.digit(in.charAt(j), 16) << 4)
+            bytes[i] = (byte) ((Character.digit(in.charAt(j), 16) << 4)
                     + Character.digit(in.charAt(j + 1), 16));
         }
-        return data;
+        return bytes;
     }
 
     /**
@@ -62,6 +83,9 @@ public class Hex {
      * @return true if {@code in} is a hex string
      */
     public static boolean isHexString(String in) {
+        if (in == null) {
+            return false;
+        }
         in = formatHexString(in);
         for (int i = 0; i < in.length(); i++) {
             char ch = Character.toLowerCase(in.charAt(i));
@@ -73,10 +97,7 @@ public class Hex {
     }
 
     private static String formatHexString(String in) {
-        if (in == null) {
-            return "";
-        }
-        if (in.startsWith("0x")) {
+        if (in.startsWith(HEX_PREFIX)) {
             in = in.substring(2);
         }
         return in.toLowerCase();
