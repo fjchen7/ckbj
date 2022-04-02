@@ -6,15 +6,16 @@ import org.ckbj.utils.Hex;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Contract {
     protected String name;
-    protected Script.HashType hashType = Script.HashType.TYPE;
     protected byte[] codeHash;
+    protected Script.HashType hashType = Script.HashType.TYPE;
     protected List<CellDep> cellDeps = new ArrayList<>();
 
     public Contract(String name) {
-        this.name = name;
+        setName(name);
     }
 
     public String getName() {
@@ -34,11 +35,13 @@ public class Contract {
     }
 
     public Contract setName(String name) {
+        Objects.requireNonNull(name);
         this.name = name;
         return this;
     }
 
     public Contract setHashType(Script.HashType hashType) {
+        Objects.requireNonNull(hashType);
         this.hashType = hashType;
         return this;
     }
@@ -53,6 +56,7 @@ public class Contract {
     }
 
     public Contract setCodeHash(byte[] codeHash) {
+        Objects.requireNonNull(codeHash);
         this.codeHash = codeHash;
         return this;
     }
@@ -60,5 +64,16 @@ public class Contract {
     public Contract addCellDep(CellDep cellDep) {
         this.cellDeps.add(cellDep);
         return this;
+    }
+
+    public enum Standard {
+        SECP256K1_BLAKE160_SIGHASH_ALL,
+        SECP256K1_BLAKE160_MULTISIG_ALL,
+        ANYONE_CAN_PAY,
+        PORTAL_WALLET_LOCK,
+        CHEQUE,
+        SUDT,
+        DAO,
+        TYPE_ID;
     }
 }

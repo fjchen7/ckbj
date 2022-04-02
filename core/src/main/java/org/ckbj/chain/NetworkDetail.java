@@ -60,12 +60,12 @@ public class NetworkDetail {
         contracts.put(contract.getName(), contract);
     }
 
-    public Contract get(String contractName) {
-        return contracts.get(contractName);
+    public Contract get(String contract) {
+        return contracts.get(contract);
     }
 
-    public Contract get(ContractName contractName) {
-        return get(contractName.name());
+    public Contract get(Contract.Standard contract) {
+        return get(contract.name());
     }
 
     /**
@@ -73,8 +73,8 @@ public class NetworkDetail {
      *
      * @return true if the script uses binary code of given contract.
      */
-    public boolean contractUsed(Script script, ContractName contractName) {
-        return contractUsed(script, contractName.name());
+    public boolean contractUsed(Script script, Contract.Standard contract) {
+        return contractUsed(script, contract.name());
     }
 
     /**

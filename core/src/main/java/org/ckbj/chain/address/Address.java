@@ -8,7 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static org.ckbj.chain.ContractName.*;
+import static org.ckbj.chain.Contract.Standard.*;
 
 public class Address {
     Script script;
