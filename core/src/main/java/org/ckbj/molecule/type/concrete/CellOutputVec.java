@@ -69,6 +69,15 @@ public final class CellOutputVec extends DynamicVector {
             return this;
         }
 
+        public Builder add(@Nonnull CellOutput[] items) {
+            Objects.requireNonNull(items);
+            CellOutput[] tempItems = new CellOutput[items.length + this.items.length];
+            System.arraycopy(this.items, 0, tempItems, 0, this.items.length);
+            System.arraycopy(items, 0, tempItems, this.items.length, items.length);
+            this.items = tempItems;
+            return this;
+        }
+
         public Builder set(int i, @Nonnull CellOutput item) {
             Objects.requireNonNull(item);
             items[i] = item;

@@ -69,6 +69,15 @@ public final class BytesVec extends DynamicVector {
             return this;
         }
 
+        public Builder add(@Nonnull Bytes[] items) {
+            Objects.requireNonNull(items);
+            Bytes[] tempItems = new Bytes[items.length + this.items.length];
+            System.arraycopy(this.items, 0, tempItems, 0, this.items.length);
+            System.arraycopy(items, 0, tempItems, this.items.length, items.length);
+            this.items = tempItems;
+            return this;
+        }
+
         public Builder set(int i, @Nonnull Bytes item) {
             Objects.requireNonNull(item);
             items[i] = item;

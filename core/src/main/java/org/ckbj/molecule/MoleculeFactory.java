@@ -55,27 +55,29 @@ class MoleculeFactory {
         if (in == null) {
             return null;
         }
-        Bytes.Builder builder = Bytes.builder();
-        for (int i = 0; i < in.length; i++) {
-            builder.add(in[i]);
-        }
-        return builder.build();
+        return Bytes.builder()
+                .add(in)
+                .build();
     }
 
     protected static BytesVec createBytesVec(List<byte[]> in) {
-        BytesVec.Builder builder = BytesVec.builder();
+        Bytes[] arr = new Bytes[in.size()];
         for (int i = 0; i < in.size(); i++) {
-            builder.add(createBytes(in.get(i)));
+            arr[i] = createBytes(in.get(i));
         }
-        return builder.build();
+        return BytesVec.builder()
+                .add(arr)
+                .build();
     }
 
     protected static Byte32Vec createByte32Vec(List<byte[]> in) {
-        Byte32Vec.Builder builder = Byte32Vec.builder();
+        Byte32[] arr = new Byte32[in.size()];
         for (int i = 0; i < in.size(); i++) {
-            builder.add(createByte32(in.get(i)));
+            arr[i] = createByte32(in.get(i));
         }
-        return builder.build();
+        return Byte32Vec.builder()
+                .add(arr)
+                .build();
     }
 
     protected static OutPoint createOutPoint(org.ckbj.type.OutPoint in) {
@@ -93,11 +95,13 @@ class MoleculeFactory {
     }
 
     protected static CellInputVec createCellInputVec(List<org.ckbj.type.CellInput> in) {
-        CellInputVec.Builder builder = CellInputVec.builder();
+        CellInput[] arr = new CellInput[in.size()];
         for (int i = 0; i < in.size(); i++) {
-            builder.add(createCellInput(in.get(i)));
+            arr[i] = createCellInput(in.get(i));
         }
-        return builder.build();
+        return CellInputVec.builder()
+                .add(arr)
+                .build();
     }
 
     protected static CellOutput createCellOutput(Cell in) {
@@ -109,11 +113,13 @@ class MoleculeFactory {
     }
 
     protected static CellOutputVec createCellOutputVec(List<Cell> in) {
-        CellOutputVec.Builder builder = CellOutputVec.builder();
+        CellOutput[] arr = new CellOutput[in.size()];
         for (int i = 0; i < in.size(); i++) {
-            builder.add(createCellOutput(in.get(i)));
+            arr[i] = createCellOutput(in.get(i));
         }
-        return builder.build();
+        return CellOutputVec.builder()
+                .add(arr)
+                .build();
     }
 
     protected static CellDep createCellDep(org.ckbj.type.CellDep in) {
@@ -124,11 +130,13 @@ class MoleculeFactory {
     }
 
     protected static CellDepVec createCellDepVec(List<org.ckbj.type.CellDep> in) {
-        CellDepVec.Builder builder = CellDepVec.builder();
+        CellDep[] arr = new CellDep[in.size()];
         for (int i = 0; i < in.size(); i++) {
-            builder.add(createCellDep(in.get(i)));
+            arr[i] = createCellDep(in.get(i));
         }
-        return builder.build();
+        return CellDepVec.builder()
+                .add(arr)
+                .build();
     }
 
     protected static Script createScript(org.ckbj.type.Script in) {
