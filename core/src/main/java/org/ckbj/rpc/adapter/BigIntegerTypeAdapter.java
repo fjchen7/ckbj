@@ -18,6 +18,6 @@ public class BigIntegerTypeAdapter implements JsonSerializer<BigInteger>, JsonDe
 
     @Override
     public BigInteger deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return new BigInteger(Hex.decode(json.getAsString()));
+        return new BigInteger(1, Hex.decode(json.getAsString()));
     }
 }
