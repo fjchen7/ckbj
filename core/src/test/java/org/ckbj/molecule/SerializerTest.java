@@ -1,8 +1,7 @@
-package com.ckbj.molecule;
+package org.ckbj.molecule;
 
 import org.ckbj.CkbService;
 import org.ckbj.chain.Network;
-import org.ckbj.molecule.Serializer;
 import org.ckbj.type.Transaction;
 import org.ckbj.utils.Hex;
 import org.junit.jupiter.api.Assertions;

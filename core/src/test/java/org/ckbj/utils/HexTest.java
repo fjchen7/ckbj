@@ -1,4 +1,4 @@
-package com.ckbj.utils;
+package org.ckbj.utils;
 
 import org.ckbj.utils.Hex;
 import org.junit.jupiter.api.Assertions;

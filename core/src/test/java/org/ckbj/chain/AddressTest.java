@@ -1,6 +1,5 @@
-package com.ckbj.chain;
+package org.ckbj.chain;
 
-import org.ckbj.chain.Network;
 import org.ckbj.chain.address.Address;
 import org.ckbj.type.Script;
 import org.junit.jupiter.api.Assertions;

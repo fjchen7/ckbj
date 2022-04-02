@@ -1,6 +1,5 @@
-package com.ckbj;
+package org.ckbj;
 
-import org.ckbj.CkbService;
 import org.ckbj.chain.Network;
 import org.ckbj.rpc.JsonRpcException;
 import org.ckbj.type.*;
