@@ -40,7 +40,7 @@ public class HexTest {
 
         Assertions.assertArrayEquals(new byte[]{}, Hex.decode("0x"));
         Assertions.assertArrayEquals(new byte[]{}, Hex.decode(""));
-        Assertions.assertArrayEquals(null, Hex.decode(null));
+        Assertions.assertArrayEquals(null, Hex.decode((String) null));
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             Hex.decode("0x01234akf");

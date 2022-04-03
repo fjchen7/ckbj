@@ -2,6 +2,7 @@ package org.ckbj.molecule;
 
 import org.ckbj.molecule.type.concrete.*;
 import org.ckbj.type.Cell;
+import org.ckbj.utils.Hex;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -28,12 +29,9 @@ class MoleculeFactory {
     }
 
     protected static Uint32 createUnit32(long in) {
-        return createUnit32(BigInteger.valueOf(in).toByteArray());
-    }
-
-    protected static Uint32 createUnit32(byte[] in) {
+        byte[] arr = Hex.decode(BigInteger.valueOf(in));
         return Uint32
-                .builder(padAfter(flip(in), Uint32.SIZE))
+                .builder(padAfter(flip(arr), Uint32.SIZE))
                 .build();
     }
 
@@ -42,7 +40,7 @@ class MoleculeFactory {
     }
 
     protected static Uint64 createUnit64(BigInteger in) {
-        return createUnit64(in.toByteArray());
+        return createUnit64(Hex.decode(in));
     }
 
     protected static Uint64 createUnit64(byte[] in) {
@@ -51,9 +49,10 @@ class MoleculeFactory {
                 .build();
     }
 
-    protected static Uint128 createUnit128(byte[] in) {
+    protected static Uint128 createUnit128(BigInteger in) {
+        byte[] arr = Hex.decode(in);
         return Uint128
-                .builder(padAfter(flip(in), Uint128.SIZE))
+                .builder(padAfter(flip(arr), Uint128.SIZE))
                 .build();
     }
 

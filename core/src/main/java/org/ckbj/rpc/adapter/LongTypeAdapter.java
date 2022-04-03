@@ -10,7 +10,7 @@ public class LongTypeAdapter implements JsonDeserializer<Long>, JsonSerializer<L
 
     @Override
     public JsonElement serialize(Long src, Type typeOfSrc, JsonSerializationContext context) {
-        return new JsonPrimitive(Hex.encode(BigInteger.valueOf(src).toByteArray(), true, false));
+        return new JsonPrimitive(Hex.toHexString(BigInteger.valueOf(src), true, false));
     }
 
     @Override
@@ -18,7 +18,7 @@ public class LongTypeAdapter implements JsonDeserializer<Long>, JsonSerializer<L
         if (json.getAsJsonPrimitive().isNumber()) {
             return json.getAsLong();
         }
-        byte[] bytes = Hex.decode(json.getAsString());
-        return new BigInteger(bytes).longValue();
+        BigInteger value = Hex.hexStringToBigInteger(json.getAsString());
+        return value.longValue();
     }
 }

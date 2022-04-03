@@ -15,7 +15,7 @@ public class IntegerTypeAdapter implements JsonSerializer<Integer>, JsonDeserial
         if (src == -1) {
             return new JsonPrimitive("0xffffffff");
         } else {
-            return new JsonPrimitive(Hex.encode(value.toByteArray(), true, false));
+            return new JsonPrimitive(Hex.toHexString(value, true, false));
         }
     }
 
@@ -24,7 +24,7 @@ public class IntegerTypeAdapter implements JsonSerializer<Integer>, JsonDeserial
         if (json.getAsJsonPrimitive().isNumber()) {
             return json.getAsInt();
         }
-        BigInteger value = new BigInteger(Hex.decode(json.getAsString()));
+        BigInteger value = Hex.hexStringToBigInteger(json.getAsString());
         // deserialize 0xffffffff to -1 for outpoint index in coinbase transaction
         if (value.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) == 1) {
             return -1;

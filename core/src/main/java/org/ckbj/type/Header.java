@@ -3,6 +3,8 @@ package org.ckbj.type;
 import org.ckbj.crypto.Blake2b;
 import org.ckbj.molecule.Serializer;
 
+import java.math.BigInteger;
+
 public class Header {
     private int version = 0;
     private long compactTarget;
@@ -15,7 +17,7 @@ public class Header {
     private byte[] extraHash;
     // TODO: implement class to parse dao
     private byte[] dao;
-    private byte[] nonce;
+    private BigInteger nonce;
 
     public int getVersion() {
         return version;
@@ -57,7 +59,7 @@ public class Header {
         return dao;
     }
 
-    public byte[] getNonce() {
+    public BigInteger getNonce() {
         return nonce;
     }
 
@@ -111,7 +113,7 @@ public class Header {
         return this;
     }
 
-    public Header setNonce(byte[] nonce) {
+    public Header setNonce(BigInteger nonce) {
         this.nonce = nonce;
         return this;
     }

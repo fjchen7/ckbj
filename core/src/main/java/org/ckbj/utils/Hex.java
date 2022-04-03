@@ -1,5 +1,7 @@
 package org.ckbj.utils;
 
+import java.math.BigInteger;
+
 public class Hex {
     private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
     private static final String HEX_PREFIX = "0x";
@@ -75,6 +77,25 @@ public class Hex {
                     + Character.digit(in.charAt(j + 1), 16));
         }
         return bytes;
+    }
+
+    public static String toHexString(BigInteger in, boolean hasPrefix, boolean isPadded) {
+        return encode(decode(in), hasPrefix, isPadded);
+    }
+
+    public static byte[] decode(BigInteger in) {
+        byte[] array = in.toByteArray();
+        if (array[0] == 0 && array.length > 1) {
+            byte[] tmp = new byte[array.length - 1];
+            System.arraycopy(array, 1, tmp, 0, tmp.length);
+            array = tmp;
+        }
+        return array;
+    }
+
+    public static BigInteger hexStringToBigInteger(String in) {
+        in = formatHexString(in);
+        return new BigInteger(in, 16);
     }
 
     /**
