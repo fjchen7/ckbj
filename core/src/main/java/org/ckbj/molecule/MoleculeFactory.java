@@ -12,9 +12,6 @@ class MoleculeFactory {
      * Pad zero after byte array
      */
     private static byte[] padAfter(byte[] in, int length) {
-        if (in.length > length) {
-            throw new IllegalArgumentException("Out of byte size " + length);
-        }
         byte[] padBytes = new byte[length];
         System.arraycopy(in, 0, padBytes, 0, in.length);
         return padBytes;
@@ -29,7 +26,7 @@ class MoleculeFactory {
     }
 
     protected static Uint32 createUnit32(long in) {
-        byte[] arr = Hex.decode(BigInteger.valueOf(in));
+        byte[] arr = Hex.toByteArray(BigInteger.valueOf(in));
         return Uint32
                 .builder(padAfter(flip(arr), Uint32.SIZE))
                 .build();
@@ -40,7 +37,7 @@ class MoleculeFactory {
     }
 
     protected static Uint64 createUnit64(BigInteger in) {
-        return createUnit64(Hex.decode(in));
+        return createUnit64(Hex.toByteArray(in));
     }
 
     protected static Uint64 createUnit64(byte[] in) {
@@ -50,7 +47,7 @@ class MoleculeFactory {
     }
 
     protected static Uint128 createUnit128(BigInteger in) {
-        byte[] arr = Hex.decode(in);
+        byte[] arr = Hex.toByteArray(in);
         return Uint128
                 .builder(padAfter(flip(arr), Uint128.SIZE))
                 .build();
@@ -183,7 +180,7 @@ class MoleculeFactory {
                 .setCompactTarget(createUnit32(in.getCompactTarget()))
                 .setTimestamp(createUnit64(in.getTimestamp()))
                 .setNumber(createUnit64(in.getNumber()))
-                .setEpoch(createUnit64(in.getEpoch().toBytes()))
+                .setEpoch(createUnit64(in.getEpoch().toByteArray()))
                 .setParentHash(createByte32(in.getParentHash()))
                 .setTransactionsRoot(createByte32(in.getTransactionsRoot()))
                 .setProposalsHash(createByte32(in.getProposalsHash()))

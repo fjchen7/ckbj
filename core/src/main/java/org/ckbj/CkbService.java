@@ -44,7 +44,7 @@ public class CkbService {
     }
 
     public Block getBlock(String blockHash) throws IOException {
-        return getBlock(Hex.decode(blockHash));
+        return getBlock(Hex.toByteArray(blockHash));
     }
 
     public Block getBlock(int blockNumber) throws IOException {
@@ -56,7 +56,7 @@ public class CkbService {
     }
 
     public Header getHeader(String blockHash) throws IOException {
-        return getHeader(Hex.decode(blockHash));
+        return getHeader(Hex.toByteArray(blockHash));
     }
 
     public Header getHeader(int blockNumber) throws IOException {
@@ -68,7 +68,7 @@ public class CkbService {
     }
 
     public DetailedTransaction getTransaction(String txHash) throws IOException {
-        return getTransaction(Hex.decode(txHash));
+        return getTransaction(Hex.toByteArray(txHash));
     }
 
     public byte[] getBlockHash(int blockNumber) throws IOException {

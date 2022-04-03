@@ -75,7 +75,7 @@ public class DetailedTransaction {
     }
 
     public DetailedTransaction setBlockHash(String blockHash) {
-        return setBlockHash(Hex.decode(blockHash));
+        return setBlockHash(Hex.toByteArray(blockHash));
     }
 
     public DetailedTransaction setBlockHash(byte[] blockHash) {

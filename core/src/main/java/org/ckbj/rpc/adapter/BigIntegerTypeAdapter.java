@@ -13,11 +13,13 @@ public class BigIntegerTypeAdapter implements JsonSerializer<BigInteger>, JsonDe
         if (src == null) {
             return null;
         }
-        return new JsonPrimitive(Hex.toHexString(src, true, false));
+        String hex = Hex.toHexString(src, true);
+        hex = Hex.onlyKeepSignificantHex(hex);
+        return new JsonPrimitive(hex);
     }
 
     @Override
     public BigInteger deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return Hex.hexStringToBigInteger(json.getAsString());
+        return Hex.toBigInteger(json.getAsString());
     }
 }

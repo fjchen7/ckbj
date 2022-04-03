@@ -3,114 +3,157 @@ package org.ckbj.utils;
 import java.math.BigInteger;
 
 public class Hex {
-    private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
+    private static final char[] HEX_CHARS = "0123456789abcdef".toCharArray();
     private static final String HEX_PREFIX = "0x";
 
     /**
-     * Convert byte array to hex string with 0x and with 0 padded
+     * Convert byte array to hex string with 0x
      */
-    public static String encode(byte[] in) {
-        return encode(in, true, true);
+    public static String toHexString(byte[] in) {
+        return toHexString(in, true);
     }
 
     /**
      * Convert byte array to hex string
      *
-     * @param in        byte array.
-     * @param hasPrefix whether the returned hex string has "0x" prefix.
-     * @param isPadded  whether the returned hex string has "0" padded in the beginning if needed.
-     *                  For example, it returns "0x0123" for [0x01, 0x23] when isPadded is true, but "0x123" when false;
+     * @param in           byte array.
+     * @param appendPrefix whether add "0x" prefix to the returned hex string.
      * @return hex string
      */
-    public static String encode(byte[] in, boolean hasPrefix, boolean isPadded) {
-        if (in == null) {
-            return null;
+    public static String toHexString(byte[] in, boolean appendPrefix) {
+        char[] hexChars;
+        hexChars = new char[in.length * 2];
+        for (int i = 0; i < in.length; i++) {
+            int hex = in[i] & 0xFF;
+            hexChars[i * 2] = HEX_CHARS[hex >>> 4];
+            hexChars[i * 2 + 1] = HEX_CHARS[hex & 0x0F];
         }
-        String hex;
-        if (in.length == 0) {
-            hex = "";
-        } else {
-            char[] hexChars;
-            int i = 0, j = 0;
-            if (!isPadded && in[0] >>> 4 == 0) {
-                hexChars = new char[in.length * 2 - 1];
-                hexChars[0] = HEX_ARRAY[in[0] & 0x0F];
-                i = j = 1;
-            } else {
-                hexChars = new char[in.length * 2];
-            }
+        return (appendPrefix ? HEX_PREFIX : "") + String.valueOf(hexChars);
+    }
 
-            for (; j < in.length; i += 2, j++) {
-                int v = in[j] & 0xFF;
-                hexChars[i] = HEX_ARRAY[v >>> 4];
-                hexChars[i + 1] = HEX_ARRAY[v & 0x0F];
-            }
-            hex = String.valueOf(hexChars);
+    /**
+     * Convert BigInteger to hex string
+     *
+     * @param in           BigInteger
+     * @param appendPrefix whether add "0x" prefix to the returned hex string.
+     * @return hex string
+     */
+    public static String toHexString(BigInteger in, boolean appendPrefix) {
+        return toHexString(toByteArray(in), appendPrefix);
+    }
+
+    /**
+     * Only keep significant hex in hex string. For example, it returns "0x123" for input "0x0123".
+     *
+     * @param in hex string with or without prefix "0x"
+     * @return hex string that only keeps significant hex
+     */
+    public static String onlyKeepSignificantHex(String in) {
+        StringBuilder builder = new StringBuilder();
+        int i = 0;
+        if (in.startsWith(HEX_PREFIX)) {
+            builder.append(HEX_PREFIX);
+            i = 2;
         }
-        return (hasPrefix ? HEX_PREFIX : "") + hex;
+        while (i < in.length() - 1 && in.charAt(i) == '0') {
+            i++;
+        }
+        builder.append(in.substring(i));
+        return builder.toString();
     }
 
     /**
      * Convert hex string to byte array.
      *
-     * @param in hex string with or without 0x
+     * @param in hex string with or without prefix "0x"
      * @return byte array
      */
-    public static byte[] decode(String in) {
-        if (in == null) {
-            return null;
-        }
+    public static byte[] toByteArray(String in) {
         in = formatHexString(in);
-        if (!isHexString(in)) {
-            throw new IllegalArgumentException("Illegal hex string");
-        }
-        int len = in.length();
-        byte[] bytes = new byte[(len + 1) / 2];
+        int length = in.length();
+        byte[] bytes = new byte[(length + 1) / 2];
         int i = 0, j = 0;
-        if (len % 2 != 0) {
+        if (length % 2 != 0) {
             bytes[i] = (byte) Character.digit(in.charAt(j), 16);
             i++;
             j++;
         }
-        for (; j < len; i++, j += 2) {
+        while (j < length) {
             bytes[i] = (byte) ((Character.digit(in.charAt(j), 16) << 4)
                     + Character.digit(in.charAt(j + 1), 16));
+            i++;
+            j += 2;
         }
         return bytes;
     }
 
-    public static String toHexString(BigInteger in, boolean hasPrefix, boolean isPadded) {
-        return encode(decode(in), hasPrefix, isPadded);
+    /**
+     * Convert BigInteger to byte array.
+     */
+    public static byte[] toByteArray(BigInteger in) {
+        return toByteArray(in, -1);
     }
 
-    public static byte[] decode(BigInteger in) {
+    /**
+     * Convert BigInteger to byte array with fixed length.
+     *
+     * @param in     BigInteger
+     * @param length of the returned byte array. No fix length if length is -1.
+     */
+    public static byte[] toByteArray(BigInteger in, int length) {
         byte[] array = in.toByteArray();
         if (array[0] == 0 && array.length > 1) {
             byte[] tmp = new byte[array.length - 1];
             System.arraycopy(array, 1, tmp, 0, tmp.length);
             array = tmp;
         }
-        return array;
+        if (length == -1) {
+            return array;
+        } else {
+            byte[] out = new byte[length];
+            System.arraycopy(array, 0, out, out.length - array.length, array.length);
+            return out;
+        }
     }
 
-    public static BigInteger hexStringToBigInteger(String in) {
+    /**
+     * Convert hex string to BigInteger
+     *
+     * @param in hex string with or without prefix "0x"
+     * @return BigInteger
+     */
+    public static BigInteger toBigInteger(String in) {
         in = formatHexString(in);
         return new BigInteger(in, 16);
     }
 
     /**
+     * Convert byte array string to BigInteger
+     *
+     * @param in byte array without sign bit
+     * @return BigInteger
+     */
+    public static BigInteger toBigInteger(byte[] in) {
+        return new BigInteger(1, in);
+    }
+
+    /**
      * Check if the given string is a hex string.
      *
-     * @return true if {@code in} is a hex string
+     * @param in hex string with or without prefix "0x"
+     * @return true if the input is a hex string, otherwise false
      */
     public static boolean isHexString(String in) {
         if (in == null) {
             return false;
         }
-        in = formatHexString(in);
-        for (int i = 0; i < in.length(); i++) {
+        int i = 0;
+        if (in.startsWith(HEX_PREFIX)) {
+            i = 2;
+        }
+        for (; i < in.length(); i++) {
             char ch = Character.toLowerCase(in.charAt(i));
-            if (!(ch >= '0' && ch <= '9' || ch >= 'a' && ch <= 'f')) {
+            if (!(ch >= '0' && ch <= '9' || ch >= 'a' && ch <= 'f' || ch >= 'A' && ch <= 'F')) {
                 return false;
             }
         }
@@ -118,9 +161,13 @@ public class Hex {
     }
 
     private static String formatHexString(String in) {
+        if (!isHexString(in)) {
+            throw new IllegalArgumentException("Illegal hex string");
+        }
         if (in.startsWith(HEX_PREFIX)) {
             in = in.substring(2);
         }
-        return in.toLowerCase();
+        in = in.toLowerCase();
+        return in;
     }
 }

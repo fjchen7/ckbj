@@ -12,11 +12,11 @@ public class ByteArrayTypeAdapter implements JsonSerializer<byte[]>, JsonDeseria
         if (src == null) {
             return null;
         }
-        return new JsonPrimitive(Hex.encode(src));
+        return new JsonPrimitive(Hex.toHexString(src));
     }
 
     @Override
     public byte[] deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return Hex.decode(json.getAsString());
+        return Hex.toByteArray(json.getAsString());
     }
 }

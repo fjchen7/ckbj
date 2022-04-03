@@ -26,7 +26,7 @@ public final class OutPoint {
     }
 
     public OutPoint setTxHash(String txHash) {
-        return setTxHash(Hex.decode(txHash));
+        return setTxHash(Hex.toByteArray(txHash));
     }
 
     public OutPoint setTxHash(byte[] txHash) {

@@ -63,7 +63,7 @@ public class Transaction {
     }
 
     public Transaction addHeaderDep(String headerDep) {
-        return addHeaderDep(Hex.decode(headerDep));
+        return addHeaderDep(Hex.toByteArray(headerDep));
     }
 
     public Transaction addHeaderDep(byte[] headerDep) {
@@ -115,7 +115,7 @@ public class Transaction {
     }
 
     public Transaction addOutputData(String outputData) {
-        return addOutputData(Hex.decode(outputData));
+        return addOutputData(Hex.toByteArray(outputData));
     }
 
     public Transaction addOutputData(byte[] outputData) {
@@ -129,7 +129,7 @@ public class Transaction {
     }
 
     public Transaction addWitness(String witness) {
-        return addWitness(Hex.decode(witness));
+        return addWitness(Hex.toByteArray(witness));
     }
 
     public Transaction addWitness(byte[] witness) {

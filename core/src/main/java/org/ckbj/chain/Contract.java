@@ -47,7 +47,7 @@ public class Contract {
     }
 
     public Contract setCodeHash(String codeHash) {
-        return setCodeHash(Hex.decode(codeHash));
+        return setCodeHash(Hex.toByteArray(codeHash));
     }
 
     public Contract setCellDeps(List<CellDep> cellDeps) {

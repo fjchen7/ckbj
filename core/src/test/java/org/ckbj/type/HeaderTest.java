@@ -13,7 +13,7 @@ class HeaderTest {
     public void testHash() throws IOException {
         Header header = CkbService.defaultInstance(Network.AGGRON).getHeader(1024);
         Assertions.assertArrayEquals(
-                Hex.decode("0x741813929fdb2bc59713995b0e402997dfe5f51f94193940fc6866c63a89d27e"),
+                Hex.toByteArray("0x741813929fdb2bc59713995b0e402997dfe5f51f94193940fc6866c63a89d27e"),
                 header.hash());
     }
 }

@@ -65,7 +65,7 @@ public class DetailedCell {
     }
 
     public DetailedCell setData(String data) {
-        return setData(Hex.decode(data));
+        return setData(Hex.toByteArray(data));
     }
 
     public DetailedCell setStatus(Status status) {

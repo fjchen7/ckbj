@@ -45,7 +45,7 @@ public class SerializerTest {
     }
 
     private void assertByteArray(String expected, byte[] actual) {
-        String message = String.format("Expected: %s\nActual: %s\n", expected, Hex.encode(actual));
-        Assertions.assertArrayEquals(Hex.decode(expected), actual, message);
+        String message = String.format("Expected: %s\nActual: %s\n", expected, Hex.toHexString(actual));
+        Assertions.assertArrayEquals(Hex.toByteArray(expected), actual, message);
     }
 }

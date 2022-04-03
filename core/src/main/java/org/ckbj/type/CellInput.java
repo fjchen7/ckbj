@@ -1,6 +1,5 @@
 package org.ckbj.type;
 
-
 /**
  * Live cell to be consumed in {@link Transaction}.
  */

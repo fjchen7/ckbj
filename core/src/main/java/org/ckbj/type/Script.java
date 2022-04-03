@@ -25,7 +25,7 @@ public final class Script {
     }
 
     public Script setCodeHash(String codeHash) {
-        return setCodeHash(Hex.decode(codeHash));
+        return setCodeHash(Hex.toByteArray(codeHash));
     }
 
     public Script setCodeHash(byte[] codeHash) {
@@ -38,7 +38,7 @@ public final class Script {
     }
 
     public Script setArgs(String args) {
-        return setArgs(Hex.decode(args));
+        return setArgs(Hex.toByteArray(args));
     }
 
     public Script setArgs(byte[] args) {

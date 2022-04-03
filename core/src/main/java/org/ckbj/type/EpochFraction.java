@@ -39,7 +39,7 @@ public class EpochFraction {
         return this;
     }
 
-    public byte[] toBytes() {
+    public byte[] toByteArray() {
         return EpochFraction.encode(this);
     }
 
@@ -87,12 +87,12 @@ public class EpochFraction {
         @Override
         public JsonElement serialize(EpochFraction src, Type typeOfSrc, JsonSerializationContext context) {
             byte[] bytes = EpochFraction.encode(src);
-            return new JsonPrimitive(Hex.encode(bytes));
+            return new JsonPrimitive(Hex.toHexString(bytes));
         }
 
         @Override
         public EpochFraction deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            byte[] bytes = Hex.decode(json.getAsString());
+            byte[] bytes = Hex.toByteArray(json.getAsString());
             return EpochFraction.decode(bytes);
         }
     }

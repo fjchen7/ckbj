@@ -115,7 +115,6 @@ public class Address {
         return address;
     }
 
-
     private static Address decodeLongBech32m(byte[] payload, Network network) {
         byte[] codeHash = Arrays.copyOfRange(payload, 1, 33);
         Script.HashType hashType = Script.HashType.valueOf(payload[33]);
@@ -135,16 +134,16 @@ public class Address {
     }
 
     public String encode() {
-        return encode(Encoding.LONG_BECH32M);
+        return encode(Format.LONG_BECH32M);
     }
 
-    public String encode(Encoding encoding) {
-        return encode(encoding, network);
+    public String encode(Format format) {
+        return encode(format, network);
     }
 
-    public String encode(Encoding encoding, Network network) {
-        Objects.requireNonNull(encoding);
-        switch (encoding) {
+    public String encode(Format format, Network network) {
+        Objects.requireNonNull(format);
+        switch (format) {
             case SHORT:
                 return encodeShort(network);
             case LONG_BECH32:
@@ -276,7 +275,7 @@ public class Address {
         return result;
     }
 
-    public enum Encoding {
+    public enum Format {
         @Deprecated
         SHORT,
         @Deprecated
