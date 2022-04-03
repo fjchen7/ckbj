@@ -3,6 +3,7 @@ package org.ckbj.type;
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import org.ckbj.crypto.Blake2b;
 import org.ckbj.utils.Hex;
 
 import java.lang.reflect.Type;
@@ -73,11 +74,7 @@ public class DetailedCell {
     }
 
     public byte[] dataHash() {
-        // TODO:
-//        Blake2b blake2b = new Blake2b();
-//        blake2b.update(data);
-//        return blake2b.doFinalBytes();
-        return null;
+        return Blake2b.digest256(data);
     }
 
     public enum Status {

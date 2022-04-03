@@ -1,5 +1,7 @@
 package org.ckbj.type;
 
+import org.ckbj.crypto.Blake2b;
+import org.ckbj.molecule.Serializer;
 import org.ckbj.utils.Hex;
 
 import java.util.ArrayList;
@@ -140,11 +142,8 @@ public class Transaction {
         return this;
     }
 
-    // TODO
     public byte[] hash() {
-        return null;
-//    Blake2b blake2b = new Blake2b();
-//    blake2b.update(Encoder.encode(Serializer.serializeRawTransaction(this)));
-//    return blake2b.doFinalBytes();
+        byte[] serialization = Serializer.serialize(this, false);
+        return Blake2b.digest256(serialization);
     }
 }

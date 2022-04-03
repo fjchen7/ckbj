@@ -1,5 +1,8 @@
 package org.ckbj.type;
 
+import org.ckbj.crypto.Blake2b;
+import org.ckbj.molecule.Serializer;
+
 public class Header {
     private int version = 0;
     private long compactTarget;
@@ -111,5 +114,10 @@ public class Header {
     public Header setNonce(byte[] nonce) {
         this.nonce = nonce;
         return this;
+    }
+
+    public byte[] hash() {
+        byte[] serialization = Serializer.serialize(this, true);
+        return Blake2b.digest256(serialization);
     }
 }
