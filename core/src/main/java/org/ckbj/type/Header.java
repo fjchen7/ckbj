@@ -1,7 +1,5 @@
 package org.ckbj.type;
 
-import java.math.BigInteger;
-
 public class Header {
     private int version = 0;
     private long compactTarget;
@@ -14,8 +12,8 @@ public class Header {
     private byte[] extraHash;
     // TODO: implement class to parse dao
     private byte[] dao;
-    private BigInteger nonce;
-    
+    private byte[] nonce;
+
     public int getVersion() {
         return version;
     }
@@ -56,7 +54,7 @@ public class Header {
         return dao;
     }
 
-    public BigInteger getNonce() {
+    public byte[] getNonce() {
         return nonce;
     }
 
@@ -110,7 +108,7 @@ public class Header {
         return this;
     }
 
-    public Header setNonce(BigInteger nonce) {
+    public Header setNonce(byte[] nonce) {
         this.nonce = nonce;
         return this;
     }

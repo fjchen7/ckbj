@@ -19,31 +19,44 @@ class MoleculeFactory {
         return padBytes;
     }
 
-    private static byte[] littleEndian(BigInteger in, int length) {
-        byte[] bytes = in.toByteArray();
-        // flip bytes
-        for (int i = 0; i < bytes.length / 2; i++) {
-            byte tmp = bytes[i];
-            bytes[i] = bytes[bytes.length - i - 1];
-            bytes[bytes.length - i - 1] = tmp;
+    private static void flipBytes(byte[] in) {
+        for (int i = 0; i < in.length / 2; i++) {
+            byte tmp = in[i];
+            in[i] = in[in.length - i - 1];
+            in[in.length - i - 1] = tmp;
         }
-        return padBytesAfter(bytes, length);
     }
 
     protected static Uint32 createUnit32(long in) {
-        byte[] bytes = littleEndian(BigInteger.valueOf(in), Uint32.SIZE);
-        return Uint32.builder(bytes).build();
+        return createUnit32(BigInteger.valueOf(in).toByteArray());
     }
 
-    protected static Uint64 createUnit64(BigInteger in) {
-        return Uint64
-                .builder(littleEndian(in, Uint64.SIZE))
+    protected static Uint32 createUnit32(byte[] in) {
+        flipBytes(in);
+        return Uint32
+                .builder(padBytesAfter(in, Uint32.SIZE))
                 .build();
     }
 
+    protected static Uint64 createUnit64(long in) {
+        return createUnit64(BigInteger.valueOf(in));
+    }
+
+    protected static Uint64 createUnit64(BigInteger in) {
+        return createUnit64(in.toByteArray());
+    }
+
     protected static Uint64 createUnit64(byte[] in) {
+        flipBytes(in);
         return Uint64
                 .builder(padBytesAfter(in, Uint64.SIZE))
+                .build();
+    }
+
+    protected static Uint128 createUnit128(byte[] in) {
+        flipBytes(in);
+        return Uint128
+                .builder(padBytesAfter(in, Uint128.SIZE))
                 .build();
     }
 
@@ -165,6 +178,29 @@ class MoleculeFactory {
         return Transaction.builder()
                 .setRaw(createRawTransaction(in))
                 .setWitnesses(createBytesVec(in.getWitnesses()))
+                .build();
+    }
+
+    protected static RawHeader createRawHeader(org.ckbj.type.Header in) {
+        RawHeader header = RawHeader.builder()
+                .setVersion(createUnit32(in.getVersion()))
+                .setCompactTarget(createUnit32(in.getCompactTarget()))
+                .setTimestamp(createUnit64(in.getTimestamp()))
+                .setNumber(createUnit64(in.getNumber()))
+                .setEpoch(createUnit64(in.getEpoch().toBytes()))
+                .setParentHash(createByte32(in.getParentHash()))
+                .setTransactionsRoot(createByte32(in.getTransactionsRoot()))
+                .setProposalsHash(createByte32(in.getProposalsHash()))
+                .setExtraHash(createByte32(in.getExtraHash()))
+                .setDao(createByte32(in.getDao()))
+                .build();
+        return header;
+    }
+
+    protected static Header createHeader(org.ckbj.type.Header in) {
+        return Header.builder()
+                .setRaw(createRawHeader(in))
+                .setNonce(createUnit128(in.getNonce()))
                 .build();
     }
 

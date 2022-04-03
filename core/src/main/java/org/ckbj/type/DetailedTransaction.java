@@ -107,7 +107,7 @@ public class DetailedTransaction {
             JsonObject objTxStatus = obj.getAsJsonObject("tx_status");
             DetailedTransaction tx = new DetailedTransaction();
             tx.transaction = context.deserialize(obj.getAsJsonObject("transaction"), Transaction.class);
-            tx.status = Status.valueOf(objTxStatus.get("status").getAsString().toUpperCase());
+            tx.status = context.deserialize(objTxStatus.get("status"), Status.class);
             tx.statusReason = context.deserialize(objTxStatus.get("reason"), String.class);
             tx.blockHash = context.deserialize(objTxStatus.get("block_hash"), byte[].class);
             return tx;

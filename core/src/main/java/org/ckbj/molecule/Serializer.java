@@ -23,6 +23,14 @@ public class Serializer {
         }
     }
 
+    public static byte[] serialize(Header in, boolean includeNonce) {
+        if (includeNonce) {
+            return MoleculeFactory.createHeader(in).getRawData();
+        } else {
+            return MoleculeFactory.createRawHeader(in).getRawData();
+        }
+    }
+
     public static byte[] serialize(WitnessArgs in) {
         return MoleculeFactory.createWitnessArgs(in).getRawData();
     }

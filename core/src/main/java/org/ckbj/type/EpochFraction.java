@@ -39,6 +39,10 @@ public class EpochFraction {
         return this;
     }
 
+    public byte[] toBytes() {
+        return EpochFraction.encode(this);
+    }
+
     public static byte[] encode(EpochFraction src) {
         // encode: length || index || number
         //           0  1 || 2  3  || 4  5  6
