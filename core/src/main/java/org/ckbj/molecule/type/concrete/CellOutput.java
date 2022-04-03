@@ -105,9 +105,9 @@ public final class CellOutput extends Table {
             fieldsSize[1] = lock.getSize();
             fieldsSize[2] = (type == null ? 0 : type.getSize());
             byte[][] fieldsBuf = new byte[FIELD_COUNT][];
-            fieldsBuf[0] = capacity.getRawData();
-            fieldsBuf[1] = lock.getRawData();
-            fieldsBuf[2] = (type == null ? new byte[]{} : type.getRawData());
+            fieldsBuf[0] = capacity.toByteArray();
+            fieldsBuf[1] = lock.toByteArray();
+            fieldsBuf[2] = (type == null ? new byte[]{} : type.toByteArray());
             int size = 4 + 4 * FIELD_COUNT;
             for (int i = 0; i < FIELD_COUNT; i++) {
                 size += fieldsSize[i];

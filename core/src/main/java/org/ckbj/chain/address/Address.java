@@ -199,7 +199,7 @@ public class Address {
         int pos = 1;
         System.arraycopy(script.getCodeHash(), 0, payload, pos, script.getCodeHash().length);
         pos += script.getCodeHash().length;
-        payload[pos] = script.getHashType().value();
+        payload[pos] = script.getHashType().toByte();
         pos++;
         System.arraycopy(script.getArgs(), 0, payload, pos, script.getArgs().length);
         payload = convertBits(payload, 0, payload.length, 8, 5, true);

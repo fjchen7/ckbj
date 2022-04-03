@@ -75,7 +75,7 @@ public final class CellDep extends Struct {
             offsets[0] = 0;
             offsets[1] = offsets[0] + OutPoint.SIZE;
             byte[] buf = new byte[SIZE];
-            MoleculeUtils.setBytes(outPoint.getRawData(), buf, offsets[0]);
+            MoleculeUtils.setBytes(outPoint.toByteArray(), buf, offsets[0]);
             buf[offsets[1]] = depType;
             CellDep s = new CellDep();
             s.buf = buf;

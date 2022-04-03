@@ -89,14 +89,14 @@ public final class Script {
         @SerializedName("data1")
         DATA1(0x02);
 
-        private byte value;
+        private byte byteValue;
 
-        HashType(int value) {
-            this.value = (byte) value;
+        HashType(int byteValue) {
+            this.byteValue = (byte) byteValue;
         }
 
-        public byte value() {
-            return value;
+        public byte toByte() {
+            return byteValue;
         }
 
         public static HashType valueOf(byte value) {

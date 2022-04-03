@@ -10,7 +10,7 @@ class MoleculeFactory {
     /**
      * Pad zero after byte array
      */
-    private static byte[] padBytesAfter(byte[] in, int length) {
+    private static byte[] padAfter(byte[] in, int length) {
         if (in.length > length) {
             throw new IllegalArgumentException("Out of byte size " + length);
         }
@@ -19,12 +19,12 @@ class MoleculeFactory {
         return padBytes;
     }
 
-    private static void flipBytes(byte[] in) {
-        for (int i = 0; i < in.length / 2; i++) {
-            byte tmp = in[i];
-            in[i] = in[in.length - i - 1];
-            in[in.length - i - 1] = tmp;
+    private static byte[] flip(byte[] in) {
+        byte[] out = new byte[in.length];
+        for (int i = 0; i < in.length; i++) {
+            out[i] = in[in.length - i - 1];
         }
+        return out;
     }
 
     protected static Uint32 createUnit32(long in) {
@@ -32,9 +32,8 @@ class MoleculeFactory {
     }
 
     protected static Uint32 createUnit32(byte[] in) {
-        flipBytes(in);
         return Uint32
-                .builder(padBytesAfter(in, Uint32.SIZE))
+                .builder(padAfter(flip(in), Uint32.SIZE))
                 .build();
     }
 
@@ -47,16 +46,14 @@ class MoleculeFactory {
     }
 
     protected static Uint64 createUnit64(byte[] in) {
-        flipBytes(in);
         return Uint64
-                .builder(padBytesAfter(in, Uint64.SIZE))
+                .builder(padAfter(flip(in), Uint64.SIZE))
                 .build();
     }
 
     protected static Uint128 createUnit128(byte[] in) {
-        flipBytes(in);
         return Uint128
-                .builder(padBytesAfter(in, Uint128.SIZE))
+                .builder(padAfter(flip(in), Uint128.SIZE))
                 .build();
     }
 
@@ -159,7 +156,7 @@ class MoleculeFactory {
         return Script.builder()
                 .setCodeHash(createByte32(in.getCodeHash()))
                 .setArgs(createBytes(in.getArgs()))
-                .setHashType(in.getHashType().value())
+                .setHashType(in.getHashType().toByte())
                 .build();
     }
 

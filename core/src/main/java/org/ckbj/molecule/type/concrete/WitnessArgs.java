@@ -107,9 +107,9 @@ public final class WitnessArgs extends Table {
             fieldsSize[1] = (inputType == null ? 0 : inputType.getSize());
             fieldsSize[2] = (outputType == null ? 0 : outputType.getSize());
             byte[][] fieldsBuf = new byte[FIELD_COUNT][];
-            fieldsBuf[0] = (lock == null ? new byte[]{} : lock.getRawData());
-            fieldsBuf[1] = (inputType == null ? new byte[]{} : inputType.getRawData());
-            fieldsBuf[2] = (outputType == null ? new byte[]{} : outputType.getRawData());
+            fieldsBuf[0] = (lock == null ? new byte[]{} : lock.toByteArray());
+            fieldsBuf[1] = (inputType == null ? new byte[]{} : inputType.toByteArray());
+            fieldsBuf[2] = (outputType == null ? new byte[]{} : outputType.toByteArray());
             int size = 4 + 4 * FIELD_COUNT;
             for (int i = 0; i < FIELD_COUNT; i++) {
                 size += fieldsSize[i];

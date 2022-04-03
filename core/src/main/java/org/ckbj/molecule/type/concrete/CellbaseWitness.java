@@ -83,8 +83,8 @@ public final class CellbaseWitness extends Table {
             fieldsSize[0] = lock.getSize();
             fieldsSize[1] = message.getSize();
             byte[][] fieldsBuf = new byte[FIELD_COUNT][];
-            fieldsBuf[0] = lock.getRawData();
-            fieldsBuf[1] = message.getRawData();
+            fieldsBuf[0] = lock.toByteArray();
+            fieldsBuf[1] = message.toByteArray();
             int size = 4 + 4 * FIELD_COUNT;
             for (int i = 0; i < FIELD_COUNT; i++) {
                 size += fieldsSize[i];

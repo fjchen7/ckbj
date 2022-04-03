@@ -83,8 +83,8 @@ public final class UncleBlock extends Table {
             fieldsSize[0] = header.getSize();
             fieldsSize[1] = proposals.getSize();
             byte[][] fieldsBuf = new byte[FIELD_COUNT][];
-            fieldsBuf[0] = header.getRawData();
-            fieldsBuf[1] = proposals.getRawData();
+            fieldsBuf[0] = header.toByteArray();
+            fieldsBuf[1] = proposals.toByteArray();
             int size = 4 + 4 * FIELD_COUNT;
             for (int i = 0; i < FIELD_COUNT; i++) {
                 size += fieldsSize[i];

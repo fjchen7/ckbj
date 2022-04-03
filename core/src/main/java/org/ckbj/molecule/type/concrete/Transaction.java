@@ -83,8 +83,8 @@ public final class Transaction extends Table {
             fieldsSize[0] = raw.getSize();
             fieldsSize[1] = witnesses.getSize();
             byte[][] fieldsBuf = new byte[FIELD_COUNT][];
-            fieldsBuf[0] = raw.getRawData();
-            fieldsBuf[1] = witnesses.getRawData();
+            fieldsBuf[0] = raw.toByteArray();
+            fieldsBuf[1] = witnesses.toByteArray();
             int size = 4 + 4 * FIELD_COUNT;
             for (int i = 0; i < FIELD_COUNT; i++) {
                 size += fieldsSize[i];

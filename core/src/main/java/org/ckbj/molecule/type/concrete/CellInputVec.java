@@ -109,7 +109,7 @@ public final class CellInputVec extends FixedVector {
             MoleculeUtils.setInt(items.length, buf, 0);;
             int start = 4;
             for (int i = 0; i < items.length; i++) {
-                MoleculeUtils.setBytes(items[i].getRawData(), buf, start);
+                MoleculeUtils.setBytes(items[i].toByteArray(), buf, start);
                 start += ITEM_SIZE;
             }
             CellInputVec v = new CellInputVec();

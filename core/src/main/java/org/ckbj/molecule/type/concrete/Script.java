@@ -101,9 +101,9 @@ public final class Script extends Table {
             fieldsSize[1] = 1;
             fieldsSize[2] = args.getSize();
             byte[][] fieldsBuf = new byte[FIELD_COUNT][];
-            fieldsBuf[0] = codeHash.getRawData();
+            fieldsBuf[0] = codeHash.toByteArray();
             fieldsBuf[1] = new byte[]{hashType};
-            fieldsBuf[2] = args.getRawData();
+            fieldsBuf[2] = args.toByteArray();
             int size = 4 + 4 * FIELD_COUNT;
             for (int i = 0; i < FIELD_COUNT; i++) {
                 size += fieldsSize[i];

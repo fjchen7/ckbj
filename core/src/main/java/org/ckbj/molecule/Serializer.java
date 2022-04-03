@@ -4,34 +4,34 @@ import org.ckbj.type.*;
 
 public class Serializer {
     public static byte[] serialize(CellDep in) {
-        return MoleculeFactory.createCellDep(in).getRawData();
+        return MoleculeFactory.createCellDep(in).toByteArray();
     }
 
     public static byte[] serialize(CellInput in) {
-        return MoleculeFactory.createCellInput(in).getRawData();
+        return MoleculeFactory.createCellInput(in).toByteArray();
     }
 
     public static byte[] serialize(Cell in) {
-        return MoleculeFactory.createCellOutput(in).getRawData();
+        return MoleculeFactory.createCellOutput(in).toByteArray();
     }
 
     public static byte[] serialize(Transaction in, boolean includeWitnesses) {
         if (includeWitnesses) {
-            return MoleculeFactory.createTransaction(in).getRawData();
+            return MoleculeFactory.createTransaction(in).toByteArray();
         } else {
-            return MoleculeFactory.createRawTransaction(in).getRawData();
+            return MoleculeFactory.createRawTransaction(in).toByteArray();
         }
     }
 
     public static byte[] serialize(Header in, boolean includeNonce) {
         if (includeNonce) {
-            return MoleculeFactory.createHeader(in).getRawData();
+            return MoleculeFactory.createHeader(in).toByteArray();
         } else {
-            return MoleculeFactory.createRawHeader(in).getRawData();
+            return MoleculeFactory.createRawHeader(in).toByteArray();
         }
     }
 
     public static byte[] serialize(WitnessArgs in) {
-        return MoleculeFactory.createWitnessArgs(in).getRawData();
+        return MoleculeFactory.createWitnessArgs(in).toByteArray();
     }
 }

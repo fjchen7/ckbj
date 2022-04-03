@@ -77,8 +77,8 @@ public final class OutPoint extends Struct {
             offsets[0] = 0;
             offsets[1] = offsets[0] + Byte32.SIZE;
             byte[] buf = new byte[SIZE];
-            MoleculeUtils.setBytes(txHash.getRawData(), buf, offsets[0]);
-            MoleculeUtils.setBytes(index.getRawData(), buf, offsets[1]);
+            MoleculeUtils.setBytes(txHash.toByteArray(), buf, offsets[0]);
+            MoleculeUtils.setBytes(index.toByteArray(), buf, offsets[1]);
             OutPoint s = new OutPoint();
             s.buf = buf;
             s.txHash = txHash;

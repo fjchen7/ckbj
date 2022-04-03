@@ -110,7 +110,7 @@ public final class CellOutputVec extends DynamicVector {
                 start += 4;
             }
             for (int i = 0; i < items.length; i++) {
-                MoleculeUtils.setBytes(items[i].getRawData(), buf, start);;
+                MoleculeUtils.setBytes(items[i].toByteArray(), buf, start);;
                 start += items[i].getSize();
             }
             CellOutputVec v = new CellOutputVec();

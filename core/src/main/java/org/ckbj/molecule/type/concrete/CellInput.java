@@ -77,8 +77,8 @@ public final class CellInput extends Struct {
             offsets[0] = 0;
             offsets[1] = offsets[0] + Uint64.SIZE;
             byte[] buf = new byte[SIZE];
-            MoleculeUtils.setBytes(since.getRawData(), buf, offsets[0]);
-            MoleculeUtils.setBytes(previousOutput.getRawData(), buf, offsets[1]);
+            MoleculeUtils.setBytes(since.toByteArray(), buf, offsets[0]);
+            MoleculeUtils.setBytes(previousOutput.toByteArray(), buf, offsets[1]);
             CellInput s = new CellInput();
             s.buf = buf;
             s.since = since;

@@ -77,8 +77,8 @@ public final class Header extends Struct {
             offsets[0] = 0;
             offsets[1] = offsets[0] + RawHeader.SIZE;
             byte[] buf = new byte[SIZE];
-            MoleculeUtils.setBytes(raw.getRawData(), buf, offsets[0]);
-            MoleculeUtils.setBytes(nonce.getRawData(), buf, offsets[1]);
+            MoleculeUtils.setBytes(raw.toByteArray(), buf, offsets[0]);
+            MoleculeUtils.setBytes(nonce.toByteArray(), buf, offsets[1]);
             Header s = new Header();
             s.buf = buf;
             s.raw = raw;

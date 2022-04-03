@@ -143,11 +143,11 @@ public final class BlockV1 extends Table {
             fieldsSize[3] = proposals.getSize();
             fieldsSize[4] = extension.getSize();
             byte[][] fieldsBuf = new byte[FIELD_COUNT][];
-            fieldsBuf[0] = header.getRawData();
-            fieldsBuf[1] = uncles.getRawData();
-            fieldsBuf[2] = transactions.getRawData();
-            fieldsBuf[3] = proposals.getRawData();
-            fieldsBuf[4] = extension.getRawData();
+            fieldsBuf[0] = header.toByteArray();
+            fieldsBuf[1] = uncles.toByteArray();
+            fieldsBuf[2] = transactions.toByteArray();
+            fieldsBuf[3] = proposals.toByteArray();
+            fieldsBuf[4] = extension.toByteArray();
             int size = 4 + 4 * FIELD_COUNT;
             for (int i = 0; i < FIELD_COUNT; i++) {
                 size += fieldsSize[i];
