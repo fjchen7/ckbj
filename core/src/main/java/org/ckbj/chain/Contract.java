@@ -66,14 +66,38 @@ public class Contract {
         return this;
     }
 
+    public Script createScript(byte[] args) {
+        return new Script()
+                .setCodeHash(codeHash)
+                .setArgs(args)
+                .setHashType(hashType);
+    }
+
     public enum Standard {
-        SECP256K1_BLAKE160_SIGHASH_ALL,
-        SECP256K1_BLAKE160_MULTISIG_ALL,
-        ANYONE_CAN_PAY,
-        PORTAL_WALLET_LOCK,
-        CHEQUE,
-        SUDT,
-        DAO,
-        TYPE_ID;
+        SECP256K1_BLAKE160_SIGHASH_ALL(true, false),
+        SECP256K1_BLAKE160_MULTISIG_ALL(true, false),
+        ANYONE_CAN_PAY(true, false),
+        PORTAL_WALLET_LOCK(true, false),
+        CHEQUE(true, false),
+        SUDT(false, true),
+        DAO(false, true),
+        TYPE_ID(false, true),
+        UNKNOWN(false, false);
+
+        private boolean isLock;
+        private boolean isType;
+
+        Standard(boolean isLock, boolean isType) {
+            this.isLock = isLock;
+            this.isType = isType;
+        }
+
+        public boolean isLock() {
+            return isLock;
+        }
+
+        public boolean isType() {
+            return isType;
+        }
     }
 }
