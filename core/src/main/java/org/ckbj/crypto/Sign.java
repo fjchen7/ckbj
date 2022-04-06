@@ -49,7 +49,8 @@ public class Sign {
     }
 
     public static SignatureData signMessage(byte[] message, ECKeyPair keyPair, boolean needToHash) {
-        BigInteger publicKey = keyPair.getPublicKey();
+        ECKeyPair.Point publicKey = keyPair.getPublicKey();
+
         byte[] messageHash;
         if (needToHash) {
             messageHash = Blake2b.digest256(message);
@@ -63,11 +64,11 @@ public class Sign {
     }
 
     public static SignatureData createSignatureData(
-            ECDSASignature sig, BigInteger publicKey, byte[] messageHash) {
+            ECDSASignature sig, ECKeyPair.Point publicKey, byte[] messageHash) {
         // Now we have to work backwards to figure out the recId needed to recover the signature.
         int recId = -1;
         for (int i = 0; i < 4; i++) {
-            BigInteger k = recoverFromSignature(i, sig, messageHash);
+            ECKeyPair.Point k = recoverFromSignature(i, sig, messageHash);
             if (k != null && k.equals(publicKey)) {
                 recId = i;
                 break;
@@ -130,9 +131,9 @@ public class Sign {
      * @param recId   Which possible key to recover.
      * @param sig     the R and S components of the signature, wrapped.
      * @param message Hash of the data that was signed.
-     * @return An ECKey containing only the public part, or null if recovery wasn't possible.
+     * @return Point represents public key, or null if recovery wasn't possible.
      */
-    public static BigInteger recoverFromSignature(int recId, ECDSASignature sig, byte[] message) {
+    public static ECKeyPair.Point recoverFromSignature(int recId, ECDSASignature sig, byte[] message) {
         verifyPrecondition(recId >= 0, "recId must be positive");
         verifyPrecondition(sig.r.signum() >= 0, "r must be positive");
         verifyPrecondition(sig.s.signum() >= 0, "s must be positive");
@@ -187,7 +188,7 @@ public class Sign {
 
         byte[] qBytes = q.getEncoded(false);
         // We remove the prefix
-        return new BigInteger(1, Arrays.copyOfRange(qBytes, 1, qBytes.length));
+        return ECKeyPair.Point.decode(qBytes);
     }
 
     /**
@@ -211,7 +212,7 @@ public class Sign {
      * @throws SignatureException If the public key could not be recovered or if there was a
      *                            signature format error.
      */
-    public static BigInteger signedMessageToKey(byte[] message, SignatureData signatureData)
+    public static ECKeyPair.Point signedMessageToKey(byte[] message, SignatureData signatureData)
             throws SignatureException {
         return signedMessageHashToKey(Blake2b.digest256(message), signatureData);
     }
@@ -227,7 +228,7 @@ public class Sign {
      * @throws SignatureException If the public key could not be recovered or if there was a
      *                            signature format error.
      */
-    public static BigInteger signedMessageHashToKey(byte[] messageHash, SignatureData signatureData)
+    public static ECKeyPair.Point signedMessageHashToKey(byte[] messageHash, SignatureData signatureData)
             throws SignatureException {
 
         byte[] r = signatureData.getR();
@@ -248,25 +249,12 @@ public class Sign {
                         new BigInteger(1, signatureData.getS()));
 
         int recId = header - 27;
-        BigInteger key = recoverFromSignature(recId, sig, messageHash);
+        ECKeyPair.Point key = recoverFromSignature(recId, sig, messageHash);
         if (key == null) {
             throw new SignatureException("Could not recover public key from signature");
         }
         return key;
     }
-
-//    /**
-//     * Returns public key from the given private key.
-//     *
-//     * @param privateKey the private key to derive the public key from
-//     * @return BigInteger encoded public key
-//     */
-//    public static BigInteger publicKeyFromPrivate(BigInteger privateKey) {
-//        ECPoint point = publicPointFromPrivate(privateKey);
-//
-//        byte[] encoded = point.getEncoded(false);
-//        return new BigInteger(1, Arrays.copyOfRange(encoded, 1, encoded.length)); // remove prefix
-//    }
 
     /**
      * Verify that the provided precondition holds true.
@@ -296,17 +284,6 @@ public class Sign {
         }
         return new FixedPointCombMultiplier().multiply(CURVE.getG(), privateKey);
     }
-
-//
-//    /**
-//     * Returns public key point from the given curve.
-//     *
-//     * @param bits representing the point on the curve
-//     * @return BigInteger encoded public key
-//     */
-//    public static BigInteger publicFromPoint(byte[] bits) {
-//        return new BigInteger(1, Arrays.copyOfRange(bits, 1, bits.length)); // remove prefix
-//    }
 
     public static class SignatureData {
         private final byte[] v;

@@ -13,23 +13,14 @@
 package org.ckbj.crypto;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.ckbj.utils.Hex;
 
-import java.math.BigInteger;
 import java.security.*;
 import java.security.spec.ECGenParameterSpec;
-import java.util.Arrays;
-
-import static org.ckbj.crypto.SecureRandomUtils.secureRandom;
 
 /**
  * Crypto key utilities.
  */
 public class Keys {
-
-    public static final int PRIVATE_KEY_SIZE = 32;
-    public static final int PUBLIC_KEY_SIZE = 64;
-
     static {
         if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
             Security.addProvider(new BouncyCastleProvider());
@@ -49,7 +40,7 @@ public class Keys {
     static KeyPair createSecp256k1KeyPair()
             throws NoSuchProviderException, NoSuchAlgorithmException,
             InvalidAlgorithmParameterException {
-        return createSecp256k1KeyPair(secureRandom());
+        return createSecp256k1KeyPair(new SecureRandom());
     }
 
     static KeyPair createSecp256k1KeyPair(SecureRandom random)
@@ -69,7 +60,7 @@ public class Keys {
     public static ECKeyPair createEcKeyPair()
             throws InvalidAlgorithmParameterException, NoSuchAlgorithmException,
             NoSuchProviderException {
-        return createEcKeyPair(secureRandom());
+        return createEcKeyPair(new SecureRandom());
     }
 
     public static ECKeyPair createEcKeyPair(SecureRandom random)
@@ -77,27 +68,5 @@ public class Keys {
             NoSuchProviderException {
         KeyPair keyPair = createSecp256k1KeyPair(random);
         return ECKeyPair.create(keyPair);
-    }
-
-    public static byte[] serialize(ECKeyPair ecKeyPair) {
-        byte[] privateKey = Hex.toByteArray(ecKeyPair.getPrivateKey(), PRIVATE_KEY_SIZE);
-        byte[] publicKey = Hex.toByteArray(ecKeyPair.getPublicKey(), PUBLIC_KEY_SIZE);
-
-        byte[] result = Arrays.copyOf(privateKey, PRIVATE_KEY_SIZE + PUBLIC_KEY_SIZE);
-        System.arraycopy(publicKey, 0, result, PRIVATE_KEY_SIZE, PUBLIC_KEY_SIZE);
-        return result;
-    }
-
-    public static ECKeyPair deserialize(byte[] input) {
-        if (input.length != PRIVATE_KEY_SIZE + PUBLIC_KEY_SIZE) {
-            throw new RuntimeException("Invalid input key size");
-        }
-
-        BigInteger privateKey = Hex.toBigInteger(
-                Arrays.copyOfRange(input, 0, PRIVATE_KEY_SIZE));
-        BigInteger publicKey = Hex.toBigInteger(
-                Arrays.copyOfRange(input, PRIVATE_KEY_SIZE, PRIVATE_KEY_SIZE + PUBLIC_KEY_SIZE));
-
-        return new ECKeyPair(privateKey, publicKey);
     }
 }

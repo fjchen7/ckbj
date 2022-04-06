@@ -17,13 +17,12 @@ import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 import org.bouncycastle.crypto.signers.HMacDSAKCalculator;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
-import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.bouncycastle.math.ec.ECPoint;
+import org.bouncycastle.math.ec.FixedPointCombMultiplier;
 import org.ckbj.utils.Hex;
 
 import java.math.BigInteger;
 import java.security.KeyPair;
-import java.util.Arrays;
 import java.util.Objects;
 
 import static org.ckbj.crypto.Sign.CURVE;
@@ -32,113 +31,60 @@ import static org.ckbj.crypto.Sign.CURVE;
  * Elliptic Curve SECP-256k1 generated key pair.
  */
 public class ECKeyPair {
+    public static final int PRIVATE_KEY_SIZE = 32;
     private BigInteger privateKey;
-//    private BigInteger x;
-//    private BigInteger y;
-    private BigInteger publicKey;
+    private Point publicKey;
 
-    public ECKeyPair(BigInteger privateKey, BigInteger publicKey) {
+    public ECKeyPair(BigInteger privateKey) {
         this.privateKey = privateKey;
-        this.publicKey = publicKey;
+        this.publicKey = Point.fromPrivateKey(privateKey);
     }
-
-//    public ECKeyPair(BigInteger privateKey) {
-//        this.privateKey = privateKey;
-//
-//        ECPoint point = Sign.publicPointFromPrivate(privateKey);
-//        byte[] encoded = point.getEncoded(false);
-//        x =  new BigInteger(1, Arrays.copyOfRange(encoded, 1, 33));
-//        y =  new BigInteger(1, Arrays.copyOfRange(encoded, 33, 65));
-//    }
 
     public BigInteger getPrivateKey() {
         return privateKey;
     }
 
-    public BigInteger getPublicKey() {
+    public byte[] getEncodedPrivateKey() {
+        byte[] encoded = Hex.toByteArray(privateKey, PRIVATE_KEY_SIZE);
+        return encoded;
+    }
+
+    public Point getPublicKey() {
         return publicKey;
     }
 
-    public byte[] getEncodedPrivateKey() {
-        byte[] encoded = privateKey.toByteArray();
-        if (encoded[0] == 0 && encoded.length > 1) {
-            byte[] tmp = new byte[encoded.length - 1];
-            System.arraycopy(encoded, 1, tmp, 0, tmp.length);
-            encoded = tmp;
-        }
-        return encoded;
-    }
-//
-//    public BigInteger getXCoord() {
-//        return x;
-//    }
-//
-//    public BigInteger getYCoord() {
-//        return y;
-//    }
-
     public byte[] getEncodedPublicKey(boolean compressed) {
-        byte[] array = publicKey.toByteArray();
-        if (array[0] == 0 && array.length > 1) {
-            byte[] tmp = new byte[array.length - 1];
-            System.arraycopy(array, 1, tmp, 0, tmp.length);
-            array = tmp;
-        }
-//        byte [] x = Arrays.copyOfRange(array,
-        return array;
+        return publicKey.encode(compressed);
     }
 
     /**
      * Sign a hash with the private key of this key pair.
      *
-     * @param transactionHash the hash to sign
+     * @param message the message to sign
      * @return An {@link ECDSASignature} of the hash
      */
-    public ECDSASignature sign(byte[] transactionHash) {
+    public ECDSASignature sign(byte[] message) {
         ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new SHA256Digest()));
 
         ECPrivateKeyParameters privKey = new ECPrivateKeyParameters(privateKey, CURVE);
         signer.init(true, privKey);
-        BigInteger[] components = signer.generateSignature(transactionHash);
+        BigInteger[] components = signer.generateSignature(message);
 
         return new ECDSASignature(components[0], components[1]).toCanonicalised();
     }
 
     public static ECKeyPair create(KeyPair keyPair) {
         BCECPrivateKey privateKey = (BCECPrivateKey) keyPair.getPrivate();
-        BCECPublicKey publicKey = (BCECPublicKey) keyPair.getPublic();
-
         BigInteger privateKeyValue = privateKey.getD();
-
-        // CKB does not use encoded public keys like bitcoin - see
-        // https://en.bitcoin.it/wiki/Elliptic_Curve_Digital_Signature_Algorithm for details
-        // Additionally, as the first bit is a constant prefix (0x04) we ignore this value
-        byte[] publicKeyBytes = publicKey.getQ().getEncoded(false);
-        BigInteger publicKeyValue =
-                new BigInteger(1, Arrays.copyOfRange(publicKeyBytes, 1, publicKeyBytes.length));
-
-        return new ECKeyPair(privateKeyValue, publicKeyValue);
+        return new ECKeyPair(privateKeyValue);
     }
 
     public static ECKeyPair create(BigInteger privateKey) {
-        return new ECKeyPair(privateKey, publicKeyFromPrivate(privateKey));
+        return new ECKeyPair(privateKey);
     }
 
     public static ECKeyPair create(byte[] privateKey) {
-        return create(Hex.toBigInteger(privateKey));
-    }
-
-    /**
-     * Returns public key from the given private key.
-     *
-     * @param privateKey the private key to derive the public key from
-     * @return BigInteger encoded public key
-     */
-    public static BigInteger publicKeyFromPrivate(BigInteger privateKey) {
-        ECPoint point = Sign.publicPointFromPrivate(privateKey);
-
-        byte[] encoded = point.getEncoded(false);
-        return new BigInteger(1, Arrays.copyOfRange(encoded, 1, encoded.length)); // remove prefix
+        return create(new BigInteger(1, privateKey));
     }
 
     @Override
@@ -157,5 +103,80 @@ public class ECKeyPair {
         int result = privateKey != null ? privateKey.hashCode() : 0;
         result = 31 * result + (publicKey != null ? publicKey.hashCode() : 0);
         return result;
+    }
+
+    public static class Point {
+        ECPoint point;
+
+        public Point(BigInteger x, BigInteger y) {
+            this.point = CURVE.getCurve().createPoint(x, y);
+        }
+
+        public Point(ECPoint point) {
+            this.point = point;
+        }
+
+        public ECPoint getECPoint() {
+            return point;
+        }
+
+        /**
+         * Encode the point itself to byte array representation.
+         *
+         * @param compressed whether the returned byte array is uncompressed (0x04 prefix) or compressed (0x02 or 0x03 prefix) form.
+         * @return the encoded byte array
+         */
+        public byte[] encode(boolean compressed) {
+            return point.getEncoded(compressed);
+        }
+
+        /**
+         * Encode byte array to Point.
+         *
+         * @param encoded compressed or uncompressed byte array representing the point.
+         * @return the decoded Point.
+         */
+        public static Point decode(byte[] encoded) {
+            ECPoint point = CURVE.getCurve().decodePoint(encoded);
+            return new Point(point);
+        }
+
+        /**
+         * Returns public key from the given private key.
+         *
+         * @param privateKey the private key to derive the public key from
+         * @return Point public key
+         */
+        public static Point fromPrivateKey(BigInteger privateKey) {
+            /*
+             * TODO: FixedPointCombMultiplier currently doesn't support scalars longer than the group
+             * order, but that could change in future versions.
+             */
+            if (privateKey.bitLength() > CURVE.getN().bitLength()) {
+                privateKey = privateKey.mod(CURVE.getN());
+            }
+            ECPoint point = new FixedPointCombMultiplier().multiply(CURVE.getG(), privateKey);
+            return new Point(point);
+        }
+
+        @Override
+        public String toString() {
+            return Hex.toHexString(encode(false));
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Point point1 = (Point) o;
+
+            return point.equals(point1.point);
+        }
+
+        @Override
+        public int hashCode() {
+            return point.hashCode();
+        }
     }
 }
