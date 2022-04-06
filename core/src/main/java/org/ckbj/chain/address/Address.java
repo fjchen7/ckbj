@@ -14,7 +14,12 @@ public class Address {
     Script script;
     Network network;
 
-    private Address() {
+    public Address() {
+    }
+
+    public Address(Script script, Network network) {
+        this.script = script;
+        this.network = network;
     }
 
     public Script getScript() {
@@ -37,20 +42,7 @@ public class Address {
         return this;
     }
 
-    public static Address from(Script script, Network network) {
-        Objects.requireNonNull(script);
-        Objects.requireNonNull(network);
-        Address address = new Address();
-        address.network = network;
-        address.script = script;
-        return address;
-    }
-
-    public static Address from(String address) {
-        return decode(address);
-    }
-
-    private static Address decode(String address) {
+    public static Address decode(String address) {
         Network network = network(address.substring(0, 3));
         return decode(address, network);
     }
@@ -86,13 +78,11 @@ public class Address {
             throw new AddressFormatException("Unknown code hash index");
         }
         byte[] args = Arrays.copyOfRange(payload, 2, payload.length);
-        Address address = new Address();
-        address.script = new Script()
+        Script script = new Script()
                 .setCodeHash(codeHash)
                 .setArgs(args)
                 .setHashType(Script.HashType.TYPE);
-        address.network = networkDetail.getNetwork();
-        return address;
+        return new Address(script, network);
     }
 
     private static Address decodeLongBech32(byte[] payload, Network network) {
@@ -106,26 +96,22 @@ public class Address {
         }
         byte[] codeHash = Arrays.copyOfRange(payload, 1, 33);
         byte[] args = Arrays.copyOfRange(payload, 33, payload.length);
-        Address address = new Address();
-        address.script = new Script()
+        Script script = new Script()
                 .setCodeHash(codeHash)
                 .setArgs(args)
                 .setHashType(hashType);
-        address.network = network;
-        return address;
+        return new Address(script, network);
     }
 
     private static Address decodeLongBech32m(byte[] payload, Network network) {
         byte[] codeHash = Arrays.copyOfRange(payload, 1, 33);
         Script.HashType hashType = Script.HashType.valueOf(payload[33]);
         byte[] args = Arrays.copyOfRange(payload, 34, payload.length);
-        Address address = new Address();
-        address.script = new Script()
+        Script script = new Script()
                 .setCodeHash(codeHash)
                 .setArgs(args)
                 .setHashType(hashType);
-        address.network = network;
-        return address;
+        return new Address(script, network);
     }
 
     @Override
@@ -141,7 +127,7 @@ public class Address {
         return encode(format, network);
     }
 
-    public String encode(Format format, Network network) {
+    private String encode(Format format, Network network) {
         Objects.requireNonNull(format);
         switch (format) {
             case SHORT:

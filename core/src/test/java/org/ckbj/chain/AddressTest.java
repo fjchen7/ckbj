@@ -16,7 +16,7 @@ public class AddressTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testEncode() {
-        Address address = Address.from(script, Network.LINA);
+        Address address = new Address(script, Network.LINA);
         assertEquals("ckb1qyqt8xaupvm8837nv3gtc9x0ekkj64vud3jqfwyw5v",
                 address.encode(SHORT));
         assertEquals("ckb1qjda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xw3vumhs9nvu786dj9p0q5elx66t24n3kxgj53qks",
@@ -27,15 +27,15 @@ public class AddressTest {
 
     @Test
     public void testDecode() {
-        Address expected = Address.from(script, Network.LINA);
+        Address expected = new Address(script, Network.LINA);
         // short format
-        Address actual = Address.from("ckb1qyqt8xaupvm8837nv3gtc9x0ekkj64vud3jqfwyw5v");
+        Address actual = Address.decode("ckb1qyqt8xaupvm8837nv3gtc9x0ekkj64vud3jqfwyw5v");
         assertEquals(expected, actual);
         // long bech32 format
-        actual = Address.from("ckb1qjda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xw3vumhs9nvu786dj9p0q5elx66t24n3kxgj53qks");
+        actual = Address.decode("ckb1qjda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xw3vumhs9nvu786dj9p0q5elx66t24n3kxgj53qks");
         assertEquals(expected, actual);
         // long bech32m format
-        actual = Address.from("ckb1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqdnnw7qkdnnclfkg59uzn8umtfd2kwxceqxwquc4");
+        actual = Address.decode("ckb1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqdnnw7qkdnnclfkg59uzn8umtfd2kwxceqxwquc4");
         assertEquals(expected, actual);
     }
 }
