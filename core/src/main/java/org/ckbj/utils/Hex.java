@@ -43,26 +43,6 @@ public class Hex {
     }
 
     /**
-     * Only keep significant hex in hex string. For example, it returns "0x123" for input "0x0123".
-     *
-     * @param in hex string with or without prefix "0x"
-     * @return hex string that only keeps significant hex
-     */
-    public static String onlyKeepSignificantHex(String in) {
-        StringBuilder builder = new StringBuilder();
-        int i = 0;
-        if (in.startsWith(HEX_PREFIX)) {
-            builder.append(HEX_PREFIX);
-            i = 2;
-        }
-        while (i < in.length() - 1 && in.charAt(i) == '0') {
-            i++;
-        }
-        builder.append(in.substring(i));
-        return builder.toString();
-    }
-
-    /**
      * Convert hex string to byte array.
      *
      * @param in hex string with or without prefix "0x"
@@ -95,10 +75,11 @@ public class Hex {
     }
 
     /**
-     * Convert BigInteger to byte array with fixed length.
+     * Convert BigInteger to zero-padded byte array.
      *
      * @param in     BigInteger
-     * @param length of the returned byte array. No fix length if length is -1.
+     * @param length of the returned byte array. This method will pad zero at beginning of
+     *               the byte array converted from `in` utils its length is `length`.
      */
     public static byte[] toByteArray(BigInteger in, int length) {
         byte[] array = in.toByteArray();

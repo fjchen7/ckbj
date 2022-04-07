@@ -1,18 +1,14 @@
 package org.ckbj.rpc.adapter;
 
 import com.google.gson.*;
-import org.ckbj.utils.Hex;
 
 import java.lang.reflect.Type;
-import java.math.BigInteger;
 
 public class LongTypeAdapter implements JsonDeserializer<Long>, JsonSerializer<Long> {
 
     @Override
     public JsonElement serialize(Long src, Type typeOfSrc, JsonSerializationContext context) {
-        String hex = Hex.toHexString(BigInteger.valueOf(src), true);
-        hex = Hex.onlyKeepSignificantHex(hex);
-        return new JsonPrimitive(hex);
+        return new JsonPrimitive("0x" + Long.toHexString(src));
     }
 
     @Override
@@ -20,7 +16,7 @@ public class LongTypeAdapter implements JsonDeserializer<Long>, JsonSerializer<L
         if (json.getAsJsonPrimitive().isNumber()) {
             return json.getAsLong();
         }
-        BigInteger value = Hex.toBigInteger(json.getAsString());
-        return value.longValue();
+        String hexValue = json.getAsString().substring(2);
+        return Long.valueOf(hexValue, 16);
     }
 }
