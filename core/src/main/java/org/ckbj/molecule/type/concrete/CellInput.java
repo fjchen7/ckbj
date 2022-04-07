@@ -51,7 +51,7 @@ public final class CellInput extends Struct {
         private Builder(@Nonnull byte[] buf) {
             Objects.requireNonNull(buf);
             if (buf.length != SIZE) {
-                throw new MoleculeException(SIZE, buf.length, CellInput.class);
+                throw MoleculeException.invalidByteSize(SIZE, buf.length, CellInput.class);
             }
             byte[] itemBuf;
             itemBuf = Arrays.copyOfRange(buf, 0, 8);

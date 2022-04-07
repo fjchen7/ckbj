@@ -5,6 +5,7 @@ import org.ckbj.molecule.type.base.MoleculeException;
 import org.ckbj.molecule.type.base.MoleculeUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -19,6 +20,11 @@ public final class CellOutputVec extends DynamicVector {
     @Nonnull
     public CellOutput get(int i) {
         return items[i];
+    }
+
+    @Nullable
+    public CellOutput[] getItems() {
+        return items;
     }
 
     @Override
@@ -50,7 +56,7 @@ public final class CellOutputVec extends DynamicVector {
             Objects.requireNonNull(buf);
             int size = MoleculeUtils.littleEndianBytes4ToInt(buf, 0);
             if (buf.length != size) {
-                throw new MoleculeException(size, buf.length, CellOutputVec.class);
+                throw MoleculeException.invalidByteSize(size, buf.length, CellOutputVec.class);
             }
             int[] offsets = MoleculeUtils.getOffsets(buf);
             items = new CellOutput[offsets.length - 1];
@@ -62,19 +68,19 @@ public final class CellOutputVec extends DynamicVector {
 
         public Builder add(@Nonnull CellOutput item) {
             Objects.requireNonNull(item);
-            CellOutput[] tempItems = new CellOutput[items.length + 1];
-            System.arraycopy(items, 0, tempItems, 0, items.length);
-            tempItems[items.length] = item;;
-            items = tempItems;
+            CellOutput[] originalItems = items;
+            items = new CellOutput[originalItems.length + 1];
+            System.arraycopy(originalItems, 0, items, 0, originalItems.length);
+            items[items.length - 1] = item;;
             return this;
         }
 
         public Builder add(@Nonnull CellOutput[] items) {
             Objects.requireNonNull(items);
-            CellOutput[] tempItems = new CellOutput[items.length + this.items.length];
-            System.arraycopy(this.items, 0, tempItems, 0, this.items.length);
-            System.arraycopy(items, 0, tempItems, this.items.length, items.length);
-            this.items = tempItems;
+            CellOutput[] originalItems = this.items;
+            this.items = new CellOutput[originalItems.length + items.length];
+            System.arraycopy(originalItems, 0, this.items, 0, originalItems.length);
+            System.arraycopy(items, 0, this.items, originalItems.length, items.length);
             return this;
         }
 
@@ -84,14 +90,20 @@ public final class CellOutputVec extends DynamicVector {
             return this;
         }
 
+        public Builder set(@Nonnull CellOutput[] items) {
+            Objects.requireNonNull(items);
+            this.items = items;
+            return this;
+        }
+
         public Builder remove(int i) {
             if (i < 0 || i >= items.length) {
                 throw new ArrayIndexOutOfBoundsException(i);
             }
-            CellOutput[] tempItems = new CellOutput[items.length - 1];
-            System.arraycopy(items, 0, tempItems, 0, i);
-            System.arraycopy(items, i + 1, tempItems, i, items.length - i -1);
-            items = tempItems;
+            CellOutput[] originalItems = items;
+            items = new CellOutput[originalItems.length - 1];
+            System.arraycopy(originalItems, 0, items, 0, i);
+            System.arraycopy(originalItems, i + 1, items, i, originalItems.length - i -1);
             return this;
         }
 

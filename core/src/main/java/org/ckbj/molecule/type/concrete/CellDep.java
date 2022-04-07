@@ -50,7 +50,7 @@ public final class CellDep extends Struct {
         private Builder(@Nonnull byte[] buf) {
             Objects.requireNonNull(buf);
             if (buf.length != SIZE) {
-                throw new MoleculeException(SIZE, buf.length, CellDep.class);
+                throw MoleculeException.invalidByteSize(SIZE, buf.length, CellDep.class);
             }
             byte[] itemBuf;
             itemBuf = Arrays.copyOfRange(buf, 0, 36);

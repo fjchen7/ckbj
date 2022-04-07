@@ -5,6 +5,7 @@ import org.ckbj.molecule.type.base.MoleculeException;
 import org.ckbj.molecule.type.base.MoleculeUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -19,6 +20,11 @@ public final class TransactionVec extends DynamicVector {
     @Nonnull
     public Transaction get(int i) {
         return items[i];
+    }
+
+    @Nullable
+    public Transaction[] getItems() {
+        return items;
     }
 
     @Override
@@ -50,7 +56,7 @@ public final class TransactionVec extends DynamicVector {
             Objects.requireNonNull(buf);
             int size = MoleculeUtils.littleEndianBytes4ToInt(buf, 0);
             if (buf.length != size) {
-                throw new MoleculeException(size, buf.length, TransactionVec.class);
+                throw MoleculeException.invalidByteSize(size, buf.length, TransactionVec.class);
             }
             int[] offsets = MoleculeUtils.getOffsets(buf);
             items = new Transaction[offsets.length - 1];
@@ -62,10 +68,19 @@ public final class TransactionVec extends DynamicVector {
 
         public Builder add(@Nonnull Transaction item) {
             Objects.requireNonNull(item);
-            Transaction[] tempItems = new Transaction[items.length + 1];
-            System.arraycopy(items, 0, tempItems, 0, items.length);
-            tempItems[items.length] = item;;
-            items = tempItems;
+            Transaction[] originalItems = items;
+            items = new Transaction[originalItems.length + 1];
+            System.arraycopy(originalItems, 0, items, 0, originalItems.length);
+            items[items.length - 1] = item;;
+            return this;
+        }
+
+        public Builder add(@Nonnull Transaction[] items) {
+            Objects.requireNonNull(items);
+            Transaction[] originalItems = this.items;
+            this.items = new Transaction[originalItems.length + items.length];
+            System.arraycopy(originalItems, 0, this.items, 0, originalItems.length);
+            System.arraycopy(items, 0, this.items, originalItems.length, items.length);
             return this;
         }
 
@@ -75,14 +90,20 @@ public final class TransactionVec extends DynamicVector {
             return this;
         }
 
+        public Builder set(@Nonnull Transaction[] items) {
+            Objects.requireNonNull(items);
+            this.items = items;
+            return this;
+        }
+
         public Builder remove(int i) {
             if (i < 0 || i >= items.length) {
                 throw new ArrayIndexOutOfBoundsException(i);
             }
-            Transaction[] tempItems = new Transaction[items.length - 1];
-            System.arraycopy(items, 0, tempItems, 0, i);
-            System.arraycopy(items, i + 1, tempItems, i, items.length - i -1);
-            items = tempItems;
+            Transaction[] originalItems = items;
+            items = new Transaction[originalItems.length - 1];
+            System.arraycopy(originalItems, 0, items, 0, i);
+            System.arraycopy(originalItems, i + 1, items, i, originalItems.length - i -1);
             return this;
         }
 

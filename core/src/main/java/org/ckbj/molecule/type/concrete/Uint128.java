@@ -4,6 +4,7 @@ import org.ckbj.molecule.type.base.Array;
 import org.ckbj.molecule.type.base.MoleculeException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 public final class Uint128 extends Array {
@@ -23,6 +24,11 @@ public final class Uint128 extends Array {
     @Nonnull
     public byte get(int i) {
         return items[i];
+    }
+
+    @Nullable
+    public byte[] getItems() {
+        return items;
     }
 
     @Override
@@ -58,7 +64,7 @@ public final class Uint128 extends Array {
         private Builder(@Nonnull byte[] buf) {
             Objects.requireNonNull(buf);
             if (buf.length != SIZE) {
-                throw new MoleculeException(SIZE, buf.length, Uint128.class);
+                throw MoleculeException.invalidByteSize(SIZE, buf.length, Uint128.class);
             }
             items = buf;
         }
@@ -66,6 +72,15 @@ public final class Uint128 extends Array {
         public Builder set(int i, @Nonnull byte item) {
             Objects.requireNonNull(item);
             items[i] = item;
+            return this;
+        }
+
+        public Builder set(@Nonnull byte[] items) {
+            Objects.requireNonNull(items);
+            if (items.length != ITEM_COUNT) {
+                throw MoleculeException.invalidItemCount(ITEM_COUNT, items.length, Uint128.class);
+            }
+            this.items = items;
             return this;
         }
 

@@ -51,7 +51,7 @@ public final class Header extends Struct {
         private Builder(@Nonnull byte[] buf) {
             Objects.requireNonNull(buf);
             if (buf.length != SIZE) {
-                throw new MoleculeException(SIZE, buf.length, Header.class);
+                throw MoleculeException.invalidByteSize(SIZE, buf.length, Header.class);
             }
             byte[] itemBuf;
             itemBuf = Arrays.copyOfRange(buf, 0, 192);

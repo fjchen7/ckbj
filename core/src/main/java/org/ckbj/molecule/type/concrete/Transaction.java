@@ -50,11 +50,11 @@ public final class Transaction extends Table {
             Objects.requireNonNull(buf);
             int size = MoleculeUtils.littleEndianBytes4ToInt(buf, 0);
             if (buf.length != size) {
-                throw new MoleculeException(size, buf.length, Transaction.class);
+                throw MoleculeException.invalidByteSize(size, buf.length, Transaction.class);
             }
             int[] offsets = MoleculeUtils.getOffsets(buf);
             if (offsets.length - 1 != FIELD_COUNT) {
-                throw new MoleculeException("Raw data should have " + FIELD_COUNT + " but find " + (offsets.length -1) + " offsets in header.");
+                throw MoleculeException.invalidFieldCount(FIELD_COUNT, offsets.length - 1, Transaction.class);
             }
             byte[] itemBuf;
             itemBuf = Arrays.copyOfRange(buf, offsets[0], offsets[1]);
