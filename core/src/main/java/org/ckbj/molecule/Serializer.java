@@ -1,37 +1,42 @@
 package org.ckbj.molecule;
 
-import org.ckbj.type.*;
+import org.ckbj.molecule.type.concrete.*;
 
 public class Serializer {
-    public static byte[] serialize(CellDep in) {
-        return MoleculeFactory.createCellDep(in).toByteArray();
+    public static byte[] serialize(org.ckbj.type.CellDep in) {
+        return Converter.toCellDep(in).toByteArray();
     }
 
-    public static byte[] serialize(CellInput in) {
-        return MoleculeFactory.createCellInput(in).toByteArray();
+    public static byte[] serialize(org.ckbj.type.CellInput in) {
+        return Converter.toCellInput(in).toByteArray();
     }
 
-    public static byte[] serialize(Cell in) {
-        return MoleculeFactory.createCellOutput(in).toByteArray();
+    public static byte[] serialize(org.ckbj.type.Cell in) {
+        return Converter.toCellOutput(in).toByteArray();
     }
 
-    public static byte[] serialize(Transaction in, boolean includeWitnesses) {
+    public static byte[] serialize(org.ckbj.type.Transaction in, boolean includeWitnesses) {
         if (includeWitnesses) {
-            return MoleculeFactory.createTransaction(in).toByteArray();
+            return Converter.toTransaction(in).toByteArray();
         } else {
-            return MoleculeFactory.createRawTransaction(in).toByteArray();
+            return Converter.toRawTransaction(in).toByteArray();
         }
     }
 
-    public static byte[] serialize(Header in, boolean includeNonce) {
+    public static byte[] serialize(org.ckbj.type.Header in, boolean includeNonce) {
         if (includeNonce) {
-            return MoleculeFactory.createHeader(in).toByteArray();
+            return Converter.toHeader(in).toByteArray();
         } else {
-            return MoleculeFactory.createRawHeader(in).toByteArray();
+            return Converter.toRawHeader(in).toByteArray();
         }
     }
 
-    public static byte[] serialize(WitnessArgs in) {
-        return MoleculeFactory.createWitnessArgs(in).toByteArray();
+    public static byte[] serialize(org.ckbj.type.WitnessArgs in) {
+        return Converter.toWitnessArgs(in).toByteArray();
+    }
+
+    public static org.ckbj.type.WitnessArgs deserializeWitnessArgs(byte[] in) {
+        WitnessArgs molecule = WitnessArgs.builder(in).build();
+        return Converter.fromWitnessArgs(molecule);
     }
 }

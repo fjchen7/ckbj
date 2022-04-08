@@ -4,6 +4,7 @@ import org.ckbj.CkbService;
 import org.ckbj.chain.Network;
 import org.ckbj.type.Header;
 import org.ckbj.type.Transaction;
+import org.ckbj.type.WitnessArgs;
 import org.ckbj.utils.Hex;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,15 @@ public class SerializerTest {
         Header header = CkbService.defaultInstance(Network.AGGRON).getHeader(1024);
         assertByteArray("0x000000005555011e4c2aeb3b7201000000040000000000000100001800f40100dc48626c5c978044c5055f316d395e74d0209b427091e4f5dd506ac849d23f2682988b971735834ea0c2766764647822ce0229cd16c0e7fb0b17248a445ec3b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007a063f88f10fa22ec7758d0b1f8723008670b170d23100000004a174a800ff06105d371a90473c1d07646cf03051a6b0",
                 Serializer.serialize(header, true));
+    }
+
+    @Test
+    public void testWitnessArgs() {
+        byte[] bytes = Hex.toByteArray("55000000100000005500000055000000410000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+        WitnessArgs witnessArgs = new WitnessArgs()
+                .setLock(new byte[65]);
+        Assertions.assertArrayEquals(bytes, Serializer.serialize(witnessArgs));
+        Assertions.assertEquals(witnessArgs, Serializer.deserializeWitnessArgs(bytes));
     }
 
     private void assertByteArray(String expected, byte[] actual) {
