@@ -22,7 +22,7 @@ public class CkbServiceTest {
 
     @Test
     public void testGetTransaction() throws IOException {
-        DetailedTransaction transaction = service.getTransaction("0x8277d74d33850581f8d843613ded0c2a1722dec0e87e748f45c115dfb14210f1");
+        OnChainTransaction transaction = service.getTransaction("0x8277d74d33850581f8d843613ded0c2a1722dec0e87e748f45c115dfb14210f1");
         assertEquals(4, transaction.getCellDeps().size());
         assertEquals(1, transaction.getInputs().size());
         assertEquals(3, transaction.getOutputs().size());
@@ -32,9 +32,10 @@ public class CkbServiceTest {
                 transaction.getOutputs().get(1).getCapacity());
         assertEquals(new BigInteger("19994640399880000"),
                 transaction.getOutputs().get(2).getCapacity());
-        assertEquals(3, transaction.getOutputsData().size());
+        assertArrayEquals(
+                Hex.toByteArray("0x005ae9950300000000000000000000000000000000000000"), transaction.getOutputs().get(1).getData());
         assertEquals(2, transaction.getWitnesses().size());
-        assertEquals(DetailedTransaction.Status.COMMITTED, transaction.getStatus());
+        assertEquals(OnChainTransaction.Status.COMMITTED, transaction.getStatus());
         assertArrayEquals(Hex.toByteArray("0xb9d83075b7694d624d46821848e1286296b9d0ab724a2a5803af9639bd071a6b"),
                 transaction.getBlockHash());
     }
@@ -76,15 +77,15 @@ public class CkbServiceTest {
     @Test
     public void testGetLiveCell() throws IOException {
         OutPoint outPoint = new OutPoint("0x8277d74d33850581f8d843613ded0c2a1722dec0e87e748f45c115dfb14210f1", 0);
-        DetailedCell detailedCell = service.getLiveCell(outPoint, true);
-        assertEquals(new BigInteger("30000000000"), detailedCell.getCapacity());
+        OnChainCell onChainCell = service.getLiveCell(outPoint, true);
+        assertEquals(new BigInteger("30000000000"), onChainCell.getCapacity());
         assertArrayEquals(Hex.toByteArray("0xa999bfb3735fdff4f26016b47712bb64ffbe88e62deec0e4e0d69ea8d54012778877ddfcc3ec76d5a59630a162828761147dd36052ca0db8d024ab68591e4826"),
-                detailedCell.getLock().getArgs());
-        assertEquals(Script.HashType.DATA, detailedCell.getLock().getHashType());
-        assertArrayEquals(Hex.toByteArray("0x82d76d1b75fe2fd9a27dfbaa65a039221a380d76c926f378d3f81cf3e7e13f2e"), detailedCell.getType().getCodeHash());
-        assertEquals(Script.HashType.TYPE, detailedCell.getType().getHashType());
-        assertArrayEquals(new byte[]{}, detailedCell.getType().getArgs());
-        assertArrayEquals(Hex.toByteArray("0x0000000000000000"), detailedCell.getData());
+                onChainCell.getLock().getArgs());
+        assertEquals(Script.HashType.DATA, onChainCell.getLock().getHashType());
+        assertArrayEquals(Hex.toByteArray("0x82d76d1b75fe2fd9a27dfbaa65a039221a380d76c926f378d3f81cf3e7e13f2e"), onChainCell.getType().getCodeHash());
+        assertEquals(Script.HashType.TYPE, onChainCell.getType().getHashType());
+        assertArrayEquals(new byte[]{}, onChainCell.getType().getArgs());
+        assertArrayEquals(Hex.toByteArray("0x0000000000000000"), onChainCell.getData());
     }
 
     @Test

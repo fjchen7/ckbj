@@ -1,22 +1,26 @@
 package org.ckbj.type;
 
+import com.google.gson.*;
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.reflect.TypeToken;
 import org.ckbj.crypto.Blake2b;
 import org.ckbj.molecule.Serializer;
 import org.ckbj.utils.Hex;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Core CKB transaction data structure
  */
+@JsonAdapter(Transaction.TypeAdapter.class)
 public class Transaction {
     private int version;
     private List<CellDep> cellDeps = new ArrayList<>();
     private List<byte[]> headerDeps = new ArrayList<>();
     private List<CellInput> inputs = new ArrayList<>();
     private List<Cell> outputs = new ArrayList<>();
-    private List<byte[]> outputsData = new ArrayList<>();
     private List<byte[]> witnesses = new ArrayList<>();
 
     public int getVersion() {
@@ -40,6 +44,10 @@ public class Transaction {
     }
 
     public List<byte[]> getOutputsData() {
+        List<byte[]> outputsData = new ArrayList<>();
+        for (int i = 0; i < outputs.size(); i++) {
+            outputsData.add(outputs.get(i).getData());
+        }
         return outputsData;
     }
 
@@ -114,20 +122,6 @@ public class Transaction {
         return this;
     }
 
-    public Transaction addOutputData(String outputData) {
-        return addOutputData(Hex.toByteArray(outputData));
-    }
-
-    public Transaction addOutputData(byte[] outputData) {
-        this.outputsData.add(outputData);
-        return this;
-    }
-
-    public Transaction setOutputsData(List<byte[]> outputsData) {
-        this.outputsData = outputsData;
-        return this;
-    }
-
     public Transaction addWitness(String witness) {
         return addWitness(Hex.toByteArray(witness));
     }
@@ -145,5 +139,24 @@ public class Transaction {
     public byte[] hash() {
         byte[] serialization = Serializer.serialize(this, false);
         return Blake2b.digest256(serialization);
+    }
+
+    protected static class TypeAdapter implements JsonDeserializer<Transaction> {
+        @Override
+        public Transaction deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject obj = json.getAsJsonObject();
+            Transaction tx = new Transaction();
+            tx.version = context.deserialize(obj.get("version"), int.class);
+            tx.cellDeps = context.deserialize(obj.get("cell_deps"), new TypeToken<List<CellDep>>() {}.getType());
+            tx.headerDeps = context.deserialize(obj.get("header_deps"), new TypeToken<List<byte[]>>() {}.getType());
+            tx.inputs = context.deserialize(obj.get("inputs"), new TypeToken<List<CellInput>>() {}.getType());
+            tx.outputs = context.deserialize(obj.get("outputs"), new TypeToken<List<Cell>>() {}.getType());
+            List<byte[]> outputsData = context.deserialize(obj.get("outputs_data"), new TypeToken<List<byte[]>>() {}.getType());
+            for (int i = 0; i < tx.outputs.size(); i++) {
+                tx.outputs.get(i).setData(outputsData.get(i));
+            }
+            tx.witnesses = context.deserialize(obj.get("witnesses"), new TypeToken<List<byte[]>>() {}.getType());
+            return tx;
+        }
     }
 }

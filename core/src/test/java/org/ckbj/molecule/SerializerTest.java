@@ -16,7 +16,7 @@ public class SerializerTest {
     public void testTransaction() throws IOException {
         Transaction transaction = CkbService.defaultInstance(Network.AGGRON)
                 .getTransaction("0x82001535467ebf5dc0f2b4b7236c9216be7c573908f67850eeb2b602cfc6213e")
-                .getTransaction();
+                .toTransaction();
 
         assertByteArray("0xf8de3bb47d055cdf460d93a2a6e1b05f7432f9777c8c474abf4eec1d4aee5d370000000001",
                 Serializer.serialize(transaction.getCellDeps().get(0)));

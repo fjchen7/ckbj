@@ -15,7 +15,7 @@ public class OnChainTransaction {
     private String statusReason;
     private byte[] blockHash;
 
-    public Transaction getTransaction() {
+    public Transaction toTransaction() {
         return transaction;
     }
 
@@ -23,32 +23,76 @@ public class OnChainTransaction {
         return status;
     }
 
+    public OnChainTransaction setStatus(Status status) {
+        this.status = status;
+        return this;
+    }
+
     public String getStatusReason() {
         return statusReason;
+    }
+
+    public OnChainTransaction setStatusReason(String statusReason) {
+        this.statusReason = statusReason;
+        return this;
     }
 
     public byte[] getBlockHash() {
         return blockHash;
     }
 
+    public OnChainTransaction setBlockHash(String blockHash) {
+        return setBlockHash(Hex.toByteArray(blockHash));
+    }
+
+    public OnChainTransaction setBlockHash(byte[] blockHash) {
+        this.blockHash = blockHash;
+        return this;
+    }
+
     public int getVersion() {
         return transaction.getVersion();
+    }
+
+    public OnChainTransaction setVersion(int version) {
+        transaction.setVersion(version);
+        return this;
     }
 
     public List<CellDep> getCellDeps() {
         return transaction.getCellDeps();
     }
 
+    public OnChainTransaction setCellDeps(List<CellDep> cellDeps) {
+        transaction.setCellDeps(cellDeps);
+        return this;
+    }
+
     public List<byte[]> getHeaderDeps() {
         return transaction.getHeaderDeps();
+    }
+
+    public OnChainTransaction setHeaderDeps(List<byte[]> headerDeps) {
+        transaction.setHeaderDeps(headerDeps);
+        return this;
     }
 
     public List<CellInput> getInputs() {
         return transaction.getInputs();
     }
 
+    public OnChainTransaction setInputs(List<CellInput> inputs) {
+        transaction.setInputs(inputs);
+        return this;
+    }
+
     public List<Cell> getOutputs() {
         return transaction.getOutputs();
+    }
+
+    public OnChainTransaction setOutputs(List<Cell> outputs) {
+        transaction.setOutputs(outputs);
+        return this;
     }
 
     public List<byte[]> getOutputsData() {
@@ -59,27 +103,8 @@ public class OnChainTransaction {
         return transaction.getWitnesses();
     }
 
-    public OnChainTransaction setTransaction(Transaction transaction) {
-        this.transaction = transaction;
-        return this;
-    }
-
-    public OnChainTransaction setStatus(Status status) {
-        this.status = status;
-        return this;
-    }
-
-    public OnChainTransaction setStatusReason(String statusReason) {
-        this.statusReason = statusReason;
-        return this;
-    }
-
-    public OnChainTransaction setBlockHash(String blockHash) {
-        return setBlockHash(Hex.toByteArray(blockHash));
-    }
-
-    public OnChainTransaction setBlockHash(byte[] blockHash) {
-        this.blockHash = blockHash;
+    public OnChainTransaction setWitnesses(List<byte[]> witnesses) {
+        transaction.setWitnesses(witnesses);
         return this;
     }
 
