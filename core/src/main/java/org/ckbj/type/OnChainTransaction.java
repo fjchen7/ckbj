@@ -8,8 +8,8 @@ import org.ckbj.utils.Hex;
 import java.lang.reflect.Type;
 import java.util.List;
 
-@JsonAdapter(DetailedTransaction.TypeAdapter.class)
-public class DetailedTransaction {
+@JsonAdapter(OnChainTransaction.TypeAdapter.class)
+public class OnChainTransaction {
     private Transaction transaction;
     private Status status = Status.UNKNOWN;
     private String statusReason;
@@ -59,26 +59,26 @@ public class DetailedTransaction {
         return transaction.getWitnesses();
     }
 
-    public DetailedTransaction setTransaction(Transaction transaction) {
+    public OnChainTransaction setTransaction(Transaction transaction) {
         this.transaction = transaction;
         return this;
     }
 
-    public DetailedTransaction setStatus(Status status) {
+    public OnChainTransaction setStatus(Status status) {
         this.status = status;
         return this;
     }
 
-    public DetailedTransaction setStatusReason(String statusReason) {
+    public OnChainTransaction setStatusReason(String statusReason) {
         this.statusReason = statusReason;
         return this;
     }
 
-    public DetailedTransaction setBlockHash(String blockHash) {
+    public OnChainTransaction setBlockHash(String blockHash) {
         return setBlockHash(Hex.toByteArray(blockHash));
     }
 
-    public DetailedTransaction setBlockHash(byte[] blockHash) {
+    public OnChainTransaction setBlockHash(byte[] blockHash) {
         this.blockHash = blockHash;
         return this;
     }
@@ -100,12 +100,12 @@ public class DetailedTransaction {
         REJECTED
     }
 
-    protected static class TypeAdapter implements JsonDeserializer<DetailedTransaction> {
+    protected static class TypeAdapter implements JsonDeserializer<OnChainTransaction> {
         @Override
-        public DetailedTransaction deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        public OnChainTransaction deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject obj = json.getAsJsonObject();
             JsonObject objTxStatus = obj.getAsJsonObject("tx_status");
-            DetailedTransaction tx = new DetailedTransaction();
+            OnChainTransaction tx = new OnChainTransaction();
             tx.transaction = context.deserialize(obj.getAsJsonObject("transaction"), Transaction.class);
             tx.status = context.deserialize(objTxStatus.get("status"), Status.class);
             tx.statusReason = context.deserialize(objTxStatus.get("reason"), String.class);

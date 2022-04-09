@@ -22,8 +22,8 @@ public class Ckb {
         return new Request("get_header_by_number", Arrays.asList(blockNumber), RpcHeader.class);
     }
 
-    public static Request<RpcDetailedTransaction> getTransaction(byte[] txHash) {
-        return new Request("get_transaction", Arrays.asList(txHash), RpcDetailedTransaction.class);
+    public static Request<RpcOnChainTransaction> getTransaction(byte[] txHash) {
+        return new Request("get_transaction", Arrays.asList(txHash), RpcOnChainTransaction.class);
     }
 
     public static Request<RpcBlockHash> getBlockHash(int blockNumber) {
@@ -34,8 +34,8 @@ public class Ckb {
         return new Request("get_tip_header", RpcHeader.class);
     }
 
-    public static Request<RpcDetailedCell> getLiveCell(OutPoint outPoint, boolean withData) {
-        return new Request("get_live_cell", Arrays.asList(outPoint, withData), RpcDetailedCell.class);
+    public static Request<RpcOnChainCell> getLiveCell(OutPoint outPoint, boolean withData) {
+        return new Request("get_live_cell", Arrays.asList(outPoint, withData), RpcOnChainCell.class);
     }
 
     public static Request<RpcBlockNumber> getTipBlockNumber() {

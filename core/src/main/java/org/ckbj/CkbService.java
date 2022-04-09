@@ -63,11 +63,11 @@ public class CkbService {
         return Ckb.getHeaderByNumber(blockNumber).send(jsonRpcService).getResultOrThrowException();
     }
 
-    public DetailedTransaction getTransaction(byte[] txHash) throws IOException {
+    public OnChainTransaction getTransaction(byte[] txHash) throws IOException {
         return Ckb.getTransaction(txHash).send(jsonRpcService).getResultOrThrowException();
     }
 
-    public DetailedTransaction getTransaction(String txHash) throws IOException {
+    public OnChainTransaction getTransaction(String txHash) throws IOException {
         return getTransaction(Hex.toByteArray(txHash));
     }
 
@@ -86,7 +86,8 @@ public class CkbService {
         return Ckb.getTipBlockNumber().send(jsonRpcService).getResultOrThrowException();
     }
 
-    public DetailedCell getLiveCell(OutPoint outPoint, boolean withData) throws IOException {
-        return Ckb.getLiveCell(outPoint, withData).send(jsonRpcService).getResultOrThrowException();
+    public OnChainCell getLiveCell(OutPoint outPoint, boolean withData) throws IOException {
+        return Ckb.getLiveCell(outPoint, withData).send(jsonRpcService).getResultOrThrowException()
+                        .setOutPoint(outPoint);
     }
 }
