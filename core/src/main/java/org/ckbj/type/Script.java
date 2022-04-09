@@ -1,6 +1,8 @@
 package org.ckbj.type;
 
 import com.google.gson.annotations.SerializedName;
+import org.ckbj.crypto.Blake2b;
+import org.ckbj.molecule.Serializer;
 import org.ckbj.utils.Hash;
 import org.ckbj.utils.Hex;
 
@@ -53,12 +55,9 @@ public final class Script {
         return this;
     }
 
-    // TODO
     public byte[] hash() {
-        return null;
-//    Blake2b blake2b = new Blake2b();
-//    blake2b.update(Encoder.encode(Serializer.serializeScript(this)));
-//    return blake2b.doFinalBytes();
+        byte[] serialization = Serializer.serialize(this);
+        return Blake2b.digest256(serialization);
     }
 
     @Override

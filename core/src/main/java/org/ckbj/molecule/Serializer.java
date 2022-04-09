@@ -15,6 +15,10 @@ public class Serializer {
         return Converter.toCellOutput(in).toByteArray();
     }
 
+    public static byte[] serialize(org.ckbj.type.Script in) {
+        return Converter.toScript(in).toByteArray();
+    }
+
     public static byte[] serialize(org.ckbj.type.Transaction in, boolean includeWitnesses) {
         if (includeWitnesses) {
             return Converter.toTransaction(in).toByteArray();
