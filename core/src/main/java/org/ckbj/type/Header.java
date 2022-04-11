@@ -23,99 +23,88 @@ public class Header {
         return version;
     }
 
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     public long getCompactTarget() {
         return compactTarget;
+    }
+
+    public void setCompactTarget(long compactTarget) {
+        this.compactTarget = compactTarget;
     }
 
     public long getTimestamp() {
         return timestamp;
     }
 
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
     public int getNumber() {
         return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public EpochFraction getEpoch() {
         return epoch;
     }
 
+    public void setEpoch(EpochFraction epoch) {
+        this.epoch = epoch;
+    }
+
     public byte[] getParentHash() {
         return parentHash;
+    }
+
+    public void setParentHash(byte[] parentHash) {
+        this.parentHash = parentHash;
     }
 
     public byte[] getTransactionsRoot() {
         return transactionsRoot;
     }
 
+    public void setTransactionsRoot(byte[] transactionsRoot) {
+        this.transactionsRoot = transactionsRoot;
+    }
+
     public byte[] getProposalsHash() {
         return proposalsHash;
+    }
+
+    public void setProposalsHash(byte[] proposalsHash) {
+        this.proposalsHash = proposalsHash;
     }
 
     public byte[] getExtraHash() {
         return extraHash;
     }
 
+    public void setExtraHash(byte[] extraHash) {
+        this.extraHash = extraHash;
+    }
+
     public byte[] getDao() {
         return dao;
+    }
+
+    public void setDao(byte[] dao) {
+        this.dao = dao;
     }
 
     public BigInteger getNonce() {
         return nonce;
     }
 
-    public Header setVersion(int version) {
-        this.version = version;
-        return this;
-    }
-
-    public Header setCompactTarget(long compactTarget) {
-        this.compactTarget = compactTarget;
-        return this;
-    }
-
-    public Header setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-        return this;
-    }
-
-    public Header setNumber(int number) {
-        this.number = number;
-        return this;
-    }
-
-    public Header setEpoch(EpochFraction epoch) {
-        this.epoch = epoch;
-        return this;
-    }
-
-    public Header setParentHash(byte[] parentHash) {
-        this.parentHash = parentHash;
-        return this;
-    }
-
-    public Header setTransactionsRoot(byte[] transactionsRoot) {
-        this.transactionsRoot = transactionsRoot;
-        return this;
-    }
-
-    public Header setProposalsHash(byte[] proposalsHash) {
-        this.proposalsHash = proposalsHash;
-        return this;
-    }
-
-    public Header setExtraHash(byte[] extraHash) {
-        this.extraHash = extraHash;
-        return this;
-    }
-
-    public Header setDao(byte[] dao) {
-        this.dao = dao;
-        return this;
-    }
-
-    public Header setNonce(BigInteger nonce) {
+    public void setNonce(BigInteger nonce) {
         this.nonce = nonce;
-        return this;
     }
 
     public byte[] hash() {

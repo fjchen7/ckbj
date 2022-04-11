@@ -11,21 +11,15 @@ public class UncleBlock {
         return header;
     }
 
-    public byte[] getProposal(int i) {
-        return proposals.get(i);
+    public void setHeader(Header header) {
+        this.header = header;
     }
 
     public List<byte[]> getProposals() {
         return proposals;
     }
 
-    public UncleBlock setHeader(Header header) {
-        this.header = header;
-        return this;
-    }
-
-    public UncleBlock setProposals(List<byte[]> proposals) {
+    public void setProposals(List<byte[]> proposals) {
         this.proposals = proposals;
-        return this;
     }
 }

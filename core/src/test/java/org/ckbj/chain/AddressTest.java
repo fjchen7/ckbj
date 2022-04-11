@@ -8,10 +8,11 @@ import static org.ckbj.chain.address.Address.Format.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AddressTest {
-    private Script script = new Script()
+    private Script script = Script.builder()
             .setCodeHash("0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8")
             .setArgs("0xb39bbc0b3673c7d36450bc14cfcdad2d559c6c64")
-            .setHashType(Script.HashType.TYPE);
+            .setHashType(Script.HashType.TYPE)
+            .build();
 
     @Test
     @SuppressWarnings("deprecation")

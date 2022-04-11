@@ -16,35 +16,31 @@ public class Block {
         return header;
     }
 
+    public void setHeader(Header header) {
+        this.header = header;
+    }
+
     public List<Transaction> getTransactions() {
         return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
     }
 
     public List<byte[]> getProposals() {
         return proposals;
     }
 
+    public void setProposals(List<byte[]> proposals) {
+        this.proposals = proposals;
+    }
+
     public List<UncleBlock> getUncleBlocks() {
         return uncleBlocks;
     }
 
-    public Block setHeader(Header header) {
-        this.header = header;
-        return this;
-    }
-
-    public Block setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
-        return this;
-    }
-
-    public Block setProposals(List<byte[]> proposals) {
-        this.proposals = proposals;
-        return this;
-    }
-
-    public Block setUncleBlocks(List<UncleBlock> uncleBlocks) {
+    public void setUncleBlocks(List<UncleBlock> uncleBlocks) {
         this.uncleBlocks = uncleBlocks;
-        return this;
     }
 }

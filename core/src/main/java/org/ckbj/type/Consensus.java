@@ -32,211 +32,184 @@ public class Consensus {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public byte[] getGenesisHash() {
         return genesisHash;
+    }
+
+    public void setGenesisHash(byte[] genesisHash) {
+        this.genesisHash = genesisHash;
     }
 
     public byte[] getDaoTypeHash() {
         return daoTypeHash;
     }
 
+    public void setDaoTypeHash(byte[] daoTypeHash) {
+        this.daoTypeHash = daoTypeHash;
+    }
+
     public byte[] getSecp256k1Blake160SighashAllTypeHash() {
         return secp256k1Blake160SighashAllTypeHash;
+    }
+
+    public void setSecp256k1Blake160SighashAllTypeHash(byte[] secp256k1Blake160SighashAllTypeHash) {
+        this.secp256k1Blake160SighashAllTypeHash = secp256k1Blake160SighashAllTypeHash;
     }
 
     public byte[] getSecp256k1Blake160MultisigAllTypeHash() {
         return secp256k1Blake160MultisigAllTypeHash;
     }
 
+    public void setSecp256k1Blake160MultisigAllTypeHash(byte[] secp256k1Blake160MultisigAllTypeHash) {
+        this.secp256k1Blake160MultisigAllTypeHash = secp256k1Blake160MultisigAllTypeHash;
+    }
+
     public BigInteger getInitialPrimaryEpochReward() {
         return initialPrimaryEpochReward;
+    }
+
+    public void setInitialPrimaryEpochReward(BigInteger initialPrimaryEpochReward) {
+        this.initialPrimaryEpochReward = initialPrimaryEpochReward;
     }
 
     public BigInteger getSecondaryEpochReward() {
         return secondaryEpochReward;
     }
 
+    public void setSecondaryEpochReward(BigInteger secondaryEpochReward) {
+        this.secondaryEpochReward = secondaryEpochReward;
+    }
+
     public int getMaxUnclesNum() {
         return maxUnclesNum;
+    }
+
+    public void setMaxUnclesNum(int maxUnclesNum) {
+        this.maxUnclesNum = maxUnclesNum;
     }
 
     public Ratio getOrphanRateTarget() {
         return orphanRateTarget;
     }
 
+    public void setOrphanRateTarget(Ratio orphanRateTarget) {
+        this.orphanRateTarget = orphanRateTarget;
+    }
+
     public long getEpochDurationTarget() {
         return epochDurationTarget;
+    }
+
+    public void setEpochDurationTarget(long epochDurationTarget) {
+        this.epochDurationTarget = epochDurationTarget;
     }
 
     public ProposalWindow getTxProposalWindow() {
         return txProposalWindow;
     }
 
+    public void setTxProposalWindow(ProposalWindow txProposalWindow) {
+        this.txProposalWindow = txProposalWindow;
+    }
+
     public Ratio getProposerRewardRatio() {
         return proposerRewardRatio;
+    }
+
+    public void setProposerRewardRatio(Ratio proposerRewardRatio) {
+        this.proposerRewardRatio = proposerRewardRatio;
     }
 
     public EpochFraction getCellbaseMaturity() {
         return cellbaseMaturity;
     }
 
+    public void setCellbaseMaturity(EpochFraction cellbaseMaturity) {
+        this.cellbaseMaturity = cellbaseMaturity;
+    }
+
     public int getMedianTimeBlockCount() {
         return medianTimeBlockCount;
+    }
+
+    public void setMedianTimeBlockCount(int medianTimeBlockCount) {
+        this.medianTimeBlockCount = medianTimeBlockCount;
     }
 
     public long getMaxBlockCycles() {
         return maxBlockCycles;
     }
 
+    public void setMaxBlockCycles(long maxBlockCycles) {
+        this.maxBlockCycles = maxBlockCycles;
+    }
+
     public int getMaxBlockBytes() {
         return maxBlockBytes;
+    }
+
+    public void setMaxBlockBytes(int maxBlockBytes) {
+        this.maxBlockBytes = maxBlockBytes;
     }
 
     public int getBlockVersion() {
         return blockVersion;
     }
 
+    public void setBlockVersion(int blockVersion) {
+        this.blockVersion = blockVersion;
+    }
+
     public int getTxVersion() {
         return txVersion;
+    }
+
+    public void setTxVersion(int txVersion) {
+        this.txVersion = txVersion;
     }
 
     public byte[] getTypeIdCodeHash() {
         return typeIdCodeHash;
     }
 
+    public void setTypeIdCodeHash(byte[] typeIdCodeHash) {
+        this.typeIdCodeHash = typeIdCodeHash;
+    }
+
     public int getMaxBlockProposalsLimit() {
         return maxBlockProposalsLimit;
+    }
+
+    public void setMaxBlockProposalsLimit(int maxBlockProposalsLimit) {
+        this.maxBlockProposalsLimit = maxBlockProposalsLimit;
     }
 
     public int getPrimaryEpochRewardHalvingInterval() {
         return primaryEpochRewardHalvingInterval;
     }
 
+    public void setPrimaryEpochRewardHalvingInterval(int primaryEpochRewardHalvingInterval) {
+        this.primaryEpochRewardHalvingInterval = primaryEpochRewardHalvingInterval;
+    }
+
     public boolean isPermanentDifficultyInDummy() {
         return permanentDifficultyInDummy;
     }
 
-    public HardForkFeature getHardforkFeatures(int i) {
-        return hardforkFeatures.get(i);
+    public void setPermanentDifficultyInDummy(boolean permanentDifficultyInDummy) {
+        this.permanentDifficultyInDummy = permanentDifficultyInDummy;
     }
 
     public List<HardForkFeature> getHardforkFeatures() {
         return hardforkFeatures;
     }
 
-    public Consensus setId(String id) {
-        this.id = id;
-        return this;
-    }
-
-    public Consensus setGenesisHash(byte[] genesisHash) {
-        this.genesisHash = genesisHash;
-        return this;
-    }
-
-    public Consensus setDaoTypeHash(byte[] daoTypeHash) {
-        this.daoTypeHash = daoTypeHash;
-        return this;
-    }
-
-    public Consensus setSecp256k1Blake160SighashAllTypeHash(byte[] secp256k1Blake160SighashAllTypeHash) {
-        this.secp256k1Blake160SighashAllTypeHash = secp256k1Blake160SighashAllTypeHash;
-        return this;
-    }
-
-    public Consensus setSecp256k1Blake160MultisigAllTypeHash(byte[] secp256k1Blake160MultisigAllTypeHash) {
-        this.secp256k1Blake160MultisigAllTypeHash = secp256k1Blake160MultisigAllTypeHash;
-        return this;
-    }
-
-    public Consensus setInitialPrimaryEpochReward(BigInteger initialPrimaryEpochReward) {
-        this.initialPrimaryEpochReward = initialPrimaryEpochReward;
-        return this;
-    }
-
-    public Consensus setSecondaryEpochReward(BigInteger secondaryEpochReward) {
-        this.secondaryEpochReward = secondaryEpochReward;
-        return this;
-    }
-
-    public Consensus setMaxUnclesNum(int maxUnclesNum) {
-        this.maxUnclesNum = maxUnclesNum;
-        return this;
-    }
-
-    public Consensus setOrphanRateTarget(Ratio orphanRateTarget) {
-        this.orphanRateTarget = orphanRateTarget;
-        return this;
-    }
-
-    public Consensus setEpochDurationTarget(long epochDurationTarget) {
-        this.epochDurationTarget = epochDurationTarget;
-        return this;
-    }
-
-    public Consensus setTxProposalWindow(ProposalWindow txProposalWindow) {
-        this.txProposalWindow = txProposalWindow;
-        return this;
-    }
-
-    public Consensus setProposerRewardRatio(Ratio proposerRewardRatio) {
-        this.proposerRewardRatio = proposerRewardRatio;
-        return this;
-    }
-
-    public Consensus setCellbaseMaturity(EpochFraction cellbaseMaturity) {
-        this.cellbaseMaturity = cellbaseMaturity;
-        return this;
-    }
-
-    public Consensus setMedianTimeBlockCount(int medianTimeBlockCount) {
-        this.medianTimeBlockCount = medianTimeBlockCount;
-        return this;
-    }
-
-    public Consensus setMaxBlockCycles(long maxBlockCycles) {
-        this.maxBlockCycles = maxBlockCycles;
-        return this;
-    }
-
-    public Consensus setMaxBlockBytes(int maxBlockBytes) {
-        this.maxBlockBytes = maxBlockBytes;
-        return this;
-    }
-
-    public Consensus setBlockVersion(int blockVersion) {
-        this.blockVersion = blockVersion;
-        return this;
-    }
-
-    public Consensus setTxVersion(int txVersion) {
-        this.txVersion = txVersion;
-        return this;
-    }
-
-    public Consensus setTypeIdCodeHash(byte[] typeIdCodeHash) {
-        this.typeIdCodeHash = typeIdCodeHash;
-        return this;
-    }
-
-    public Consensus setMaxBlockProposalsLimit(int maxBlockProposalsLimit) {
-        this.maxBlockProposalsLimit = maxBlockProposalsLimit;
-        return this;
-    }
-
-    public Consensus setPrimaryEpochRewardHalvingInterval(int primaryEpochRewardHalvingInterval) {
-        this.primaryEpochRewardHalvingInterval = primaryEpochRewardHalvingInterval;
-        return this;
-    }
-
-    public Consensus setPermanentDifficultyInDummy(boolean permanentDifficultyInDummy) {
-        this.permanentDifficultyInDummy = permanentDifficultyInDummy;
-        return this;
-    }
-
-    public Consensus setHardforkFeatures(List<HardForkFeature> hardforkFeatures) {
+    public void setHardforkFeatures(List<HardForkFeature> hardforkFeatures) {
         this.hardforkFeatures = hardforkFeatures;
-        return this;
     }
 
     public static class Ratio {
@@ -247,8 +220,16 @@ public class Consensus {
             return denom;
         }
 
+        public void setDenom(int denom) {
+            this.denom = denom;
+        }
+
         public int getNumer() {
             return numer;
+        }
+
+        public void setNumer(int numer) {
+            this.numer = numer;
         }
     }
 
@@ -260,8 +241,16 @@ public class Consensus {
             return closest;
         }
 
+        public void setClosest(int closest) {
+            this.closest = closest;
+        }
+
         public int getFarthest() {
             return farthest;
+        }
+
+        public void setFarthest(int farthest) {
+            this.farthest = farthest;
         }
     }
 
@@ -273,8 +262,16 @@ public class Consensus {
             return rfc;
         }
 
+        public void setRfc(String rfc) {
+            this.rfc = rfc;
+        }
+
         public Integer getEpochNumber() {
             return epochNumber;
+        }
+
+        public void setEpochNumber(Integer epochNumber) {
+            this.epochNumber = epochNumber;
         }
     }
 }

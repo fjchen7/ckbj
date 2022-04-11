@@ -67,10 +67,11 @@ public class Contract {
     }
 
     public Script createScript(byte[] args) {
-        return new Script()
+        return Script.builder()
                 .setCodeHash(codeHash)
                 .setArgs(args)
-                .setHashType(hashType);
+                .setHashType(hashType)
+                .build();
     }
 
     public enum Standard {

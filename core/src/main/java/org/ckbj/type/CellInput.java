@@ -26,22 +26,15 @@ public class CellInput {
         return previousOutput;
     }
 
+    public void setPreviousOutput(OutPoint previousOutput) {
+        this.previousOutput = previousOutput;
+    }
+
     public byte[] getSince() {
         return since;
     }
 
-    public CellInput setPreviousOutput(OutPoint previousOutput) {
-        this.previousOutput = previousOutput;
-        return this;
-    }
-
-    public CellInput setPreviousOutput(byte[] txHash, int index) {
-        this.previousOutput = new OutPoint(txHash, index);
-        return this;
-    }
-
-    public CellInput setSince(byte[] since) {
+    public void setSince(byte[] since) {
         this.since = since;
-        return this;
     }
 }

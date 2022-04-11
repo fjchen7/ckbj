@@ -13,45 +13,41 @@ public class TransactionProof {
         return proof;
     }
 
+    public void setProof(MerkleProof proof) {
+        this.proof = proof;
+    }
+
     public byte[] getWitnessesRoot() {
         return witnessesRoot;
+    }
+
+    public void setWitnessesRoot(byte[] witnessesRoot) {
+        this.witnessesRoot = witnessesRoot;
     }
 
     public byte[] getBlockHash() {
         return blockHash;
     }
 
-    public TransactionProof setProof(MerkleProof proof) {
-        this.proof = proof;
-        return this;
-    }
-
-    public TransactionProof setWitnessesRoot(byte[] witnessesRoot) {
-        this.witnessesRoot = witnessesRoot;
-        return this;
-    }
-
-    public TransactionProof setBlockHash(byte[] blockHash) {
+    public void setBlockHash(byte[] blockHash) {
         this.blockHash = blockHash;
-        return this;
     }
 
     public static class MerkleProof {
-        @SerializedName("indices")
-        private List<Integer> indexes;
+        private List<Integer> indices;
         private List<byte[]> lemmas;
 
-        public MerkleProof(List<Integer> indexes, List<byte[]> lemmas) {
-            this.indexes = indexes;
+        public MerkleProof(List<Integer> indices, List<byte[]> lemmas) {
+            this.indices = indices;
             this.lemmas = lemmas;
         }
 
         public int getProofIndex(int i) {
-            return indexes.get(i);
+            return indices.get(i);
         }
 
-        public List<Integer> getIndexes() {
-            return indexes;
+        public List<Integer> getIndices() {
+            return indices;
         }
 
         public byte[] getProofLemma(int i) {

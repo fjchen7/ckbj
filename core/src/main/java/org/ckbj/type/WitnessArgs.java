@@ -1,5 +1,7 @@
 package org.ckbj.type;
 
+import org.ckbj.utils.Hex;
+
 import java.util.Arrays;
 
 public class WitnessArgs {
@@ -10,31 +12,44 @@ public class WitnessArgs {
     // Type args for output
     private byte[] outputType;
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public byte[] getLock() {
         return lock;
     }
 
-    public WitnessArgs setLock(byte[] lock) {
+    public void setLock(byte[] lock) {
         this.lock = lock;
-        return this;
+    }
+
+    public void setLock(String lock) {
+        this.lock = Hex.toByteArray(lock);
     }
 
     public byte[] getInputType() {
         return inputType;
     }
 
-    public WitnessArgs setInputType(byte[] inputType) {
+    public void setInputType(byte[] inputType) {
         this.inputType = inputType;
-        return this;
+    }
+
+    public void setInputType(String inputType) {
+        this.inputType = Hex.toByteArray(inputType);
     }
 
     public byte[] getOutputType() {
         return outputType;
     }
 
-    public WitnessArgs setOutputType(byte[] outputType) {
+    public void setOutputType(byte[] outputType) {
         this.outputType = outputType;
-        return this;
+    }
+
+    public void setOutputType(String outputType) {
+        this.outputType = Hex.toByteArray(outputType);
     }
 
     @Override
@@ -55,5 +70,52 @@ public class WitnessArgs {
         result = 31 * result + Arrays.hashCode(inputType);
         result = 31 * result + Arrays.hashCode(outputType);
         return result;
+    }
+
+    public static final class Builder {
+        private byte[] lock;
+        private byte[] inputType;
+        private byte[] outputType;
+
+        private Builder() {
+        }
+
+        public Builder setLock(byte[] lock) {
+            this.lock = lock;
+            return this;
+        }
+
+        public Builder setLock(String lock) {
+            this.lock = Hex.toByteArray(lock);
+            return this;
+        }
+
+        public Builder setInputType(byte[] inputType) {
+            this.inputType = inputType;
+            return this;
+        }
+
+        public Builder setInputType(String inputType) {
+            this.inputType = Hex.toByteArray(inputType);
+            return this;
+        }
+
+        public Builder setOutputType(byte[] outputType) {
+            this.outputType = outputType;
+            return this;
+        }
+
+        public Builder setOutputType(String outputType) {
+            this.outputType = Hex.toByteArray(outputType);
+            return this;
+        }
+
+        public WitnessArgs build() {
+            WitnessArgs witnessArgs = new WitnessArgs();
+            witnessArgs.setLock(lock);
+            witnessArgs.setInputType(inputType);
+            witnessArgs.setOutputType(outputType);
+            return witnessArgs;
+        }
     }
 }

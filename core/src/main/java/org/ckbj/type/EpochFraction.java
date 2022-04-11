@@ -16,27 +16,24 @@ public class EpochFraction {
         return number;
     }
 
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
     public int getBlockIndex() {
         return blockIndex;
+    }
+
+    public void setBlockIndex(int blockIndex) {
+        this.blockIndex = blockIndex;
     }
 
     public int getLength() {
         return length;
     }
 
-    public EpochFraction setNumber(int number) {
-        this.number = number;
-        return this;
-    }
-
-    public EpochFraction setBlockIndex(int blockIndex) {
-        this.blockIndex = blockIndex;
-        return this;
-    }
-
-    public EpochFraction setLength(int length) {
+    public void setLength(int length) {
         this.length = length;
-        return this;
     }
 
     public byte[] toByteArray() {

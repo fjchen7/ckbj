@@ -11,56 +11,106 @@ public class Cell {
     private Script lock;
     private byte[] data = new byte[0];
 
-    public Cell() {}
+    public static Builder builder() {
+        return new Builder();
+    }
 
-    public Cell(Cell cell) {
-        this.capacity = cell.capacity;
-        this.type = cell.type;
-        this.lock = cell.lock;
-        this.data = cell.data;
+    public static Builder builder(Cell cell) {
+        return new Builder(cell);
     }
 
     public BigInteger getCapacity() {
         return capacity;
     }
 
-    public Cell setCapacity(BigInteger capacity) {
+    public void setCapacity(BigInteger capacity) {
         this.capacity = capacity;
-        return this;
     }
 
     public Script getType() {
         return type;
     }
 
-    public Cell setType(Script type) {
+    public void setType(Script type) {
         this.type = type;
-        return this;
     }
 
     public Script getLock() {
         return lock;
     }
 
-    public Cell setLock(Script lock) {
+    public void setLock(Script lock) {
         this.lock = lock;
-        return this;
     }
 
     public byte[] getData() {
         return data;
     }
 
-    public Cell setData(byte[] data) {
+    public void setData(byte[] data) {
         this.data = data;
-        return this;
     }
 
-    public Cell setData(String data) {
-        return setData(Hex.toByteArray(data));
+    public void setData(String data) {
+        setData(Hex.toByteArray(data));
     }
 
     public byte[] dataHash() {
         return Blake2b.digest256(data);
+    }
+
+    public static final class Builder {
+        private BigInteger capacity = BigInteger.ZERO;
+        private Script type;
+        private Script lock;
+        private byte[] data = new byte[0];
+
+        private Builder() {
+        }
+
+        public Builder(Cell cell) {
+            this.capacity = cell.capacity;
+            this.type = cell.type;
+            this.lock = cell.lock;
+            this.data = cell.data;
+        }
+
+        public Builder setCapacity(BigInteger capacity) {
+            this.capacity = capacity;
+            return this;
+        }
+
+        public Builder setCapacity(String capacity) {
+            return setCapacity(Hex.toBigInteger(capacity));
+        }
+
+        public Builder setType(Script type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder setLock(Script lock) {
+            this.lock = lock;
+            return this;
+        }
+
+        public Builder setData(byte[] data) {
+            this.data = data;
+            return this;
+        }
+
+        public Builder setData(String data) {
+            setData(Hex.toByteArray(data));
+            return this;
+        }
+
+        public Cell build() {
+            Cell cell = new Cell();
+            cell.setCapacity(capacity);
+            cell.setType(type);
+            cell.setLock(lock);
+            cell.setData(data);
+            return cell;
+        }
     }
 }

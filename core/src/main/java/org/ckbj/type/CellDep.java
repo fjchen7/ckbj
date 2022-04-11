@@ -6,31 +6,27 @@ import com.google.gson.annotations.SerializedName;
  * Live cell that {@link Transaction} depends on.
  */
 public class CellDep {
+    private DepType depType;
     private OutPoint outPoint;
-    private DepType depType = DepType.DEP_GROUP;
 
-    public OutPoint getOutPoint() {
-        return outPoint;
+    public static Builder builder() {
+        return new Builder();
     }
 
     public DepType getDepType() {
         return depType;
     }
 
-    public CellDep setOutPoint(byte[] txHash, int index) {
-        OutPoint outPoint = new OutPoint(txHash, index);
-        this.outPoint = outPoint;
-        return this;
-    }
-
-    public CellDep setOutPoint(OutPoint outPoint) {
-        this.outPoint = outPoint;
-        return this;
-    }
-
-    public CellDep setDepType(DepType depType) {
+    public void setDepType(DepType depType) {
         this.depType = depType;
-        return this;
+    }
+
+    public OutPoint getOutPoint() {
+        return outPoint;
+    }
+
+    public void setOutPoint(OutPoint outPoint) {
+        this.outPoint = outPoint;
     }
 
     public enum DepType {
@@ -47,6 +43,41 @@ public class CellDep {
 
         public byte toByte() {
             return value;
+        }
+    }
+
+    public static final class Builder {
+        private DepType depType = DepType.DEP_GROUP;
+        private OutPoint outPoint;
+
+        private Builder() {
+        }
+
+        public Builder setDepType(DepType depType) {
+            this.depType = depType;
+            return this;
+        }
+
+        public Builder setOutPoint(OutPoint outPoint) {
+            this.outPoint = outPoint;
+            return this;
+        }
+
+        public Builder setOutPoint(byte[] txHash, int index) {
+            this.outPoint = new OutPoint(txHash, index);
+            return this;
+        }
+
+        public Builder setOutPoint(String txHash, int index) {
+            this.outPoint = new OutPoint(txHash, index);
+            return this;
+        }
+
+        public CellDep build() {
+            CellDep cellDep = new CellDep();
+            cellDep.outPoint = outPoint;
+            cellDep.depType = depType;
+            return cellDep;
         }
     }
 }

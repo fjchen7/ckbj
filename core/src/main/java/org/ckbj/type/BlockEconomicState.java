@@ -12,71 +12,91 @@ public class BlockEconomicState {
         return issuance;
     }
 
+    public void setIssuance(BlockIssuance issuance) {
+        this.issuance = issuance;
+    }
+
     public MinerReward getMinerReward() {
         return minerReward;
+    }
+
+    public void setMinerReward(MinerReward minerReward) {
+        this.minerReward = minerReward;
     }
 
     public BigInteger getTxsFee() {
         return txsFee;
     }
 
+    public void setTxsFee(BigInteger txsFee) {
+        this.txsFee = txsFee;
+    }
+
     public byte[] getFinalizedAt() {
         return finalizedAt;
     }
 
-    public BlockEconomicState setIssuance(BlockIssuance issuance) {
-        this.issuance = issuance;
-        return this;
-    }
-
-    public BlockEconomicState setMinerReward(MinerReward minerReward) {
-        this.minerReward = minerReward;
-        return this;
-    }
-
-    public BlockEconomicState setTxsFee(BigInteger txsFee) {
-        this.txsFee = txsFee;
-        return this;
-    }
-
-    public BlockEconomicState setFinalizedAt(byte[] finalizedAt) {
+    public void setFinalizedAt(byte[] finalizedAt) {
         this.finalizedAt = finalizedAt;
-        return this;
     }
 
     public static class BlockIssuance {
-        public BigInteger primary;
-        public BigInteger secondary;
+        private BigInteger primary;
+        private BigInteger secondary;
 
         public BigInteger getPrimary() {
             return primary;
+        }
+
+        public void setPrimary(BigInteger primary) {
+            this.primary = primary;
         }
 
         public BigInteger getSecondary() {
             return secondary;
         }
+
+        public void setSecondary(BigInteger secondary) {
+            this.secondary = secondary;
+        }
     }
 
     public static class MinerReward {
-        public BigInteger committed;
-        public BigInteger primary;
-        public BigInteger proposal;
-        public BigInteger secondary;
+        private BigInteger committed;
+        private BigInteger primary;
+        private BigInteger proposal;
+        private BigInteger secondary;
 
         public BigInteger getCommitted() {
             return committed;
         }
 
+        public void setCommitted(BigInteger committed) {
+            this.committed = committed;
+        }
+
         public BigInteger getPrimary() {
             return primary;
+        }
+
+        public void setPrimary(BigInteger primary) {
+            this.primary = primary;
         }
 
         public BigInteger getProposal() {
             return proposal;
         }
 
+        public void setProposal(BigInteger proposal) {
+            this.proposal = proposal;
+        }
+
         public BigInteger getSecondary() {
             return secondary;
+        }
+
+        public void setSecondary(BigInteger secondary) {
+            this.secondary = secondary;
         }
     }
 }

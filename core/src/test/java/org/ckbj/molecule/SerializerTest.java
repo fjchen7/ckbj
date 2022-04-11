@@ -16,7 +16,7 @@ public class SerializerTest {
     public void testTransaction() throws IOException {
         Transaction transaction = CkbService.defaultInstance(Network.AGGRON)
                 .getTransaction("0x82001535467ebf5dc0f2b4b7236c9216be7c573908f67850eeb2b602cfc6213e")
-                .toTransaction();
+                .getTransaction();
 
         assertByteArray("0xf8de3bb47d055cdf460d93a2a6e1b05f7432f9777c8c474abf4eec1d4aee5d370000000001",
                 Serializer.serialize(transaction.getCellDeps().get(0)));
@@ -48,8 +48,9 @@ public class SerializerTest {
     @Test
     public void testWitnessArgs() {
         byte[] bytes = Hex.toByteArray("55000000100000005500000055000000410000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
-        WitnessArgs witnessArgs = new WitnessArgs()
-                .setLock(new byte[65]);
+        WitnessArgs witnessArgs = WitnessArgs.builder()
+                .setLock(new byte[65])
+                .build();
         Assertions.assertArrayEquals(bytes, Serializer.serialize(witnessArgs));
         Assertions.assertEquals(witnessArgs, Serializer.deserializeWitnessArgs(bytes));
     }

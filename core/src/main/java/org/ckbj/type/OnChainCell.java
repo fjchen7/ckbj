@@ -13,49 +13,48 @@ public class OnChainCell {
     private Status status = Status.UNKNOWN;
     private OutPoint outPoint;
 
-    public Cell toCell() {
-        return new Cell(cell);
+    public Cell getCell() {
+        return cell;
+    }
+
+    public void setCell(Cell cell) {
+        this.cell = cell;
     }
 
     public BigInteger getCapacity() {
         return cell.getCapacity();
     }
 
-    public OnChainCell setCapacity(BigInteger capacity) {
+    public void setCapacity(BigInteger capacity) {
         this.setCapacity(capacity);
-        return this;
     }
 
     public Script getType() {
         return cell.getType();
     }
 
-    public OnChainCell setType(Script type) {
+    public void setType(Script type) {
         this.setType(type);
-        return this;
     }
 
     public Script getLock() {
         return cell.getLock();
     }
 
-    public OnChainCell setLock(Script lock) {
+    public void setLock(Script lock) {
         this.setLock(lock);
-        return this;
     }
 
     public byte[] getData() {
         return cell.getData();
     }
 
-    public OnChainCell setData(byte[] data) {
+    public void setData(byte[] data) {
         this.cell.setData(data);
-        return this;
     }
 
-    public OnChainCell setData(String data) {
+    public void setData(String data) {
         this.cell.setData(data);
-        return this;
     }
 
     public Status getStatus() {
@@ -70,9 +69,8 @@ public class OnChainCell {
         return outPoint;
     }
 
-    public OnChainCell setOutPoint(OutPoint outPoint) {
+    public void setOutPoint(OutPoint outPoint) {
         this.outPoint = outPoint;
-        return this;
     }
 
     public byte[] dataHash() {

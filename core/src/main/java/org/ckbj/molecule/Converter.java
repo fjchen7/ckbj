@@ -208,9 +208,10 @@ class Converter {
     }
 
     protected static org.ckbj.type.WitnessArgs fromWitnessArgs(WitnessArgs in) {
-        return new org.ckbj.type.WitnessArgs()
+        return org.ckbj.type.WitnessArgs.builder()
                 .setLock(in.getLock() == null ? null : in.getLock().getItems())
                 .setInputType(in.getInputType() == null ? null : in.getInputType().getItems())
-                .setOutputType(in.getOutputType() == null ? null : in.getOutputType().getItems());
+                .setOutputType(in.getOutputType() == null ? null : in.getOutputType().getItems())
+                .build();
     }
 }

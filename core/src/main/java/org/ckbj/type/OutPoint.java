@@ -1,6 +1,5 @@
 package org.ckbj.type;
 
-import org.ckbj.utils.Hash;
 import org.ckbj.utils.Hex;
 
 public final class OutPoint {
@@ -21,24 +20,22 @@ public final class OutPoint {
         return txHash;
     }
 
+    public void setTxHash(String txHash) {
+        setTxHash(Hex.toByteArray(txHash));
+    }
+
+    public void setTxHash(byte[] txHash) {
+        if (txHash.length != 32) {
+            throw new IllegalArgumentException("txHash should be 32 bytes");
+        }
+        this.txHash = txHash;
+    }
+
     public int getIndex() {
         return index;
     }
 
-    public OutPoint setTxHash(String txHash) {
-        return setTxHash(Hex.toByteArray(txHash));
-    }
-
-    public OutPoint setTxHash(byte[] txHash) {
-        if (!Hash.isHash(txHash)) {
-            throw new IllegalArgumentException("txHash should be 32 bytes");
-        }
-        this.txHash = txHash;
-        return this;
-    }
-
-    public OutPoint setIndex(int index) {
+    public void setIndex(int index) {
         this.index = index;
-        return this;
     }
 }

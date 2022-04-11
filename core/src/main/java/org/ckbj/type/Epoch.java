@@ -8,40 +8,36 @@ public class Epoch {
     private int startBlockNumber;
     private int length;
     private long compactTarget;
-
+    
     public int getNumber() {
         return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public int getStartBlockNumber() {
         return startBlockNumber;
     }
 
+    public void setStartBlockNumber(int startBlockNumber) {
+        this.startBlockNumber = startBlockNumber;
+    }
+
     public int getLength() {
         return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
     }
 
     public long getCompactTarget() {
         return compactTarget;
     }
 
-    public Epoch setNumber(int number) {
-        this.number = number;
-        return this;
-    }
-
-    public Epoch setStartBlockNumber(int startBlockNumber) {
-        this.startBlockNumber = startBlockNumber;
-        return this;
-    }
-
-    public Epoch setLength(int length) {
-        this.length = length;
-        return this;
-    }
-
-    public Epoch setCompactTarget(long compactTarget) {
+    public void setCompactTarget(long compactTarget) {
         this.compactTarget = compactTarget;
-        return this;
     }
 }

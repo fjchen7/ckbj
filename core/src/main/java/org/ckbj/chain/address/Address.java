@@ -78,10 +78,11 @@ public class Address {
             throw new AddressFormatException("Unknown code hash index");
         }
         byte[] args = Arrays.copyOfRange(payload, 2, payload.length);
-        Script script = new Script()
+        Script script = Script.builder()
                 .setCodeHash(codeHash)
                 .setArgs(args)
-                .setHashType(Script.HashType.TYPE);
+                .setHashType(Script.HashType.TYPE)
+                .build();
         return new Address(script, network);
     }
 
@@ -96,10 +97,11 @@ public class Address {
         }
         byte[] codeHash = Arrays.copyOfRange(payload, 1, 33);
         byte[] args = Arrays.copyOfRange(payload, 33, payload.length);
-        Script script = new Script()
+        Script script = Script.builder()
                 .setCodeHash(codeHash)
                 .setArgs(args)
-                .setHashType(hashType);
+                .setHashType(hashType)
+                .build();
         return new Address(script, network);
     }
 
@@ -107,10 +109,11 @@ public class Address {
         byte[] codeHash = Arrays.copyOfRange(payload, 1, 33);
         Script.HashType hashType = Script.HashType.valueOf(payload[33]);
         byte[] args = Arrays.copyOfRange(payload, 34, payload.length);
-        Script script = new Script()
+        Script script = Script.builder()
                 .setCodeHash(codeHash)
                 .setArgs(args)
-                .setHashType(hashType);
+                .setHashType(hashType)
+                .build();
         return new Address(script, network);
     }
 
