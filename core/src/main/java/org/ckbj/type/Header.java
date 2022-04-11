@@ -109,6 +109,6 @@ public class Header {
 
     public byte[] hash() {
         byte[] serialization = Serializer.serialize(this, true);
-        return Blake2b.digest256(serialization);
+        return Blake2b.digest(serialization);
     }
 }

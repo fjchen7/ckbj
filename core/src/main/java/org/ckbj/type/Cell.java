@@ -56,7 +56,7 @@ public class Cell {
     }
 
     public byte[] dataHash() {
-        return Blake2b.digest256(data);
+        return Blake2b.digest(data);
     }
 
     public static final class Builder {

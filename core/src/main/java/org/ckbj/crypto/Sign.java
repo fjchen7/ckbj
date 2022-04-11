@@ -53,7 +53,7 @@ public class Sign {
 
         byte[] messageHash;
         if (needToHash) {
-            messageHash = Blake2b.digest256(message);
+            messageHash = Blake2b.digest(message);
         } else {
             messageHash = message;
         }
@@ -214,7 +214,7 @@ public class Sign {
      */
     public static ECKeyPair.Point signedMessageToKey(byte[] message, SignatureData signatureData)
             throws SignatureException {
-        return signedMessageHashToKey(Blake2b.digest256(message), signatureData);
+        return signedMessageHashToKey(Blake2b.digest(message), signatureData);
     }
 
     /**
@@ -310,6 +310,14 @@ public class Sign {
 
         public byte[] getS() {
             return s;
+        }
+
+        public byte[] getSignature() {
+            byte[] signature = new byte[65];
+            System.arraycopy(r, 0, signature, 0, 32);
+            System.arraycopy(s, 0, signature, 32, 32);
+            System.arraycopy(v, 0, signature, 64, 1);
+            return signature;
         }
 
         @Override

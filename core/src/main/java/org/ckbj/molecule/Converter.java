@@ -7,16 +7,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 class Converter {
-    /**
-     * Pad zero after byte array
-     */
-    private static byte[] padAfter(byte[] in, int length) {
-        byte[] padBytes = new byte[length];
-        System.arraycopy(in, 0, padBytes, 0, in.length);
-        return padBytes;
-    }
-
-    private static byte[] flip(byte[] in) {
+    private static byte[] reverse(byte[] in) {
         byte[] out = new byte[in.length];
         for (int i = 0; i < in.length; i++) {
             out[i] = in[in.length - i - 1];
@@ -24,34 +15,42 @@ class Converter {
         return out;
     }
 
-    protected static Uint32 toUnit32(long in) {
-        byte[] arr = Hex.toByteArray(BigInteger.valueOf(in), Uint32.SIZE);
+    private static byte[] littleEndian(BigInteger in, int length) {
+        byte[] arr = Hex.toByteArray(in, length);
+        arr = reverse(arr);
+        return arr;
+    }
+
+    protected static Uint32 toUint32(BigInteger in) {
+        byte[] arr = littleEndian(in, Uint32.SIZE);
         return Uint32.builder()
-                .set(flip(arr))
+                .set(arr)
                 .build();
     }
 
-    protected static Uint64 toUnit64(long in) {
-        return toUnit64(BigInteger.valueOf(in));
+    protected static Uint32 toUint32(long in) {
+        return toUint32(BigInteger.valueOf(in));
     }
 
-    protected static Uint64 toUnit64(BigInteger in) {
-        byte[] arr = Hex.toByteArray(in, Uint64.SIZE);
+    protected static Uint64 toUint64(BigInteger in) {
+        byte[] arr = littleEndian(in, Uint64.SIZE);
         return Uint64.builder()
-                .set(flip(arr))
+                .set(arr)
                 .build();
     }
 
-    protected static Uint64 toUnit64(byte[] in) {
-        return Uint64.builder()
-                .set(padAfter(flip(in), Uint64.SIZE))
-                .build();
+    protected static Uint64 toUint64(long in) {
+        return toUint64(BigInteger.valueOf(in));
+    }
+
+    protected static Uint64 toUint64(byte[] in) {
+        return toUint64(Hex.toBigInteger(in));
     }
 
     protected static Uint128 toUnit128(BigInteger in) {
-        byte[] arr = Hex.toByteArray(in, Uint128.SIZE);
+        byte[] arr = littleEndian(in, Uint128.SIZE);
         return Uint128.builder()
-                .set(flip(arr))
+                .set(arr)
                 .build();
     }
 
@@ -90,14 +89,14 @@ class Converter {
 
     protected static OutPoint toOutPoint(org.ckbj.type.OutPoint in) {
         return OutPoint.builder()
-                .setIndex(toUnit32(in.getIndex()))
+                .setIndex(toUint32(in.getIndex()))
                 .setTxHash(toByte32(in.getTxHash()))
                 .build();
     }
 
     protected static CellInput toCellInput(org.ckbj.type.CellInput in) {
         return CellInput.builder()
-                .setSince(toUnit64(in.getSince()))
+                .setSince(toUint64(in.getSince()))
                 .setPreviousOutput(toOutPoint(in.getPreviousOutput()))
                 .build();
     }
@@ -116,7 +115,7 @@ class Converter {
         return CellOutput.builder()
                 .setLock(toScript(in.getLock()))
                 .setType(toScript(in.getType()))
-                .setCapacity(toUnit64(in.getCapacity()))
+                .setCapacity(toUint64(in.getCapacity()))
                 .build();
     }
 
@@ -160,7 +159,7 @@ class Converter {
 
     protected static RawTransaction toRawTransaction(org.ckbj.type.Transaction in) {
         return RawTransaction.builder()
-                .setVersion(toUnit32(in.getVersion()))
+                .setVersion(toUint32(in.getVersion()))
                 .setCellDeps(toCellDepVec(in.getCellDeps()))
                 .setHeaderDeps(toByte32Vec(in.getHeaderDeps()))
                 .setInputs(toCellInputVec(in.getInputs()))
@@ -178,11 +177,11 @@ class Converter {
 
     protected static RawHeader toRawHeader(org.ckbj.type.Header in) {
         RawHeader header = RawHeader.builder()
-                .setVersion(toUnit32(in.getVersion()))
-                .setCompactTarget(toUnit32(in.getCompactTarget()))
-                .setTimestamp(toUnit64(in.getTimestamp()))
-                .setNumber(toUnit64(in.getNumber()))
-                .setEpoch(toUnit64(in.getEpoch().toByteArray()))
+                .setVersion(toUint32(in.getVersion()))
+                .setCompactTarget(toUint32(in.getCompactTarget()))
+                .setTimestamp(toUint64(in.getTimestamp()))
+                .setNumber(toUint64(in.getNumber()))
+                .setEpoch(toUint64(in.getEpoch().toByteArray()))
                 .setParentHash(toByte32(in.getParentHash()))
                 .setTransactionsRoot(toByte32(in.getTransactionsRoot()))
                 .setProposalsHash(toByte32(in.getProposalsHash()))

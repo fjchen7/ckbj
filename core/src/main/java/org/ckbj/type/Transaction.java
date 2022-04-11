@@ -85,7 +85,7 @@ public class Transaction {
 
     public byte[] hash() {
         byte[] serialization = Serializer.serialize(this, false);
-        return Blake2b.digest256(serialization);
+        return Blake2b.digest(serialization);
     }
 
     public static final class Builder {

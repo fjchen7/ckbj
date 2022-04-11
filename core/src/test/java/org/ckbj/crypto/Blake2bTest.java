@@ -11,9 +11,6 @@ public class Blake2bTest {
         byte[] input = new byte[]{0x1, 0x2};
         assertArrayEquals(
                 Hex.toByteArray("0x4f0e79094368f9b3e9fbffa7d5098c39cc3744f0031b5c0aefea31a5bd8aba76"),
-                Blake2b.digest256(input));
-        assertArrayEquals(
-                Hex.toByteArray("0x4f0e79094368f9b3e9fbffa7d5098c39cc3744f0"),
-                Blake2b.digest160(input));
+                Blake2b.digest(input));
     }
 }

@@ -83,7 +83,10 @@ public class NetworkDetail {
      * @return true if the script uses code of given contract.
      */
     public boolean contractUsed(Script script, String contractName) {
-        Contract contract = get(contractName);
+        return contractUsed(script, get(contractName));
+    }
+
+    public boolean contractUsed(Script script, Contract contract) {
         if (contract == null) {
             return false;
         }
@@ -93,8 +96,7 @@ public class NetworkDetail {
     private static List<Contract> loadContracts(String path) throws IOException {
         Class clazz = NetworkDetail.class;
         Reader reader = Files.newBufferedReader(
-                Paths.get(clazz.getResource(path).getPath())
-        );
+                Paths.get(clazz.getResource(path).getPath()));
         Gson gson = GsonFactory.create();
         Type type = new TypeToken<List<Contract>>() {
         }.getType();

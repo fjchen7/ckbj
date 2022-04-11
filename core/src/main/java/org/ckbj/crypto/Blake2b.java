@@ -3,7 +3,6 @@ package org.ckbj.crypto;
 import org.bouncycastle.crypto.digests.Blake2bDigest;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class Blake2b {
     private static final byte[] CKB_HASH_PERSONALIZATION = "ckb-default-hash".getBytes(StandardCharsets.UTF_8);
@@ -21,25 +20,15 @@ public class Blake2b {
         blake2bDigest.update(input, offset, len);
     }
 
-    public byte[] doFinal256() {
+    public byte[] doFinal() {
         byte[] out = new byte[32];
         blake2bDigest.doFinal(out, 0);
         return out;
     }
 
-    public byte[] doFinal160() {
-        return Arrays.copyOfRange(doFinal256(), 0, 20);
-    }
-
-    public static byte[] digest256(byte[] input) {
+    public static byte[] digest(byte[] input) {
         Blake2b blake2b = new Blake2b();
         blake2b.update(input);
-        return blake2b.doFinal256();
-    }
-
-    public static byte[] digest160(byte[] input) {
-        Blake2b blake2b = new Blake2b();
-        blake2b.update(input);
-        return blake2b.doFinal160();
+        return blake2b.doFinal();
     }
 }
