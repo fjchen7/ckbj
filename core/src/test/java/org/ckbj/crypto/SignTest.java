@@ -45,12 +45,10 @@ public class SignTest {
 
         // Iterate for each possible key to recover
         for (int i = 0; i < 4; i++) {
+            BigInteger r = new BigInteger(1, sd.getR());
+            BigInteger s = new BigInteger(1, sd.getS());
             recoveredPublicKey =
-                    Sign.recoverFromSignature(
-                            (byte) i,
-                            new ECDSASignature(
-                                    new BigInteger(1, sd.getR()), new BigInteger(1, sd.getS())),
-                            message);
+                    Sign.recoverFromSignature(i, new ECDSASignature(r, s), message);
             if (publicKey.equals(recoveredPublicKey)) {
                 match = true;
                 break;

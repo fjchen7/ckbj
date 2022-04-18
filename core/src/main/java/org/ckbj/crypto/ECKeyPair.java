@@ -35,7 +35,7 @@ public class ECKeyPair {
     private BigInteger privateKey;
     private Point publicKey;
 
-    public ECKeyPair(BigInteger privateKey) {
+    private ECKeyPair(BigInteger privateKey) {
         this.privateKey = privateKey;
         this.publicKey = Point.fromPrivateKey(privateKey);
     }
@@ -79,12 +79,34 @@ public class ECKeyPair {
         return new ECKeyPair(privateKeyValue);
     }
 
+    /**
+     * Create a new ECKeyPair from a private key.
+     *
+     * @param privateKey the private key
+     * @return the ECKeyPair
+     */
     public static ECKeyPair create(BigInteger privateKey) {
         return new ECKeyPair(privateKey);
     }
 
+    /**
+     * Create a new ECKeyPair from a private key.
+     *
+     * @param privateKey byte array of private key
+     * @return ECKeyPair
+     */
     public static ECKeyPair create(byte[] privateKey) {
         return create(new BigInteger(1, privateKey));
+    }
+
+    /**
+     * Create a new ECKeyPair from a private key.
+     *
+     * @param privateKey hex string of private key
+     * @return ECKeyPair
+     */
+    public static ECKeyPair create(String privateKey) {
+        return create(Hex.toBigInteger(privateKey));
     }
 
     @Override
