@@ -87,7 +87,7 @@ public class CkbService {
     }
 
     public OnChainCell getLiveCell(OutPoint outPoint, boolean withData) throws IOException {
-        OnChainCell cell =  Ckb.getLiveCell(outPoint, withData).send(jsonRpcService).getResultOrThrowException();
+        OnChainCell cell = Ckb.getLiveCell(outPoint, withData).send(jsonRpcService).getResultOrThrowException();
         cell.setOutPoint(outPoint);
         return cell;
     }

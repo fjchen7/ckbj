@@ -71,7 +71,7 @@ public final class BytesVec extends DynamicVector {
             Bytes[] originalItems = items;
             items = new Bytes[originalItems.length + 1];
             System.arraycopy(originalItems, 0, items, 0, originalItems.length);
-            items[items.length - 1] = item;;
+            items[items.length - 1] = item;
             return this;
         }
 
@@ -103,7 +103,7 @@ public final class BytesVec extends DynamicVector {
             Bytes[] originalItems = items;
             items = new Bytes[originalItems.length - 1];
             System.arraycopy(originalItems, 0, items, 0, i);
-            System.arraycopy(originalItems, i + 1, items, i, originalItems.length - i -1);
+            System.arraycopy(originalItems, i + 1, items, i, originalItems.length - i - 1);
             return this;
         }
 
@@ -113,16 +113,16 @@ public final class BytesVec extends DynamicVector {
                 size += items[i].getSize();
             }
             byte[] buf = new byte[size];
-            MoleculeUtils.setInt(size, buf, 0);;
+            MoleculeUtils.setInt(size, buf, 0);
             int offset = 4 + 4 * items.length;
             int start = 4;
             for (int i = 0; i < items.length; i++) {
-                MoleculeUtils.setInt(offset, buf, start);;
+                MoleculeUtils.setInt(offset, buf, start);
                 offset += items[i].getSize();
                 start += 4;
             }
             for (int i = 0; i < items.length; i++) {
-                MoleculeUtils.setBytes(items[i].toByteArray(), buf, start);;
+                MoleculeUtils.setBytes(items[i].toByteArray(), buf, start);
                 start += items[i].getSize();
             }
             BytesVec v = new BytesVec();

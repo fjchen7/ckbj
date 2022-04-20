@@ -19,11 +19,11 @@ public class AddressTest {
     public void testEncode() {
         Address address = new Address(script, Network.LINA);
         assertEquals("ckb1qyqt8xaupvm8837nv3gtc9x0ekkj64vud3jqfwyw5v",
-                address.encode(SHORT));
+                     address.encode(SHORT));
         assertEquals("ckb1qjda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xw3vumhs9nvu786dj9p0q5elx66t24n3kxgj53qks",
-                address.encode(LONG_BECH32));
+                     address.encode(LONG_BECH32));
         assertEquals("ckb1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqdnnw7qkdnnclfkg59uzn8umtfd2kwxceqxwquc4",
-                address.encode(LONG_BECH32M));
+                     address.encode(LONG_BECH32M));
     }
 
     @Test

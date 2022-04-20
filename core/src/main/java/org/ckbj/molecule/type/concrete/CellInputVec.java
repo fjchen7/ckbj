@@ -80,7 +80,7 @@ public final class CellInputVec extends FixedVector {
             CellInput[] originalItems = items;
             items = new CellInput[originalItems.length + 1];
             System.arraycopy(originalItems, 0, items, 0, originalItems.length);
-            items[items.length - 1] = item;;
+            items[items.length - 1] = item;
             return this;
         }
 
@@ -112,13 +112,13 @@ public final class CellInputVec extends FixedVector {
             CellInput[] originalItems = items;
             items = new CellInput[originalItems.length - 1];
             System.arraycopy(originalItems, 0, items, 0, i);
-            System.arraycopy(originalItems, i + 1, items, i, originalItems.length - i -1);
+            System.arraycopy(originalItems, i + 1, items, i, originalItems.length - i - 1);
             return this;
         }
 
         public CellInputVec build() {
             byte[] buf = new byte[4 + items.length * ITEM_SIZE];
-            MoleculeUtils.setInt(items.length, buf, 0);;
+            MoleculeUtils.setInt(items.length, buf, 0);
             int start = 4;
             for (int i = 0; i < items.length; i++) {
                 MoleculeUtils.setBytes(items[i].toByteArray(), buf, start);

@@ -8,7 +8,7 @@ public class Epoch {
     private int startBlockNumber;
     private int length;
     private long compactTarget;
-    
+
     public int getNumber() {
         return number;
     }

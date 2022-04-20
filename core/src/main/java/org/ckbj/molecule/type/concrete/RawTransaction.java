@@ -173,7 +173,7 @@ public final class RawTransaction extends Table {
             for (int i = 0; i < FIELD_COUNT; i++) {
                 size += fieldsSize[i];
             }
-            byte[] buf = new byte[size];;
+            byte[] buf = new byte[size];
             MoleculeUtils.setInt(size, buf, 0);
             int start = 4;
             for (int i = 0; i < FIELD_COUNT; i++) {

@@ -69,7 +69,7 @@ public class Transaction {
 
     public List<byte[]> getOutputsData() {
         List<byte[]> outputsData = new ArrayList<>();
-        for (Cell output : outputs) {
+        for (Cell output: outputs) {
             outputsData.add(output.getData());
         }
         return outputsData;
@@ -209,21 +209,15 @@ public class Transaction {
             JsonObject obj = json.getAsJsonObject();
             Transaction tx = new Transaction();
             tx.version = context.deserialize(obj.get("version"), int.class);
-            tx.cellDeps = context.deserialize(obj.get("cell_deps"), new TypeToken<List<CellDep>>() {
-            }.getType());
-            tx.headerDeps = context.deserialize(obj.get("header_deps"), new TypeToken<List<byte[]>>() {
-            }.getType());
-            tx.inputs = context.deserialize(obj.get("inputs"), new TypeToken<List<CellInput>>() {
-            }.getType());
-            tx.outputs = context.deserialize(obj.get("outputs"), new TypeToken<List<Cell>>() {
-            }.getType());
-            List<byte[]> outputsData = context.deserialize(obj.get("outputs_data"), new TypeToken<List<byte[]>>() {
-            }.getType());
+            tx.cellDeps = context.deserialize(obj.get("cell_deps"), new TypeToken<List<CellDep>>() {}.getType());
+            tx.headerDeps = context.deserialize(obj.get("header_deps"), new TypeToken<List<byte[]>>() {}.getType());
+            tx.inputs = context.deserialize(obj.get("inputs"), new TypeToken<List<CellInput>>() {}.getType());
+            tx.outputs = context.deserialize(obj.get("outputs"), new TypeToken<List<Cell>>() {}.getType());
+            List<byte[]> outputsData = context.deserialize(obj.get("outputs_data"), new TypeToken<List<byte[]>>() {}.getType());
             for (int i = 0; i < tx.outputs.size(); i++) {
                 tx.outputs.get(i).setData(outputsData.get(i));
             }
-            tx.witnesses = context.deserialize(obj.get("witnesses"), new TypeToken<List<byte[]>>() {
-            }.getType());
+            tx.witnesses = context.deserialize(obj.get("witnesses"), new TypeToken<List<byte[]>>() {}.getType());
             return tx;
         }
     }

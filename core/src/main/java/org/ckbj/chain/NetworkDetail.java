@@ -35,7 +35,7 @@ public class NetworkDetail {
     public NetworkDetail(Network network, String configurationPath) throws IOException {
         this(network);
         List<Contract> contractList = loadContracts(configurationPath);
-        for (Contract contract : contractList) {
+        for (Contract contract: contractList) {
             register(contract);
         }
     }
@@ -98,8 +98,7 @@ public class NetworkDetail {
         Reader reader = Files.newBufferedReader(
                 Paths.get(clazz.getResource(path).getPath()));
         Gson gson = GsonFactory.create();
-        Type type = new TypeToken<List<Contract>>() {
-        }.getType();
+        Type type = new TypeToken<List<Contract>>() {}.getType();
         return gson.fromJson(reader, type);
     }
 }

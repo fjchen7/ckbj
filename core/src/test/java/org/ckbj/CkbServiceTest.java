@@ -27,17 +27,17 @@ public class CkbServiceTest {
         assertEquals(1, transaction.getInputs().size());
         assertEquals(3, transaction.getOutputs().size());
         assertEquals(new BigInteger("30000000000"),
-                transaction.getOutputs().get(0).getCapacity());
+                     transaction.getOutputs().get(0).getCapacity());
         assertEquals(new BigInteger("11800000000"),
-                transaction.getOutputs().get(1).getCapacity());
+                     transaction.getOutputs().get(1).getCapacity());
         assertEquals(new BigInteger("19994640399880000"),
-                transaction.getOutputs().get(2).getCapacity());
+                     transaction.getOutputs().get(2).getCapacity());
         assertArrayEquals(
                 Hex.toByteArray("0x005ae9950300000000000000000000000000000000000000"), transaction.getOutputs().get(1).getData());
         assertEquals(2, transaction.getWitnesses().size());
         assertEquals(OnChainTransaction.Status.COMMITTED, transaction.getStatus());
         assertArrayEquals(Hex.toByteArray("0xb9d83075b7694d624d46821848e1286296b9d0ab724a2a5803af9639bd071a6b"),
-                transaction.getBlockHash());
+                          transaction.getBlockHash());
     }
 
     @Test
@@ -80,7 +80,7 @@ public class CkbServiceTest {
         OnChainCell onChainCell = service.getLiveCell(outPoint, true);
         assertEquals(new BigInteger("30000000000"), onChainCell.getCapacity());
         assertArrayEquals(Hex.toByteArray("0xa999bfb3735fdff4f26016b47712bb64ffbe88e62deec0e4e0d69ea8d54012778877ddfcc3ec76d5a59630a162828761147dd36052ca0db8d024ab68591e4826"),
-                onChainCell.getLock().getArgs());
+                          onChainCell.getLock().getArgs());
         assertEquals(Script.HashType.DATA, onChainCell.getLock().getHashType());
         assertArrayEquals(Hex.toByteArray("0x82d76d1b75fe2fd9a27dfbaa65a039221a380d76c926f378d3f81cf3e7e13f2e"), onChainCell.getType().getCodeHash());
         assertEquals(Script.HashType.TYPE, onChainCell.getType().getHashType());

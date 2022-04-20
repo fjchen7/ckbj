@@ -11,8 +11,9 @@ public class HexTest {
     public void testToHexString() {
         assertEquals("0x1234", Hex.toHexString(new byte[]{0x12, 0x34}));
         assertEquals("0x0123456789abcdef",
-                Hex.toHexString(new byte[]{0x01, 0x23, 0x45, 0x67, (byte) 0x89, (byte) 0xab, (byte) 0xcd, (byte) 0xef}));
-
+                     Hex.toHexString(new byte[]{0x01, 0x23, 0x45, 0x67,
+                                                (byte) 0x89, (byte) 0xab,
+                                                (byte) 0xcd, (byte) 0xef}));
         assertEquals("0x", Hex.toHexString(new byte[]{}));
         assertEquals("0x00", Hex.toHexString(new byte[]{0x0}));
         assertEquals("0x000000", Hex.toHexString(new byte[]{0x0, 0x0, 0x0}));
@@ -58,6 +59,6 @@ public class HexTest {
     @Test
     public void testToBigInteger() {
         assertEquals(new BigInteger("234807695289199110200921978552702164240"),
-                Hex.toBigInteger("0xb0a65130f06c64071d3c47901a375d10"));
+                     Hex.toBigInteger("0xb0a65130f06c64071d3c47901a375d10"));
     }
 }

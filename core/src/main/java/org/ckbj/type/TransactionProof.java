@@ -1,7 +1,5 @@
 package org.ckbj.type;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 public class TransactionProof {

@@ -8,7 +8,7 @@ public class NetworkDetailTest {
     public void testDefaultInstance() {
         NetworkDetail lina = NetworkDetail.defaultInstance(Network.LINA);
         NetworkDetail aggron = NetworkDetail.defaultInstance(Network.AGGRON);
-        for (Contract.Standard contractName : Contract.Standard.values()) {
+        for (Contract.Standard contractName: Contract.Standard.values()) {
             if (contractName != Contract.Standard.UNKNOWN) {
                 Assertions.assertNotNull(lina.get(contractName));
                 Assertions.assertNotNull(aggron.get(contractName));

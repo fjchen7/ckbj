@@ -34,17 +34,17 @@ public class Bech32 {
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-            15, -1, 10, 17, 21, 20, 26, 30,  7,  5, -1, -1, -1, -1, -1, -1,
-            -1, 29, -1, 24, 13, 25,  9,  8, 23, -1, 18, 22, 31, 27, 19, -1,
-            1,  0,  3, 16, 11, 28, 12, 14,  6,  4,  2, -1, -1, -1, -1, -1,
-            -1, 29, -1, 24, 13, 25,  9,  8, 23, -1, 18, 22, 31, 27, 19, -1,
-            1,  0,  3, 16, 11, 28, 12, 14,  6,  4,  2, -1, -1, -1, -1, -1
+            15, -1, 10, 17, 21, 20, 26, 30, 7, 5, -1, -1, -1, -1, -1, -1,
+            -1, 29, -1, 24, 13, 25, 9, 8, 23, -1, 18, 22, 31, 27, 19, -1,
+            1, 0, 3, 16, 11, 28, 12, 14, 6, 4, 2, -1, -1, -1, -1, -1,
+            -1, 29, -1, 24, 13, 25, 9, 8, 23, -1, 18, 22, 31, 27, 19, -1,
+            1, 0, 3, 16, 11, 28, 12, 14, 6, 4, 2, -1, -1, -1, -1, -1
     };
 
     private static final int BECH32_CONST = 1;
     private static final int BECH32M_CONST = 0x2bc830a3;
 
-    public enum Encoding { BECH32, BECH32M }
+    public enum Encoding {BECH32, BECH32M}
 
     public static class Bech32Data {
         public final Encoding encoding;
@@ -64,10 +64,10 @@ public class Bech32 {
         for (byte v_i: values) {
             int c0 = (c >>> 25) & 0xff;
             c = ((c & 0x1ffffff) << 5) ^ (v_i & 0xff);
-            if ((c0 &  1) != 0) c ^= 0x3b6a57b2;
-            if ((c0 &  2) != 0) c ^= 0x26508e6d;
-            if ((c0 &  4) != 0) c ^= 0x1ea119fa;
-            if ((c0 &  8) != 0) c ^= 0x3d4233dd;
+            if ((c0 & 1) != 0) c ^= 0x3b6a57b2;
+            if ((c0 & 2) != 0) c ^= 0x26508e6d;
+            if ((c0 & 4) != 0) c ^= 0x1ea119fa;
+            if ((c0 & 8) != 0) c ^= 0x3d4233dd;
             if ((c0 & 16) != 0) c ^= 0x2a1462b3;
         }
         return c;
@@ -102,7 +102,7 @@ public class Bech32 {
     }
 
     /** Create a checksum. */
-    private static byte[] createChecksum(final Encoding encoding, final String hrp, final byte[] values)  {
+    private static byte[] createChecksum(final Encoding encoding, final String hrp, final byte[] values) {
         byte[] hrpExpanded = expandHrp(hrp);
         byte[] enc = new byte[hrpExpanded.length + values.length + 6];
         System.arraycopy(hrpExpanded, 0, enc, 0, hrpExpanded.length);
@@ -136,7 +136,7 @@ public class Bech32 {
         StringBuilder sb = new StringBuilder(hrp.length() + 1 + combined.length);
         sb.append(hrp);
         sb.append('1');
-        for (byte b : combined) {
+        for (byte b: combined) {
             sb.append(CHARSET.charAt(b));
         }
         return sb.toString();
@@ -164,7 +164,9 @@ public class Bech32 {
         final int pos = str.lastIndexOf('1');
         if (pos < 1) throw new AddressFormatException.InvalidPrefix("Missing human-readable part");
         final int dataPartLength = str.length() - 1 - pos;
-        if (dataPartLength < 6) throw new AddressFormatException.InvalidDataLength("Data part too short: " + dataPartLength);
+        if (dataPartLength < 6) {
+            throw new AddressFormatException.InvalidDataLength("Data part too short: " + dataPartLength);
+        }
         byte[] values = new byte[dataPartLength];
         for (int i = 0; i < dataPartLength; ++i) {
             char c = str.charAt(i + pos + 1);
