@@ -17,20 +17,20 @@ public class TransactionSigner {
 
     public void sign(Transaction transaction, List<Cell> inputsDetail) {
         Set<ScriptSigner> signers = new HashSet<>();
-        for (ScriptSigner signer : ScriptSigners) {
-            for (Cell cell : inputsDetail) {
+        for (ScriptSigner signer: ScriptSigners) {
+            for (Cell cell: inputsDetail) {
                 if (signer.match(cell.getLock()) || signer.match(cell.getType())) {
                     signers.add(signer);
                     break;
                 }
             }
-            for (Cell cell : transaction.getOutputs()) {
+            for (Cell cell: transaction.getOutputs()) {
                 if (signer.match(cell.getType())) {
                     signers.add(signer);
                 }
             }
         }
-        for (ScriptSigner signer : signers) {
+        for (ScriptSigner signer: signers) {
             signer.sign(transaction, inputsDetail);
         }
     }

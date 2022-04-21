@@ -23,7 +23,7 @@ public abstract class StandardLockScriptSigner extends LockScriptSigner {
             return false;
         }
         boolean contractUsed = false;
-        for (NetworkDetail networkDetail : networkDetails) {
+        for (NetworkDetail networkDetail: networkDetails) {
             if (networkDetail.contractUsed(script, getContractName())) {
                 contractUsed = true;
             }

@@ -46,7 +46,7 @@ public class Secp256K1Blake160SighashAllSigner extends StandardLockScriptSigner 
         List<byte[]> witnesses = transaction.getWitnesses();
         Blake2b blake2b = new Blake2b();
         blake2b.update(txHash);
-        for (int i : inputGroup) {
+        for (int i: inputGroup) {
             byte[] witness = witnesses.get(i);
             blake2b.update(Serializer.serialize(witness.length, Serializer.MoleculeNumber.UINT64));
             blake2b.update(witness);
