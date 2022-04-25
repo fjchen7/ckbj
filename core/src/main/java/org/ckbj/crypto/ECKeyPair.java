@@ -17,12 +17,14 @@ import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 import org.bouncycastle.crypto.signers.HMacDSAKCalculator;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.math.ec.FixedPointCombMultiplier;
 import org.ckbj.utils.Hex;
 
 import java.math.BigInteger;
-import java.security.KeyPair;
+import java.security.*;
+import java.security.spec.ECGenParameterSpec;
 import java.util.Objects;
 
 import static org.ckbj.crypto.Sign.CURVE;
@@ -34,6 +36,12 @@ public class ECKeyPair {
     public static final int PRIVATE_KEY_SIZE = 32;
     private BigInteger privateKey;
     private Point publicKey;
+
+    static {
+        if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+            Security.addProvider(new BouncyCastleProvider());
+        }
+    }
 
     private ECKeyPair(BigInteger privateKey) {
         this.privateKey = privateKey;
@@ -107,6 +115,39 @@ public class ECKeyPair {
      */
     public static ECKeyPair create(String privateKey) {
         return create(Hex.toBigInteger(privateKey));
+    }
+
+    /**
+     * Create a new ECKeyPair randomly with a given {@link SecureRandom}.
+     *
+     * @throws NoSuchProviderException
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidAlgorithmParameterException
+     */
+    public static ECKeyPair random(SecureRandom random)
+            throws NoSuchProviderException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECDSA", "BC");
+        ECGenParameterSpec ecGenParameterSpec = new ECGenParameterSpec("secp256k1");
+        if (random != null) {
+            keyPairGenerator.initialize(ecGenParameterSpec, random);
+        } else {
+            keyPairGenerator.initialize(ecGenParameterSpec);
+        }
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        return ECKeyPair.create(keyPair);
+    }
+
+    /**
+     * Create a new ECKeyPair randomly.
+     *
+     * @throws NoSuchProviderException
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidAlgorithmParameterException
+     */
+    public static ECKeyPair random()
+            throws NoSuchProviderException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+        return random(new SecureRandom());
     }
 
     @Override

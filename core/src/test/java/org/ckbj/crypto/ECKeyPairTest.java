@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
 class ECKeyPairTest {
     @Test
@@ -44,5 +47,11 @@ class ECKeyPairTest {
 
         Assertions.assertEquals(point, ECKeyPair.Point.decode(compressedEncoded));
         Assertions.assertEquals(point, ECKeyPair.Point.decode(uncompressedEncoded));
+    }
+
+    @Test
+    public void testRandom() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException {
+        ECKeyPair keyPair = ECKeyPair.random();
+        Assertions.assertNotNull(keyPair);
     }
 }
