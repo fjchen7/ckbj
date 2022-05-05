@@ -51,14 +51,34 @@ public class Address {
         Objects.requireNonNull(address);
         byte[] payload = Bech32.decode(address).data;
         payload = convertBits(payload, 0, payload.length, 5, 8, false);
-        switch (payload[0]) {
-            case 0x00:
-                return decodeLongBech32m(payload, network);
-            case 0x01:
+        switch (encodeFormat(payload[0])) {
+            case SHORT:
                 return decodeShort(payload, network);
+            case FULL_BECH32:
+                return decodeLongBech32(payload, network);
+            case FULL_BECH32M:
+                return decodeLongBech32m(payload, network);
+            default:
+                return null;
+        }
+    }
+
+    public static Format encodedFormat(String address) {
+        Objects.requireNonNull(address);
+        byte[] payload = Bech32.decode(address).data;
+        payload = convertBits(payload, 0, payload.length, 5, 8, false);
+        return encodeFormat(payload[0]);
+    }
+
+    private static Format encodeFormat(byte header) {
+        switch (header) {
+            case 0x00:
+                return Format.FULL_BECH32M;
+            case 0x01:
+                return Format.SHORT;
             case 0x02:
             case 0x04:
-                return decodeLongBech32(payload, network);
+                return Format.FULL_BECH32;
             default:
                 throw new AddressFormatException("Unknown format type");
         }
@@ -123,7 +143,7 @@ public class Address {
     }
 
     public String encode() {
-        return encode(Format.LONG_BECH32M);
+        return encode(Format.FULL_BECH32M);
     }
 
     public String encode(Format format) {
@@ -134,17 +154,17 @@ public class Address {
         Objects.requireNonNull(format);
         switch (format) {
             case SHORT:
-                return encodeShort(network);
-            case LONG_BECH32:
+                return encodeShort();
+            case FULL_BECH32:
                 return encodeFullBech32();
-            case LONG_BECH32M:
+            case FULL_BECH32M:
                 return encodeFullBech32m();
             default:
                 throw new AddressFormatException("Unknown encoding");
         }
     }
 
-    private String encodeShort(Network network) {
+    private String encodeShort() {
         NetworkDetail networkDetail = NetworkDetail.defaultInstance(network);
         byte[] payload = new byte[2 + script.getArgs().length];
         byte codeHashIndex;
@@ -268,7 +288,7 @@ public class Address {
         @Deprecated
         SHORT,
         @Deprecated
-        LONG_BECH32,
-        LONG_BECH32M,
+        FULL_BECH32,
+        FULL_BECH32M,
     }
 }

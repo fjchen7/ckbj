@@ -1,5 +1,3 @@
-package org.ckbj.chain.address;
-
 /*
  * Modifications Copyright 2022 fjchen7
  *
@@ -15,6 +13,7 @@ package org.ckbj.chain.address;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.ckbj.chain.address;
 
 import java.util.Arrays;
 import java.util.Locale;
