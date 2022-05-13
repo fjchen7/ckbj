@@ -5,39 +5,17 @@ import org.ckbj.type.Script;
 import org.ckbj.utils.Hex;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class Contract {
-    protected String name;
-    protected byte[] codeHash;
-    protected Script.HashType hashType = Script.HashType.TYPE;
-    protected List<CellDep> cellDeps = new ArrayList<>();
-
-    public Contract(String name) {
-        setName(name);
-    }
-
-    public String getName() {
-        return name;
-    }
+    private byte[] codeHash;
+    private Script.HashType hashType = Script.HashType.TYPE;
+    private List<CellDep> cellDeps = new ArrayList<>();
 
     public Script.HashType getHashType() {
         return hashType;
-    }
-
-    public byte[] getCodeHash() {
-        return codeHash;
-    }
-
-    public List<CellDep> getCellDeps() {
-        return cellDeps;
-    }
-
-    public Contract setName(String name) {
-        Objects.requireNonNull(name);
-        this.name = name;
-        return this;
     }
 
     public Contract setHashType(Script.HashType hashType) {
@@ -46,13 +24,12 @@ public class Contract {
         return this;
     }
 
-    public Contract setCodeHash(String codeHash) {
-        return setCodeHash(Hex.toByteArray(codeHash));
+    public byte[] getCodeHash() {
+        return codeHash;
     }
 
-    public Contract setCellDeps(List<CellDep> cellDeps) {
-        this.cellDeps = cellDeps;
-        return this;
+    public Contract setCodeHash(String codeHash) {
+        return setCodeHash(Hex.toByteArray(codeHash));
     }
 
     public Contract setCodeHash(byte[] codeHash) {
@@ -61,9 +38,27 @@ public class Contract {
         return this;
     }
 
+    public List<CellDep> getCellDeps() {
+        return cellDeps;
+    }
+
+    public Contract setCellDeps(List<CellDep> cellDeps) {
+        this.cellDeps = cellDeps;
+        return this;
+    }
+
     public Contract addCellDep(CellDep cellDep) {
         this.cellDeps.add(cellDep);
         return this;
+    }
+
+    /**
+     * Check if the script uses code of given contract.
+     *
+     * @return true if the script uses code of given contract.
+     */
+    public boolean usedBy(Script script) {
+        return Arrays.equals(script.getCodeHash(), getCodeHash());
     }
 
     public Script createScript(byte[] args) {
@@ -82,8 +77,7 @@ public class Contract {
         CHEQUE(true, false),
         SUDT(false, true),
         DAO(false, true),
-        TYPE_ID(false, true),
-        UNKNOWN(false, false);
+        TYPE_ID(false, true);
 
         private boolean isLock;
         private boolean isType;

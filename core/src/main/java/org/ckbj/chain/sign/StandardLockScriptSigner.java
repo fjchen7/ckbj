@@ -2,19 +2,18 @@ package org.ckbj.chain.sign;
 
 import org.ckbj.chain.Contract;
 import org.ckbj.chain.Network;
-import org.ckbj.chain.NetworkDetail;
 import org.ckbj.type.Script;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public abstract class StandardLockScriptSigner extends LockScriptSigner {
-    protected Set<NetworkDetail> networkDetails;
+    protected Set<Network> networks;
 
     public StandardLockScriptSigner() {
-        networkDetails = new HashSet<>();
-        networkDetails.add(NetworkDetail.defaultInstance(Network.AGGRON));
-        networkDetails.add(NetworkDetail.defaultInstance(Network.LINA));
+        networks = new HashSet<>();
+        networks.add(Network.LINA);
+        networks.add(Network.AGGRON);
     }
 
     @Override
@@ -22,9 +21,10 @@ public abstract class StandardLockScriptSigner extends LockScriptSigner {
         if (script == null) {
             return false;
         }
+
         boolean contractUsed = false;
-        for (NetworkDetail networkDetail: networkDetails) {
-            if (networkDetail.contractUsed(script, getContractName())) {
+        for (Network network: networks) {
+            if (network.get(getContractName()).usedBy(script)) {
                 contractUsed = true;
             }
         }

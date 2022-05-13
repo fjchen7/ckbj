@@ -1,7 +1,6 @@
 package org.ckbj.chain.address;
 
 import org.ckbj.chain.Network;
-import org.ckbj.chain.NetworkDetail;
 import org.ckbj.type.Script;
 
 import java.io.ByteArrayOutputStream;
@@ -87,13 +86,12 @@ public class Address {
     private static Address decodeShort(byte[] payload, Network network) {
         byte codeHashIndex = payload[1];
         byte[] codeHash;
-        NetworkDetail networkDetail = NetworkDetail.defaultInstance(network);
         if (codeHashIndex == 0x00) {
-            codeHash = networkDetail.get(SECP256K1_BLAKE160_SIGHASH_ALL).getCodeHash();
+            codeHash = network.get(SECP256K1_BLAKE160_SIGHASH_ALL).getCodeHash();
         } else if (codeHashIndex == 0x01) {
-            codeHash = networkDetail.get(SECP256K1_BLAKE160_MULTISIG_ALL).getCodeHash();
+            codeHash = network.get(SECP256K1_BLAKE160_MULTISIG_ALL).getCodeHash();
         } else if (codeHashIndex == 0x02) {
-            codeHash = networkDetail.get(ANYONE_CAN_PAY).getCodeHash();
+            codeHash = network.get(ANYONE_CAN_PAY).getCodeHash();
         } else {
             throw new AddressFormatException("Unknown code hash index");
         }
@@ -165,14 +163,13 @@ public class Address {
     }
 
     private String encodeShort() {
-        NetworkDetail networkDetail = NetworkDetail.defaultInstance(network);
         byte[] payload = new byte[2 + script.getArgs().length];
         byte codeHashIndex;
-        if (networkDetail.contractUsed(script, SECP256K1_BLAKE160_SIGHASH_ALL)) {
+        if (network.get(SECP256K1_BLAKE160_SIGHASH_ALL).usedBy(script)) {
             codeHashIndex = 0x00;
-        } else if (networkDetail.contractUsed(script, SECP256K1_BLAKE160_MULTISIG_ALL)) {
+        } else if (network.get(SECP256K1_BLAKE160_MULTISIG_ALL).usedBy(script)) {
             codeHashIndex = 0x01;
-        } else if (networkDetail.contractUsed(script, ANYONE_CAN_PAY)) {
+        } else if (network.get(ANYONE_CAN_PAY).usedBy(script)) {
             codeHashIndex = 0x02;
         } else {
             throw new AddressFormatException("Encoding to short address for given script is unsupported");
