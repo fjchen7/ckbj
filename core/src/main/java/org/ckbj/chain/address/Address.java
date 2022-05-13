@@ -214,9 +214,9 @@ public class Address {
     private static String hrp(Network network) {
         Objects.requireNonNull(network);
         switch (network) {
-            case LINA:
+            case MAINNET:
                 return "ckb";
-            case AGGRON:
+            case TESTNET:
                 return "ckt";
             default:
                 throw new AddressFormatException("Unknown network");
@@ -226,9 +226,9 @@ public class Address {
     private static Network network(String hrp) {
         switch (hrp) {
             case "ckb":
-                return Network.LINA;
+                return Network.MAINNET;
             case "ckt":
-                return Network.AGGRON;
+                return Network.TESTNET;
             default:
                 throw new AddressFormatException("Invalid hrp");
         }

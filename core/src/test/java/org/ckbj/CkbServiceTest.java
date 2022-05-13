@@ -12,7 +12,7 @@ import java.math.BigInteger;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CkbServiceTest {
-    private CkbService service = CkbService.defaultInstance(Network.AGGRON);
+    private CkbService service = CkbService.defaultInstance(Network.TESTNET);
 
     @Test
     public void testGetBlockHash() throws IOException {

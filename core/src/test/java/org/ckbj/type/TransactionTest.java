@@ -12,7 +12,7 @@ public class TransactionTest {
     @Test
     public void testHash() throws IOException {
         byte[] hash = Hex.toByteArray("0x82001535467ebf5dc0f2b4b7236c9216be7c573908f67850eeb2b602cfc6213e");
-        Transaction transaction = CkbService.defaultInstance(Network.AGGRON)
+        Transaction transaction = CkbService.defaultInstance(Network.TESTNET)
                 .getTransaction(hash)
                 .getTransaction();
         Assertions.assertArrayEquals(hash, transaction.hash());

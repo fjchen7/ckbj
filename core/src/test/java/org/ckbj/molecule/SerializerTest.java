@@ -14,7 +14,7 @@ import java.io.IOException;
 public class SerializerTest {
     @Test
     public void testTransaction() throws IOException {
-        Transaction transaction = CkbService.defaultInstance(Network.AGGRON)
+        Transaction transaction = CkbService.defaultInstance(Network.TESTNET)
                 .getTransaction("0x82001535467ebf5dc0f2b4b7236c9216be7c573908f67850eeb2b602cfc6213e")
                 .getTransaction();
 
@@ -40,7 +40,7 @@ public class SerializerTest {
 
     @Test
     public void testHeader() throws IOException {
-        Header header = CkbService.defaultInstance(Network.AGGRON).getHeader(1024);
+        Header header = CkbService.defaultInstance(Network.TESTNET).getHeader(1024);
         assertByteArray("0x000000005555011e4c2aeb3b7201000000040000000000000100001800f40100dc48626c5c978044c5055f316d395e74d0209b427091e4f5dd506ac849d23f2682988b971735834ea0c2766764647822ce0229cd16c0e7fb0b17248a445ec3b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007a063f88f10fa22ec7758d0b1f8723008670b170d23100000004a174a800ff06105d371a90473c1d07646cf03051a6b0",
                         Serializer.serialize(header, true));
     }

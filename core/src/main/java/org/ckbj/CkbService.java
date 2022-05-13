@@ -24,12 +24,12 @@ public class CkbService {
 
     public static CkbService defaultInstance(Network network) {
         switch (network) {
-            case LINA:
+            case MAINNET:
                 if (LINA_SERVICE == null) {
                     LINA_SERVICE = new CkbService("https://mainnet.ckb.dev");
                 }
                 return LINA_SERVICE;
-            case AGGRON:
+            case TESTNET:
                 if (AGGRON_SERVICE == null) {
                     AGGRON_SERVICE = new CkbService("https://testnet.ckb.dev");
                 }

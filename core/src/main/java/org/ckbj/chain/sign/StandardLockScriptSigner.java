@@ -12,8 +12,8 @@ public abstract class StandardLockScriptSigner extends LockScriptSigner {
 
     public StandardLockScriptSigner() {
         networks = new HashSet<>();
-        networks.add(Network.LINA);
-        networks.add(Network.AGGRON);
+        networks.add(Network.MAINNET);
+        networks.add(Network.TESTNET);
     }
 
     @Override

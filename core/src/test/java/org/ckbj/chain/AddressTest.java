@@ -28,7 +28,7 @@ public class AddressTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testEncode() {
-        Address address = new Address(script, Network.LINA);
+        Address address = new Address(script, Network.MAINNET);
         assertEquals("ckb1qyqt8xaupvm8837nv3gtc9x0ekkj64vud3jqfwyw5v",
                      address.encode(SHORT));
         assertEquals("ckb1qjda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xw3vumhs9nvu786dj9p0q5elx66t24n3kxgj53qks",
@@ -39,7 +39,7 @@ public class AddressTest {
 
     @Test
     public void testDecode() {
-        Address expected = new Address(script, Network.LINA);
+        Address expected = new Address(script, Network.MAINNET);
         // short format
         Address actual = Address.decode("ckb1qyqt8xaupvm8837nv3gtc9x0ekkj64vud3jqfwyw5v");
         assertEquals(expected, actual);

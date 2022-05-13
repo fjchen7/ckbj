@@ -14,15 +14,15 @@ import java.util.Map;
 import java.util.Objects;
 
 public enum Network {
-    LINA,
-    AGGRON;
+    MAINNET,
+    TESTNET;
 
     private Map<Contract.Standard, Contract> contracts = new HashMap<>();
 
     static {
         try {
-            LINA.loadContracts("/mirana.json");
-            AGGRON.loadContracts("/pudge.json");
+            MAINNET.loadContracts("/mainnet.json");
+            TESTNET.loadContracts("/testnet.json");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
