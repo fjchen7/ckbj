@@ -2,7 +2,9 @@ package org.ckbj.chain;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.ckbj.chain.address.Address;
 import org.ckbj.rpc.GsonFactory;
+import org.ckbj.type.Script;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -17,7 +19,8 @@ public enum Network {
     MAINNET,
     TESTNET;
 
-    private Map<Contract.Standard, Contract> contracts = new HashMap<>();
+    private Map<Contract.Type, Contract> contractTypeContractMap = new HashMap<>();
+    private Map<Script, Contract.Type> scriptContractTypeMap = new HashMap<>();
 
     static {
         try {
@@ -32,20 +35,42 @@ public enum Network {
         Reader reader = Files.newBufferedReader(
                 Paths.get(Network.class.getResource(path).getPath()));
         Gson gson = GsonFactory.create();
-        Type type = new TypeToken<Map<Contract.Standard, Contract>>() {}.getType();
+        Type type = new TypeToken<Map<Contract.Type, Contract>>() {}.getType();
 
-        Map<Contract.Standard, Contract> contracts = gson.fromJson(reader, type);
-        for (Map.Entry<Contract.Standard, Contract> entry: contracts.entrySet()) {
+        Map<Contract.Type, Contract> contracts = gson.fromJson(reader, type);
+        for (Map.Entry<Contract.Type, Contract> entry: contracts.entrySet()) {
             Objects.requireNonNull(entry.getKey());
             register(entry.getKey(), entry.getValue());
         }
     }
 
-    private void register(Contract.Standard name, Contract contract) {
-        contracts.put(name, contract);
+    private void register(Contract.Type contractType, Contract contract) {
+        Objects.requireNonNull(contractType);
+        Objects.requireNonNull(contract);
+        contractTypeContractMap.put(contractType, contract);
+        Script script = contract.createScript(new byte[0]);
+        scriptContractTypeMap.put(script, contractType);
     }
 
-    public Contract get(Contract.Standard name) {
-        return contracts.get(name);
+    public Contract getContract(Contract.Type contractType) {
+        return contractTypeContractMap.get(contractType);
+    }
+
+    public Contract getContract(Script script) {
+        return getContract(getContractType(script));
+    }
+
+    public Contract.Type getContractType(Script script) {
+        Script key = Script.builder()
+                .setArgs(new byte[0])
+                .setCodeHash(script.getCodeHash())
+                .setHashType(script.getHashType())
+                .build();
+        return scriptContractTypeMap.get(key);
+    }
+
+    public Address createAddress(Contract.Type contractType, byte[] args) {
+        Script script = contractTypeContractMap.get(contractType).createScript(args);
+        return new Address(script, this);
     }
 }

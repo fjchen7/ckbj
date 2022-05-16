@@ -1,5 +1,6 @@
 package org.ckbj.chain.address;
 
+import org.ckbj.chain.Contract;
 import org.ckbj.chain.Network;
 import org.ckbj.type.Script;
 
@@ -7,7 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static org.ckbj.chain.Contract.Standard.*;
+import static org.ckbj.chain.Contract.Type.*;
 
 public class Address {
     Script script;
@@ -85,16 +86,17 @@ public class Address {
 
     private static Address decodeShort(byte[] payload, Network network) {
         byte codeHashIndex = payload[1];
-        byte[] codeHash;
+        Contract contract;
         if (codeHashIndex == 0x00) {
-            codeHash = network.get(SECP256K1_BLAKE160_SIGHASH_ALL).getCodeHash();
+            contract = network.getContract(SECP256K1_BLAKE160_SIGHASH_ALL);
         } else if (codeHashIndex == 0x01) {
-            codeHash = network.get(SECP256K1_BLAKE160_MULTISIG_ALL).getCodeHash();
+            contract = network.getContract(SECP256K1_BLAKE160_MULTISIG_ALL);
         } else if (codeHashIndex == 0x02) {
-            codeHash = network.get(ANYONE_CAN_PAY).getCodeHash();
+            contract = network.getContract(ANYONE_CAN_PAY);
         } else {
             throw new AddressFormatException("Unknown code hash index");
         }
+        byte[] codeHash = contract.getCodeHash();
         byte[] args = Arrays.copyOfRange(payload, 2, payload.length);
         Script script = Script.builder()
                 .setCodeHash(codeHash)
@@ -165,14 +167,15 @@ public class Address {
     private String encodeShort() {
         byte[] payload = new byte[2 + script.getArgs().length];
         byte codeHashIndex;
-        if (network.get(SECP256K1_BLAKE160_SIGHASH_ALL).usedBy(script)) {
+        Contract.Type contractType = network.getContractType(script);
+        if (contractType == SECP256K1_BLAKE160_SIGHASH_ALL) {
             codeHashIndex = 0x00;
-        } else if (network.get(SECP256K1_BLAKE160_MULTISIG_ALL).usedBy(script)) {
+        } else if (contractType == SECP256K1_BLAKE160_MULTISIG_ALL) {
             codeHashIndex = 0x01;
-        } else if (network.get(ANYONE_CAN_PAY).usedBy(script)) {
+        } else if (contractType == ANYONE_CAN_PAY) {
             codeHashIndex = 0x02;
         } else {
-            throw new AddressFormatException("Encoding to short address for given script is unsupported");
+            throw new AddressFormatException("Encoding to short address is unsupported for given script");
         }
         payload[0] = 0x01;
         payload[1] = codeHashIndex;

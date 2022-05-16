@@ -26,8 +26,8 @@ public class Secp256K1Blake160SighashAllSigner extends StandardLockScriptSigner 
     }
 
     @Override
-    public Contract.Standard getContractName() {
-        return Contract.Standard.SECP256K1_BLAKE160_SIGHASH_ALL;
+    public Contract.Type getContractType() {
+        return Contract.Type.SECP256K1_BLAKE160_SIGHASH_ALL;
     }
 
     @Override

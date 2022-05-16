@@ -69,7 +69,7 @@ public class Contract {
                 .build();
     }
 
-    public enum Standard {
+    public enum Type {
         SECP256K1_BLAKE160_SIGHASH_ALL(true, false),
         SECP256K1_BLAKE160_MULTISIG_ALL(true, false),
         ANYONE_CAN_PAY(true, false),
@@ -82,7 +82,7 @@ public class Contract {
         private boolean isLock;
         private boolean isType;
 
-        Standard(boolean isLock, boolean isType) {
+        Type(boolean isLock, boolean isType) {
             this.isLock = isLock;
             this.isType = isType;
         }

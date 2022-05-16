@@ -24,7 +24,7 @@ public abstract class StandardLockScriptSigner extends LockScriptSigner {
 
         boolean contractUsed = false;
         for (Network network: networks) {
-            if (network.get(getContractName()).usedBy(script)) {
+            if (network.getContractType(script) == getContractType()) {
                 contractUsed = true;
             }
         }
@@ -37,5 +37,5 @@ public abstract class StandardLockScriptSigner extends LockScriptSigner {
 
     protected abstract boolean doMatch(byte[] scriptArgs);
 
-    public abstract Contract.Standard getContractName();
+    public abstract Contract.Type getContractType();
 }
