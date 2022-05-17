@@ -11,15 +11,15 @@ public class CellInput {
      *
      * @see <a href="https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0017-tx-valid-since/0017-tx-valid-since.md">RFC17 Transaction valid since</a>
      */
-    private byte[] since;
+    private long since;
 
-    public CellInput(OutPoint previousOutput, byte[] since) {
+    public CellInput(OutPoint previousOutput, long since) {
         this.previousOutput = previousOutput;
         this.since = since;
     }
 
     public CellInput(OutPoint previousOutput) {
-        this(previousOutput, new byte[]{0});
+        this(previousOutput, 0);
     }
 
     public OutPoint getPreviousOutput() {
@@ -30,11 +30,11 @@ public class CellInput {
         this.previousOutput = previousOutput;
     }
 
-    public byte[] getSince() {
+    public long getSince() {
         return since;
     }
 
-    public void setSince(byte[] since) {
+    public void setSince(long since) {
         this.since = since;
     }
 }

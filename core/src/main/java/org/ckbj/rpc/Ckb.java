@@ -2,6 +2,7 @@ package org.ckbj.rpc;
 
 import org.ckbj.rpc.type.*;
 import org.ckbj.type.OutPoint;
+import org.ckbj.type.Transaction;
 
 import java.util.Arrays;
 
@@ -26,8 +27,8 @@ public class Ckb {
         return new Request("get_transaction", Arrays.asList(txHash), RpcOnChainTransaction.class);
     }
 
-    public static Request<RpcBlockHash> getBlockHash(int blockNumber) {
-        return new Request("get_block_hash", Arrays.asList(blockNumber), RpcBlockHash.class);
+    public static Request<RpcHash> getBlockHash(int blockNumber) {
+        return new Request("get_block_hash", Arrays.asList(blockNumber), RpcHash.class);
     }
 
     public static Request<RpcHeader> getTipHeader() {
@@ -38,7 +39,12 @@ public class Ckb {
         return new Request("get_live_cell", Arrays.asList(outPoint, withData), RpcOnChainCell.class);
     }
 
-    public static Request<RpcBlockNumber> getTipBlockNumber() {
-        return new Request("get_tip_block_number", RpcBlockNumber.class);
+    public static Request<RpcInteger> getTipBlockNumber() {
+        return new Request("get_tip_block_number", RpcInteger.class);
+    }
+
+    public static Request<RpcHash> sendTransaction(Transaction transaction) {
+        return new Request("send_transaction", Arrays.asList(transaction), RpcHash.class);
+
     }
 }

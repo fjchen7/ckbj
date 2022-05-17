@@ -11,7 +11,7 @@ import java.io.IOException;
 public class TransactionTest {
     @Test
     public void testHash() throws IOException {
-        byte[] hash = Hex.toByteArray("0x82001535467ebf5dc0f2b4b7236c9216be7c573908f67850eeb2b602cfc6213e");
+        byte[] hash = Hex.toByteArray("0xffcd8f05518e63937fc59ddf1801fc78da96fdfebd1e0a65f677d92795474e3e");
         Transaction transaction = CkbService.defaultInstance(Network.TESTNET)
                 .getTransaction(hash)
                 .getTransaction();

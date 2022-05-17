@@ -91,4 +91,8 @@ public class CkbService {
         cell.setOutPoint(outPoint);
         return cell;
     }
+
+    public byte[] sendTransaction(Transaction transaction) throws IOException {
+        return Ckb.sendTransaction(transaction).send(jsonRpcService).getResultOrThrowException();
+    }
 }

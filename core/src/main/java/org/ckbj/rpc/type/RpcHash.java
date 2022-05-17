@@ -2,5 +2,5 @@ package org.ckbj.rpc.type;
 
 import org.ckbj.rpc.Response;
 
-public class RpcBlockHash extends Response<byte[]> {
+public class RpcHash extends Response<byte[]> {
 }

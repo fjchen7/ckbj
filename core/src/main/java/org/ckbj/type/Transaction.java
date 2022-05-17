@@ -5,6 +5,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.reflect.TypeToken;
 import org.ckbj.crypto.Blake2b;
 import org.ckbj.molecule.Serializer;
+import org.ckbj.utils.Capacity;
 import org.ckbj.utils.Hex;
 
 import java.lang.reflect.Type;
@@ -134,6 +135,11 @@ public class Transaction {
             return this;
         }
 
+        public Builder addCellDeps(List<CellDep> cellDeps) {
+            this.cellDeps.addAll(cellDeps);
+            return this;
+        }
+
         public Builder addCellDeps(CellDep... cellDeps) {
             this.cellDeps.addAll(Arrays.asList(cellDeps));
             return this;
@@ -189,13 +195,27 @@ public class Transaction {
         }
 
         public Builder setOutputs(List<Cell> outputs) {
-            this.outputs = outputs;
+            this.outputs = new ArrayList<>();
+            for (Cell output: outputs) {
+                addOutput(output);
+            }
+            return this;
+        }
+
+        public Builder addOutput(Cell output) {
+            long capacity = output.getCapacity();
+            long occupation = Capacity.occupation(output, false);
+            if (capacity < occupation) {
+                throw new IllegalArgumentException("capacity " + capacity + " is less than output occupation " + occupation);
+            } else {
+                this.outputs.add(output);
+            }
             return this;
         }
 
         public Builder addOutputs(Cell... outputs) {
             for (Cell output: outputs) {
-                this.outputs.add(output);
+                addOutput(output);
             }
             return this;
         }
@@ -208,12 +228,24 @@ public class Transaction {
             return addOutputs(cell);
         }
 
+        public Builder addOutput(Script lockScript, double capacityInBytes) {
+            return addOutput(lockScript, Capacity.bytesToShannon(capacityInBytes));
+        }
+
         public Builder addOutput(Address address, long capacity) {
             return addOutput(address.getScript(), capacity);
         }
 
+        public Builder addOutput(Address address, double capacityInBytes) {
+            return addOutput(address.getScript(), Capacity.bytesToShannon(capacityInBytes));
+        }
+
         public Builder addOutput(String address, long capacity) {
             return addOutput(Address.decode(address), capacity);
+        }
+
+        public Builder addOutput(String address, double capacityInBytes) {
+            return addOutput(Address.decode(address), Capacity.bytesToShannon(capacityInBytes));
         }
 
         public Builder setWitnesses(List<byte[]> witnesses) {
@@ -252,7 +284,7 @@ public class Transaction {
         }
     }
 
-    protected static class TypeAdapter implements JsonDeserializer<Transaction> {
+    protected static class TypeAdapter implements JsonDeserializer<Transaction>, JsonSerializer<Transaction> {
         @Override
         public Transaction deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject obj = json.getAsJsonObject();
@@ -268,6 +300,29 @@ public class Transaction {
             }
             tx.witnesses = context.deserialize(obj.get("witnesses"), new TypeToken<List<byte[]>>() {}.getType());
             return tx;
+        }
+
+        @Override
+        public JsonElement serialize(Transaction src, Type typeOfSrc, JsonSerializationContext context) {
+            JsonObject obj = new JsonObject();
+            obj.add("version", context.serialize(src.version));
+            obj.add("cell_deps", context.serialize(src.cellDeps));
+            obj.add("header_deps", context.serialize(src.headerDeps));
+            obj.add("inputs", context.serialize(src.inputs));
+            JsonArray outputs = new JsonArray();
+            JsonArray outputsData = new JsonArray();
+            for (int i = 0; i < src.outputs.size(); i++) {
+                JsonObject output = new JsonObject();
+                output.add("capacity", context.serialize(src.outputs.get(i).getCapacity()));
+                output.add("lock", context.serialize(src.outputs.get(i).getLock()));
+                output.add("type", context.serialize(src.outputs.get(i).getType()));
+                outputs.add(output);
+                outputsData.add(context.serialize(src.outputs.get(i).getData()));
+            }
+            obj.add("outputs", outputs);
+            obj.add("outputs_data", context.serialize(outputsData));
+            obj.add("witnesses", context.serialize(src.witnesses));
+            return obj;
         }
     }
 }
