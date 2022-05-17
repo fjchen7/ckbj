@@ -3,15 +3,11 @@ package org.ckbj.chain.contract;
 import org.ckbj.chain.Contract;
 import org.ckbj.chain.Network;
 import org.ckbj.molecule.Serializer;
-import org.ckbj.type.Cell;
 import org.ckbj.type.Script;
 import org.ckbj.type.Transaction;
 import org.ckbj.type.WitnessArgs;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public abstract class StandardLockScriptFulfillment implements ScriptFulfillment {
+public abstract class StandardLockScriptFulfillment implements LockScriptFulfillment {
     protected abstract boolean doMatch(byte[] scriptArgs);
 
     public abstract void fulfill(Transaction transaction, int... inputGroup);
@@ -25,26 +21,6 @@ public abstract class StandardLockScriptFulfillment implements ScriptFulfillment
             return doMatch(script.getArgs());
         } else {
             return false;
-        }
-    }
-
-    @Override
-    public boolean fulfill(Transaction transaction, List<Cell> inputsDetail) {
-        List<Integer> inputGroupList = new ArrayList<>();
-        for (int i = 0; i < inputsDetail.size(); i++) {
-            if (match(inputsDetail.get(i).getLock())) {
-                inputGroupList.add(i);
-            }
-        }
-        if (inputGroupList.size() == 0) {
-            return false;
-        } else {
-            int[] inputGroup = new int[inputGroupList.size()];
-            for (int i = 0; i < inputGroup.length; i++) {
-                inputGroup[i] = inputGroupList.get(i);
-            }
-            fulfill(transaction, inputGroup);
-            return true;
         }
     }
 

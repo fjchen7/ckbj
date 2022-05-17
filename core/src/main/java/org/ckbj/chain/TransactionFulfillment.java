@@ -1,6 +1,6 @@
 package org.ckbj.chain;
 
-import org.ckbj.chain.contract.ScriptFulfillment;
+import org.ckbj.chain.contract.LockScriptFulfillment;
 import org.ckbj.type.Cell;
 import org.ckbj.type.Transaction;
 
@@ -9,30 +9,25 @@ import java.util.List;
 import java.util.Set;
 
 public class TransactionFulfillment {
-    private final Set<ScriptFulfillment> scriptFulfillments = new HashSet<>();
+    private final Set<LockScriptFulfillment> lockScriptFulfillmentSet = new HashSet<>();
 
-    public TransactionFulfillment register(ScriptFulfillment scriptFulfillment) {
-        scriptFulfillments.add(scriptFulfillment);
+    public TransactionFulfillment register(LockScriptFulfillment lockScriptFulfillment) {
+        this.lockScriptFulfillmentSet.add(lockScriptFulfillment);
         return this;
     }
 
     public void fulfill(Transaction transaction, List<Cell> inputsDetail) {
-        Set<ScriptFulfillment> signers = new HashSet<>();
-        for (ScriptFulfillment signer: scriptFulfillments) {
-            for (Cell cell: inputsDetail) {
-                if (signer.match(cell.getLock()) || signer.match(cell.getType())) {
-                    signers.add(signer);
+        Set<LockScriptFulfillment> matchedFulfillmentSet = new HashSet<>();
+        for (LockScriptFulfillment fulfillment: lockScriptFulfillmentSet) {
+            for (Cell cell: transaction.getOutputs()) {
+                if (fulfillment.match(cell.getType())) {
+                    matchedFulfillmentSet.add(fulfillment);
                     break;
                 }
             }
-            for (Cell cell: transaction.getOutputs()) {
-                if (signer.match(cell.getType())) {
-                    signers.add(signer);
-                }
-            }
         }
-        for (ScriptFulfillment signer: signers) {
-            signer.fulfill(transaction, inputsDetail);
+        for (LockScriptFulfillment fulfillment: matchedFulfillmentSet) {
+            fulfillment.fulfill(transaction, inputsDetail);
         }
     }
 }
