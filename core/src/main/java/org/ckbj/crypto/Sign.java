@@ -34,7 +34,7 @@ import java.util.Arrays;
  * BitcoinJ ECKey</a> implementation.
  */
 public class Sign {
-
+    public final static int SIGNATURE_LENGTH = 65;
     public static final X9ECParameters CURVE_PARAMS = CustomNamedCurves.getByName("secp256k1");
     static final ECDomainParameters CURVE =
             new ECDomainParameters(
@@ -313,7 +313,7 @@ public class Sign {
         }
 
         public byte[] getSignature() {
-            byte[] signature = new byte[65];
+            byte[] signature = new byte[SIGNATURE_LENGTH];
             System.arraycopy(r, 0, signature, 0, 32);
             System.arraycopy(s, 0, signature, 32, 32);
             System.arraycopy(v, 0, signature, 64, 1);
