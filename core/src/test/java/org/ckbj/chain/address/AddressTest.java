@@ -1,6 +1,6 @@
-package org.ckbj.chain;
+package org.ckbj.chain.address;
 
-import org.ckbj.chain.address.Address;
+import org.ckbj.chain.Network;
 import org.ckbj.type.Script;
 import org.junit.jupiter.api.Test;
 

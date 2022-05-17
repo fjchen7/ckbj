@@ -9,6 +9,7 @@ import org.ckbj.utils.Hex;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,12 +40,20 @@ public class Transaction {
         return cellDeps;
     }
 
+    public CellDep getCellDep(int i) {
+        return cellDeps.get(i);
+    }
+
     public void setCellDeps(List<CellDep> cellDeps) {
         this.cellDeps = cellDeps;
     }
 
     public List<byte[]> getHeaderDeps() {
         return headerDeps;
+    }
+
+    public byte[] getHeaderDep(int i) {
+        return headerDeps.get(i);
     }
 
     public void setHeaderDeps(List<byte[]> headerDeps) {
@@ -55,12 +64,20 @@ public class Transaction {
         return inputs;
     }
 
+    public CellInput getInput(int i) {
+        return inputs.get(i);
+    }
+
     public void setInputs(List<CellInput> inputs) {
         this.inputs = inputs;
     }
 
     public List<Cell> getOutputs() {
         return outputs;
+    }
+
+    public Cell getOutput(int i) {
+        return outputs.get(i);
     }
 
     public void setOutputs(List<Cell> outputs) {
@@ -75,8 +92,16 @@ public class Transaction {
         return outputsData;
     }
 
+    public byte[] getOutputData(int i) {
+        return outputs.get(i).getData();
+    }
+
     public List<byte[]> getWitnesses() {
         return witnesses;
+    }
+
+    public byte[] getWitness(int i) {
+        return witnesses.get(i);
     }
 
     public void setWitnesses(List<byte[]> witnesses) {
@@ -109,8 +134,8 @@ public class Transaction {
             return this;
         }
 
-        public Builder addCellDep(CellDep cellDep) {
-            this.cellDeps.add(cellDep);
+        public Builder addCellDeps(CellDep... cellDeps) {
+            this.cellDeps.addAll(Arrays.asList(cellDeps));
             return this;
         }
 
@@ -123,7 +148,7 @@ public class Transaction {
                     .setDepType(depType)
                     .setOutPoint(new OutPoint(txHash, index))
                     .build();
-            return addCellDep(cellDep);
+            return addCellDeps(cellDep);
         }
 
         public Builder setHeaderDeps(List<byte[]> headerDeps) {
@@ -131,13 +156,15 @@ public class Transaction {
             return this;
         }
 
-        public Builder addHeaderDep(byte[] headerDep) {
-            this.headerDeps.add(headerDep);
+        public Builder addHeaderDeps(byte[]... headerDeps) {
+            this.headerDeps.addAll(Arrays.asList(headerDeps));
             return this;
         }
 
-        public Builder addHeaderDep(String headerDep) {
-            addHeaderDep(Hex.toByteArray(headerDep));
+        public Builder addHeaderDeps(String... headerDep) {
+            for (String header: headerDep) {
+                this.headerDeps.add(Hex.toByteArray(header));
+            }
             return this;
         }
 
@@ -146,19 +173,19 @@ public class Transaction {
             return this;
         }
 
-        public Builder addInput(CellInput inputs) {
-            this.inputs.add(inputs);
+        public Builder addInputs(CellInput... inputs) {
+            this.inputs.addAll(Arrays.asList(inputs));
             return this;
         }
 
         public Builder addInput(String txHash, int index) {
             CellInput cellInput = new CellInput(new OutPoint(txHash, index));
-            return addInput(cellInput);
+            return addInputs(cellInput);
         }
 
         public Builder addInput(byte[] txHash, int index) {
             CellInput cellInput = new CellInput(new OutPoint(txHash, index));
-            return addInput(cellInput);
+            return addInputs(cellInput);
         }
 
         public Builder setOutputs(List<Cell> outputs) {
@@ -166,9 +193,27 @@ public class Transaction {
             return this;
         }
 
-        public Builder addOutput(Cell output) {
-            this.outputs.add(output);
+        public Builder addOutputs(Cell... outputs) {
+            for (Cell output: outputs) {
+                this.outputs.add(output);
+            }
             return this;
+        }
+
+        public Builder addOutput(Script lockScript, long capacity) {
+            Cell cell = Cell.builder()
+                    .setCapacity(capacity)
+                    .setLock(lockScript)
+                    .build();
+            return addOutputs(cell);
+        }
+
+        public Builder addOutput(Address address, long capacity) {
+            return addOutput(address.getScript(), capacity);
+        }
+
+        public Builder addOutput(String address, long capacity) {
+            return addOutput(Address.decode(address), capacity);
         }
 
         public Builder setWitnesses(List<byte[]> witnesses) {
@@ -176,13 +221,17 @@ public class Transaction {
             return this;
         }
 
-        public Builder addWitness(byte[] witness) {
-            this.witnesses.add(witness);
+        public Builder addWitnesses(byte[]... witnesses) {
+            for (byte[] witness: witnesses) {
+                this.witnesses.add(witness);
+            }
             return this;
         }
 
-        public Builder addWitness(String witness) {
-            addWitness(Hex.toByteArray(witness));
+        public Builder addWitnesses(String... witnesses) {
+            for (String witness: witnesses) {
+                addWitnesses(Hex.toByteArray(witness));
+            }
             return this;
         }
 

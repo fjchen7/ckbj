@@ -11,6 +11,7 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -19,7 +20,7 @@ public enum Network {
     MAINNET,
     TESTNET;
 
-    private Map<Contract.Type, Contract> contractTypeContractMap = new HashMap<>();
+    private Map<Contract.Type, Contract> contractTypeContractMap = new EnumMap<>(Contract.Type.class);
     private Map<Script, Contract.Type> scriptContractTypeMap = new HashMap<>();
 
     static {
@@ -67,6 +68,9 @@ public enum Network {
      * @return return contract type used by script, or null if not found
      */
     public Contract.Type getContractType(Script script) {
+        if (script == null) {
+            return null;
+        }
         Script key = Script.builder()
                 .setArgs(new byte[0])
                 .setCodeHash(script.getCodeHash())
