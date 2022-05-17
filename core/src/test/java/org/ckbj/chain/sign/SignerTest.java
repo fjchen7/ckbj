@@ -7,7 +7,6 @@ import org.ckbj.utils.Hex;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class SignerTest {
                 .addCellDep(CellDep.DepType.DEP_GROUP, "0xec26b0f85ed839ece5f11c4c4e837ec359f5adc4420410f6453b1f6b60fb96a6", 0)
                 .addInput("0xbaf3371f487a0d40f8ebc341a34b93a2d36e1d9f77b9533fb8c579c87958b7aa", 0)
                 .addOutput(Cell.builder()
-                                   .setCapacity(Hex.toBigInteger("0x2540be400"))
+                                   .setCapacity(0x2540be400L)
                                    .setLock(Script.builder()
                                                     .setCodeHash("0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8")
                                                     .setArgs("0x05a1fabfa84db9e538e2e7fe3ca9adf849f55ce0")
@@ -28,7 +27,7 @@ public class SignerTest {
                                    .setData(new byte[]{})
                                    .build())
                 .addOutput(Cell.builder()
-                                   .setCapacity(Hex.toBigInteger("0x368f7cadfb00"))
+                                   .setCapacity(0x368f7cadfb00L)
                                    .setLock(Script.builder()
                                                     .setCodeHash("0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8")
                                                     .setArgs("0xa3b8598e1d53e6c5e89e8acb6b4c34d3adb13f2b")
@@ -46,7 +45,7 @@ public class SignerTest {
 
         List<Cell> inputDetails = new ArrayList<>();
         inputDetails.add(Cell.builder()
-                                 .setCapacity(new BigInteger("60000000000000"))
+                                 .setCapacity(60000000000000L)
                                  .setLock(Script.builder()
                                                   .setCodeHash("0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8")
                                                   .setArgs("0xa3b8598e1d53e6c5e89e8acb6b4c34d3adb13f2b")
@@ -66,7 +65,7 @@ public class SignerTest {
                 .addCellDep(CellDep.DepType.DEP_GROUP, "0xec26b0f85ed839ece5f11c4c4e837ec359f5adc4420410f6453b1f6b60fb96a6", 0)
                 .addInput("0xbaf3371f487a0d40f8ebc341a34b93a2d36e1d9f77b9533fb8c579c87958b7aa", 0)
                 .addOutput(Cell.builder()
-                                   .setCapacity(Hex.toBigInteger("0x2540be400"))
+                                   .setCapacity(0x2540be400L)
                                    .setLock(Script.builder()
                                                     .setCodeHash("0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8")
                                                     .setArgs("0x05a1fabfa84db9e538e2e7fe3ca9adf849f55ce0")
@@ -74,7 +73,7 @@ public class SignerTest {
                                    .setData(new byte[]{})
                                    .build())
                 .addOutput(Cell.builder()
-                                   .setCapacity(Hex.toBigInteger("0x368f7cadfb00"))
+                                   .setCapacity(0x368f7cadfb00L)
                                    .setLock(Script.builder()
                                                     .setCodeHash("0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8")
                                                     .setArgs("0xa3b8598e1d53e6c5e89e8acb6b4c34d3adb13f2b")
@@ -89,7 +88,7 @@ public class SignerTest {
 
         List<Cell> inputDetails = new ArrayList<>();
         inputDetails.add(Cell.builder()
-                                 .setCapacity(new BigInteger("60000000000000"))
+                                 .setCapacity(60000000000000L)
                                  .setLock(Script.builder()
                                                   .setCodeHash("0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8")
                                                   .setArgs("0xa3b8598e1d53e6c5e89e8acb6b4c34d3adb13f2b")

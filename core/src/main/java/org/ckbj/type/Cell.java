@@ -3,10 +3,8 @@ package org.ckbj.type;
 import org.ckbj.crypto.Blake2b;
 import org.ckbj.utils.Hex;
 
-import java.math.BigInteger;
-
 public class Cell {
-    private BigInteger capacity = BigInteger.ZERO;
+    private long capacity;
     private Script type;
     private Script lock;
     private byte[] data = new byte[0];
@@ -19,11 +17,14 @@ public class Cell {
         return new Builder(cell);
     }
 
-    public BigInteger getCapacity() {
+    public long getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(BigInteger capacity) {
+    public void setCapacity(long capacity) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("capacity must be positive");
+        }
         this.capacity = capacity;
     }
 
@@ -60,7 +61,7 @@ public class Cell {
     }
 
     public static final class Builder {
-        private BigInteger capacity = BigInteger.ZERO;
+        private long capacity;
         private Script type;
         private Script lock;
         private byte[] data = new byte[0];
@@ -75,13 +76,12 @@ public class Cell {
             this.data = cell.data;
         }
 
-        public Builder setCapacity(BigInteger capacity) {
+        public Builder setCapacity(long capacity) {
+            if (capacity < 0) {
+                throw new IllegalArgumentException("capacity must be positive");
+            }
             this.capacity = capacity;
             return this;
-        }
-
-        public Builder setCapacity(String capacity) {
-            return setCapacity(Hex.toBigInteger(capacity));
         }
 
         public Builder setType(Script type) {

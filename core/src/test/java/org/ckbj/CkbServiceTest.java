@@ -7,7 +7,6 @@ import org.ckbj.utils.Hex;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,11 +25,11 @@ public class CkbServiceTest {
         assertEquals(4, transaction.getCellDeps().size());
         assertEquals(1, transaction.getInputs().size());
         assertEquals(3, transaction.getOutputs().size());
-        assertEquals(new BigInteger("30000000000"),
+        assertEquals(30000000000L,
                      transaction.getOutputs().get(0).getCapacity());
-        assertEquals(new BigInteger("11800000000"),
+        assertEquals(11800000000L,
                      transaction.getOutputs().get(1).getCapacity());
-        assertEquals(new BigInteger("19994640399880000"),
+        assertEquals(19994640399880000L,
                      transaction.getOutputs().get(2).getCapacity());
         assertArrayEquals(
                 Hex.toByteArray("0x005ae9950300000000000000000000000000000000000000"), transaction.getOutputs().get(1).getData());
@@ -78,7 +77,7 @@ public class CkbServiceTest {
     public void testGetLiveCell() throws IOException {
         OutPoint outPoint = new OutPoint("0x8277d74d33850581f8d843613ded0c2a1722dec0e87e748f45c115dfb14210f1", 0);
         OnChainCell onChainCell = service.getLiveCell(outPoint, true);
-        assertEquals(new BigInteger("30000000000"), onChainCell.getCapacity());
+        assertEquals(30000000000L, onChainCell.getCapacity());
         assertArrayEquals(Hex.toByteArray("0xa999bfb3735fdff4f26016b47712bb64ffbe88e62deec0e4e0d69ea8d54012778877ddfcc3ec76d5a59630a162828761147dd36052ca0db8d024ab68591e4826"),
                           onChainCell.getLock().getArgs());
         assertEquals(Script.HashType.DATA, onChainCell.getLock().getHashType());

@@ -5,7 +5,6 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 
 import java.lang.reflect.Type;
-import java.math.BigInteger;
 
 @JsonAdapter(OnChainCell.TypeAdapter.class)
 public class OnChainCell {
@@ -21,12 +20,12 @@ public class OnChainCell {
         this.cell = cell;
     }
 
-    public BigInteger getCapacity() {
+    public long getCapacity() {
         return cell.getCapacity();
     }
 
-    public void setCapacity(BigInteger capacity) {
-        this.setCapacity(capacity);
+    public void setCapacity(long capacity) {
+        cell.setCapacity(capacity);
     }
 
     public Script getType() {
@@ -34,7 +33,7 @@ public class OnChainCell {
     }
 
     public void setType(Script type) {
-        this.setType(type);
+        cell.setType(type);
     }
 
     public Script getLock() {
@@ -42,7 +41,7 @@ public class OnChainCell {
     }
 
     public void setLock(Script lock) {
-        this.setLock(lock);
+        cell.setLock(lock);
     }
 
     public byte[] getData() {
@@ -50,11 +49,11 @@ public class OnChainCell {
     }
 
     public void setData(byte[] data) {
-        this.cell.setData(data);
+        cell.setData(data);
     }
 
     public void setData(String data) {
-        this.cell.setData(data);
+        cell.setData(data);
     }
 
     public Status getStatus() {
@@ -74,7 +73,7 @@ public class OnChainCell {
     }
 
     public byte[] dataHash() {
-        return this.cell.dataHash();
+        return cell.dataHash();
     }
 
     public enum Status {
