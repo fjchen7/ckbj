@@ -153,4 +153,9 @@ public final class Script {
             }
         }
     }
+
+    public enum Type {
+        LOCK,
+        TYPE
+    }
 }

@@ -9,6 +9,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static org.ckbj.type.Script.Type.LOCK;
+import static org.ckbj.type.Script.Type.TYPE;
+
 public class Contract {
     private byte[] codeHash;
     private Script.HashType hashType = Script.HashType.TYPE;
@@ -70,29 +73,23 @@ public class Contract {
     }
 
     public enum Type {
-        SECP256K1_BLAKE160_SIGHASH_ALL(true, false),
-        SECP256K1_BLAKE160_MULTISIG_ALL(true, false),
-        ANYONE_CAN_PAY(true, false),
-        PORTAL_WALLET_LOCK(true, false),
-        CHEQUE(true, false),
-        SUDT(false, true),
-        DAO(false, true),
-        TYPE_ID(false, true);
+        SECP256K1_BLAKE160_SIGHASH_ALL(LOCK),
+        SECP256K1_BLAKE160_MULTISIG_ALL(LOCK),
+        ANYONE_CAN_PAY(LOCK),
+        PORTAL_WALLET_LOCK(LOCK),
+        CHEQUE(LOCK),
+        SUDT(TYPE),
+        DAO(TYPE),
+        TYPE_ID(TYPE);
 
-        private boolean isLock;
-        private boolean isType;
+        private Script.Type scriptType;
 
-        Type(boolean isLock, boolean isType) {
-            this.isLock = isLock;
-            this.isType = isType;
+        Type(Script.Type scriptType) {
+            this.scriptType = scriptType;
         }
 
-        public boolean isLock() {
-            return isLock;
-        }
-
-        public boolean isType() {
-            return isType;
+        public Script.Type getScriptType() {
+            return scriptType;
         }
     }
 }
