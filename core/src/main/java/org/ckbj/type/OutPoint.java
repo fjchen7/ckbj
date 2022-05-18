@@ -2,6 +2,8 @@ package org.ckbj.type;
 
 import org.ckbj.utils.Hex;
 
+import java.util.Arrays;
+
 public final class OutPoint {
     private byte[] txHash;
     private int index;
@@ -37,5 +39,23 @@ public final class OutPoint {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OutPoint outPoint = (OutPoint) o;
+
+        if (index != outPoint.index) return false;
+        return Arrays.equals(txHash, outPoint.txHash);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Arrays.hashCode(txHash);
+        result = 31 * result + index;
+        return result;
     }
 }
