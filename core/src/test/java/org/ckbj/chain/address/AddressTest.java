@@ -2,6 +2,7 @@ package org.ckbj.chain.address;
 
 import org.ckbj.chain.Network;
 import org.ckbj.type.Script;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.ckbj.chain.address.Address.Format.*;
@@ -17,12 +18,12 @@ public class AddressTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testEncodedFormat() {
-        assertEquals(Address.encodedFormat("ckb1qyqt8xaupvm8837nv3gtc9x0ekkj64vud3jqfwyw5v"),
-                     SHORT);
-        assertEquals(Address.encodedFormat("ckb1qjda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xw3vumhs9nvu786dj9p0q5elx66t24n3kxgj53qks"),
-                     FULL_BECH32);
-        assertEquals(Address.encodedFormat("ckb1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqdnnw7qkdnnclfkg59uzn8umtfd2kwxceqxwquc4"),
-                     FULL_BECH32M);
+        assertEquals(SHORT,
+                     Address.encodedFormat("ckb1qyqt8xaupvm8837nv3gtc9x0ekkj64vud3jqfwyw5v"));
+        assertEquals(FULL_BECH32,
+                     Address.encodedFormat("ckb1qjda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xw3vumhs9nvu786dj9p0q5elx66t24n3kxgj53qks"));
+        assertEquals(FULL_BECH32M,
+                     Address.encodedFormat("ckb1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqdnnw7qkdnnclfkg59uzn8umtfd2kwxceqxwquc4"));
     }
 
     @Test
@@ -50,4 +51,15 @@ public class AddressTest {
         actual = Address.decode("ckb1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqdnnw7qkdnnclfkg59uzn8umtfd2kwxceqxwquc4");
         assertEquals(expected, actual);
     }
+
+    @Test
+    public void testValidDecode() {
+        // How to get the error address
+        // original address: ckb1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqgvf0k9sc40s3azmpfvhyuudhahpsj72tsr8cx3d
+        // change payload[0] to be 0x00 in Address#encodeFullBech32m, and then decode(FULL_BECH32M);
+        Assertions.assertThrows(AddressFormatException.class, () -> {
+            Address.decode("ckb1q2da0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqgvf0k9sc40s3azmpfvhyuudhahpsj72tsqsf9mm");
+        });
+    }
 }
+

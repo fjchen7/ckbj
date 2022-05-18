@@ -5,8 +5,8 @@ public class AddressFormatException extends IllegalArgumentException {
         super();
     }
 
-    public AddressFormatException(String message) {
-        super(message);
+    public AddressFormatException(String format, Object... args) {
+        super(String.format(format, args));
     }
 
     public static class InvalidCharacter extends AddressFormatException {

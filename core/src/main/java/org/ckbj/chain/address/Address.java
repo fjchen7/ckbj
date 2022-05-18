@@ -14,9 +14,6 @@ public class Address {
     Script script;
     Network network;
 
-    public Address() {
-    }
-
     public Address(Script script, Network network) {
         this.script = script;
         this.network = network;
@@ -43,15 +40,17 @@ public class Address {
     }
 
     public static Address decode(String address) {
-        Network network = network(address.substring(0, 3));
-        return decode(address, network);
-    }
-
-    private static Address decode(String address, Network network) {
         Objects.requireNonNull(address);
-        byte[] payload = Bech32.decode(address).data;
+        Bech32.Bech32Data bech32Data = Bech32.decode(address);
+        Bech32.Encoding encoding = bech32Data.encoding;
+        Network network = network(bech32Data.hrp);
+        byte[] payload = bech32Data.data;
         payload = convertBits(payload, 0, payload.length, 5, 8, false);
-        switch (encodeFormat(payload[0])) {
+        Format format = encodeFormat(payload[0]);
+        if (format.getEncoding() != encoding) {
+            throw new AddressFormatException("Payload header 0x%02x should have encoding %s, but find %s", payload[0], format.getEncoding(), encoding);
+        }
+        switch (format) {
             case SHORT:
                 return decodeShort(payload, network);
             case FULL_BECH32:
@@ -65,9 +64,15 @@ public class Address {
 
     public static Format encodedFormat(String address) {
         Objects.requireNonNull(address);
-        byte[] payload = Bech32.decode(address).data;
+        Bech32.Bech32Data bech32Data = Bech32.decode(address);
+        Bech32.Encoding encoding = bech32Data.encoding;
+        byte[] payload = bech32Data.data;
         payload = convertBits(payload, 0, payload.length, 5, 8, false);
-        return encodeFormat(payload[0]);
+        Format format = encodeFormat(payload[0]);
+        if (format.getEncoding() != encoding) {
+            throw new AddressFormatException("Payload header 0x%02x should have encoding %s, but find %s", payload[0], format.getEncoding(), encoding);
+        }
+        return format;
     }
 
     private static Format encodeFormat(byte header) {
@@ -80,13 +85,20 @@ public class Address {
             case 0x04:
                 return Format.FULL_BECH32;
             default:
-                throw new AddressFormatException("Unknown format type");
+                throw new AddressFormatException("Unsupported payload header 0x%02x", header);
         }
     }
 
     private static Address decodeShort(byte[] payload, Network network) {
-        byte codeHashIndex = payload[1];
+        // header (1) + codeHashIndex (1) + args (20) = 22
+        if (payload.length != 22) {
+            throw new AddressFormatException("Invalid payload length %d", payload.length);
+        }
+        if (payload[0] != 0x01) {
+            throw new AddressFormatException("Invalid payload header 0x%02x", payload[0]);
+        }
         Contract contract;
+        byte codeHashIndex = payload[1];
         if (codeHashIndex == 0x00) {
             contract = network.getContract(SECP256K1_BLAKE160_SIGHASH_ALL);
         } else if (codeHashIndex == 0x01) {
@@ -94,7 +106,7 @@ public class Address {
         } else if (codeHashIndex == 0x02) {
             contract = network.getContract(ANYONE_CAN_PAY);
         } else {
-            throw new AddressFormatException("Unknown code hash index");
+            throw new AddressFormatException("Invalid code hash index 0x%02x", codeHashIndex);
         }
         byte[] codeHash = contract.getCodeHash();
         byte[] args = Arrays.copyOfRange(payload, 2, payload.length);
@@ -113,7 +125,7 @@ public class Address {
         } else if (payload[0] == 0x02) {
             hashType = Script.HashType.DATA;
         } else {
-            throw new AddressFormatException("Unknown script hash type");
+            throw new AddressFormatException("Invalid payload header 0x%02x", payload[0]);
         }
         byte[] codeHash = Arrays.copyOfRange(payload, 1, 33);
         byte[] args = Arrays.copyOfRange(payload, 33, payload.length);
@@ -126,6 +138,9 @@ public class Address {
     }
 
     private static Address decodeLongBech32m(byte[] payload, Network network) {
+        if (payload[0] != 0x00) {
+            throw new AddressFormatException("Invalid payload header 0x%02x", payload[0]);
+        }
         byte[] codeHash = Arrays.copyOfRange(payload, 1, 33);
         Script.HashType hashType = Script.HashType.valueOf(payload[33]);
         byte[] args = Arrays.copyOfRange(payload, 34, payload.length);
@@ -147,10 +162,6 @@ public class Address {
     }
 
     public String encode(Format format) {
-        return encode(format, network);
-    }
-
-    private String encode(Format format, Network network) {
         Objects.requireNonNull(format);
         switch (format) {
             case SHORT:
@@ -160,7 +171,7 @@ public class Address {
             case FULL_BECH32M:
                 return encodeFullBech32m();
             default:
-                throw new AddressFormatException("Unknown encoding");
+                throw new AddressFormatException("Invalid format %s", format);
         }
     }
 
@@ -175,7 +186,7 @@ public class Address {
         } else if (contractType == ANYONE_CAN_PAY) {
             codeHashIndex = 0x02;
         } else {
-            throw new AddressFormatException("Encoding to short address is unsupported for given script");
+            throw new UnsupportedOperationException("Unsupported contract type " + contractType);
         }
         payload[0] = 0x01;
         payload[1] = codeHashIndex;
@@ -191,7 +202,7 @@ public class Address {
         } else if (script.getHashType() == Script.HashType.DATA) {
             payload[1] = 0x02;
         } else {
-            throw new AddressFormatException("Unknown script hash type");
+            throw new UnsupportedOperationException("Unsupported script hash type " + script.getHashType());
         }
         int pos = 1;
         System.arraycopy(script.getCodeHash(), 0, payload, pos, script.getCodeHash().length);
@@ -222,7 +233,7 @@ public class Address {
             case TESTNET:
                 return "ckt";
             default:
-                throw new AddressFormatException("Unknown network");
+                throw new AddressFormatException("Unsupported network %s", network);
         }
     }
 
@@ -233,7 +244,7 @@ public class Address {
             case "ckt":
                 return Network.TESTNET;
             default:
-                throw new AddressFormatException("Invalid hrp");
+                throw new AddressFormatException("Invalid hrp %s", hrp);
         }
     }
 
@@ -247,8 +258,7 @@ public class Address {
         for (int i = 0; i < inLen; i++) {
             int value = in[i + inStart] & 0xff;
             if ((value >>> fromBits) != 0) {
-                throw new AddressFormatException(
-                        String.format("Input value '%X' exceeds '%d' bit size", value, fromBits));
+                throw new AddressFormatException("Input value '%X' exceeds '%d' bit size", value, fromBits);
             }
             acc = ((acc << fromBits) | value) & max_acc;
             bits += fromBits;
@@ -286,9 +296,19 @@ public class Address {
 
     public enum Format {
         @Deprecated
-        SHORT,
+        SHORT(Bech32.Encoding.BECH32),
         @Deprecated
-        FULL_BECH32,
-        FULL_BECH32M,
+        FULL_BECH32(Bech32.Encoding.BECH32),
+        FULL_BECH32M(Bech32.Encoding.BECH32M);
+
+        private Bech32.Encoding encoding;
+
+        Format(Bech32.Encoding encoding) {
+            this.encoding = encoding;
+        }
+
+        public Bech32.Encoding getEncoding() {
+            return encoding;
+        }
     }
 }
