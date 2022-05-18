@@ -1,6 +1,7 @@
 package org.ckbj.type;
 
 import org.ckbj.crypto.Blake2b;
+import org.ckbj.utils.Capacity;
 import org.ckbj.utils.Hex;
 
 public class Cell {
@@ -58,6 +59,14 @@ public class Cell {
 
     public byte[] dataHash() {
         return Blake2b.digest(data);
+    }
+
+    public long getOccupiedCapacity(boolean includeData) {
+        return Capacity.occupation(this, includeData);
+    }
+
+    public boolean isCapacityEnough() {
+        return capacity >= getOccupiedCapacity(true);
     }
 
     public static final class Builder {

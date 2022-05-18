@@ -3,6 +3,7 @@ package org.ckbj.type;
 import com.google.gson.annotations.SerializedName;
 import org.ckbj.crypto.Blake2b;
 import org.ckbj.molecule.Serializer;
+import org.ckbj.utils.Capacity;
 import org.ckbj.utils.Hex;
 
 import java.util.Arrays;
@@ -54,6 +55,10 @@ public final class Script {
     public byte[] hash() {
         byte[] serialization = Serializer.serialize(this);
         return Blake2b.digest(serialization);
+    }
+
+    public long getOccupiedCapacity() {
+        return Capacity.occupation(this);
     }
 
     @Override
