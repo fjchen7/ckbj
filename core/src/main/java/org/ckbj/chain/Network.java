@@ -60,6 +60,12 @@ public enum Network {
         return getContract(getContractType(script));
     }
 
+    /**
+     * get contract type used by script
+     *
+     * @param script
+     * @return return contract type used by script, or null if not found
+     */
     public Contract.Type getContractType(Script script) {
         Script key = Script.builder()
                 .setArgs(new byte[0])

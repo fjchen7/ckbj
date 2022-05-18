@@ -2,12 +2,10 @@ package org.ckbj.chain;
 
 import org.ckbj.type.CellDep;
 import org.ckbj.type.Script;
-import org.ckbj.utils.Hex;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import static org.ckbj.type.Script.Type.LOCK;
 import static org.ckbj.type.Script.Type.TYPE;
@@ -17,51 +15,28 @@ public class Contract {
     private Script.HashType hashType = Script.HashType.TYPE;
     private List<CellDep> cellDeps = new ArrayList<>();
 
-    public Script.HashType getHashType() {
-        return hashType;
+    public Contract(byte[] codeHash, Script.HashType hashType, List<CellDep> cellDeps) {
+        this.codeHash = codeHash;
+        this.hashType = hashType;
+        this.cellDeps = cellDeps;
     }
 
-    public Contract setHashType(Script.HashType hashType) {
-        Objects.requireNonNull(hashType);
+    public Contract(byte[] codeHash, Script.HashType hashType, CellDep... cellDeps) {
+        this.codeHash = codeHash;
         this.hashType = hashType;
-        return this;
+        this.cellDeps = Arrays.asList(cellDeps);
     }
 
     public byte[] getCodeHash() {
         return codeHash;
     }
 
-    public Contract setCodeHash(String codeHash) {
-        return setCodeHash(Hex.toByteArray(codeHash));
-    }
-
-    public Contract setCodeHash(byte[] codeHash) {
-        Objects.requireNonNull(codeHash);
-        this.codeHash = codeHash;
-        return this;
+    public Script.HashType getHashType() {
+        return hashType;
     }
 
     public List<CellDep> getCellDeps() {
         return cellDeps;
-    }
-
-    public Contract setCellDeps(List<CellDep> cellDeps) {
-        this.cellDeps = cellDeps;
-        return this;
-    }
-
-    public Contract addCellDep(CellDep cellDep) {
-        this.cellDeps.add(cellDep);
-        return this;
-    }
-
-    /**
-     * Check if the script uses code of given contract.
-     *
-     * @return true if the script uses code of given contract.
-     */
-    public boolean usedBy(Script script) {
-        return Arrays.equals(script.getCodeHash(), getCodeHash());
     }
 
     public Script createScript(byte[] args) {
