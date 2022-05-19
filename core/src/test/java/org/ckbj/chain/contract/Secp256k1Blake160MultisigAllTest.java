@@ -1,5 +1,6 @@
 package org.ckbj.chain.contract;
 
+import org.ckbj.chain.Network;
 import org.ckbj.crypto.ECKeyPair;
 import org.ckbj.type.Cell;
 import org.ckbj.type.CellDep;
@@ -113,7 +114,7 @@ class Secp256k1Blake160MultisigAllTest {
          * - signature #1
          *   - bf990766e3efa8253c58330f4366bef09f49cbe4efa47b2b491541ad919c90c33ca6763c5780693efd0efea89c1645e8992520e8e551c1dec50fc41fac14b3a401
          */
-        Transaction tx = Transaction.builder()
+        Transaction tx = Transaction.builder(Network.TESTNET)
                 .addCellDep(CellDep.DepType.DEP_GROUP, "0xf8de3bb47d055cdf460d93a2a6e1b05f7432f9777c8c474abf4eec1d4aee5d37", 1)
                 .addInput("0xb8e52009fb4dc0d63dd2a0547909bb1d66dff83e14645c70b25222c1e04ec593", 0)
                 .addOutput(Cell.builder()

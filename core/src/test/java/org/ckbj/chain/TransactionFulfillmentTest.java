@@ -16,7 +16,7 @@ public class TransactionFulfillmentTest {
     @Test
     public void testFulfill() {
         // https://pudge.explorer.nervos.org/transaction/0x7be5f1df2c5eb2f33bcf20603774e485c78ab7616e059908715b4a8200e8949f
-        Transaction tx = Transaction.builder()
+        Transaction tx = Transaction.builder(Network.TESTNET)
                 .addCellDep(CellDep.DepType.DEP_GROUP, "0xf8de3bb47d055cdf460d93a2a6e1b05f7432f9777c8c474abf4eec1d4aee5d37", 0)
                 .addCellDep(CellDep.DepType.DEP_GROUP, "0xec26b0f85ed839ece5f11c4c4e837ec359f5adc4420410f6453b1f6b60fb96a6", 0)
                 .addInput("0xbaf3371f487a0d40f8ebc341a34b93a2d36e1d9f77b9533fb8c579c87958b7aa", 0)

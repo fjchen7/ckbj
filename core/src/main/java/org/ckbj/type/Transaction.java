@@ -3,13 +3,16 @@ package org.ckbj.type;
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.reflect.TypeToken;
+import org.ckbj.chain.Contract;
+import org.ckbj.chain.Network;
+import org.ckbj.chain.address.Address;
 import org.ckbj.crypto.Blake2b;
 import org.ckbj.molecule.Serializer;
+import org.ckbj.utils.Capacity;
 import org.ckbj.utils.Hex;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Core CKB transaction data structure
@@ -23,8 +26,8 @@ public class Transaction {
     private List<Cell> outputs = new ArrayList<>();
     private List<byte[]> witnesses = new ArrayList<>();
 
-    public static Builder builder() {
-        return new Builder();
+    public static Builder builder(Network network) {
+        return new Builder(network);
     }
 
     public int getVersion() {
@@ -113,6 +116,8 @@ public class Transaction {
     }
 
     public static final class Builder {
+        private Network network;
+
         private int version = 0;
         private List<CellDep> cellDeps = new ArrayList<>();
         private List<byte[]> headerDeps = new ArrayList<>();
@@ -120,7 +125,8 @@ public class Transaction {
         private List<Cell> outputs = new ArrayList<>();
         private List<byte[]> witnesses = new ArrayList<>();
 
-        private Builder() {
+        public Builder(Network network) {
+            this.network = network;
         }
 
         public Builder setVersion(int version) {
@@ -128,16 +134,35 @@ public class Transaction {
             return this;
         }
 
-        public Builder setCellDeps(List<CellDep> cellDeps) {
+        public Builder setCellDep(List<CellDep> cellDeps) {
+            Objects.requireNonNull(cellDeps);
             this.cellDeps = cellDeps;
             return this;
         }
 
-        public Builder addCellDep(CellDep... cellDeps) {
+        public Builder addCellDep(CellDep cellDep) {
+            Objects.requireNonNull(cellDep);
+            this.cellDeps.add(cellDep);
+            return this;
+        }
+
+        public Builder addCellDep(Collection<CellDep> cellDeps) {
             for (CellDep cellDep: cellDeps) {
-                this.cellDeps.add(cellDep);
+                addCellDep(cellDep);
             }
             return this;
+        }
+
+        public Builder addCellDep(Contract contract) {
+            return addCellDep(contract.getCellDeps());
+        }
+
+        public Builder addCellDep(Contract.Type contractTypes) {
+            return addCellDep(network.getContract(contractTypes));
+        }
+
+        public Builder addCellDep(Script script) {
+            return addCellDep(network.getContract(script).getCellDeps());
         }
 
         public Builder addCellDep(CellDep.DepType depType, String txHash, int index) {
@@ -145,42 +170,57 @@ public class Transaction {
         }
 
         public Builder addCellDep(CellDep.DepType depType, byte[] txHash, int index) {
+            Objects.requireNonNull(depType);
             CellDep cellDep = CellDep.builder()
                     .setDepType(depType)
                     .setOutPoint(new OutPoint(txHash, index))
                     .build();
-            this.cellDeps.add(cellDep);
-            return this;
+            return addCellDep(cellDep);
         }
 
         public Builder setHeaderDeps(List<byte[]> headerDeps) {
+            Objects.requireNonNull(headerDeps);
             this.headerDeps = headerDeps;
             return this;
         }
 
-        public Builder addHeaderDep(byte[]... headerDeps) {
+        public Builder addHeaderDep(byte[] headerDep) {
+            if (headerDep.length != 32) {
+                throw new IllegalArgumentException("headerDep length must be 32");
+            }
+            this.headerDeps.add(headerDep);
+            return this;
+        }
+
+        public Builder addHeaderDep(Collection<byte[]> headerDeps) {
             for (byte[] headerDep: headerDeps) {
-                this.headerDeps.add(headerDep);
+                addHeaderDep(headerDep);
             }
             return this;
         }
 
         public Builder setInputs(List<CellInput> inputs) {
+            Objects.requireNonNull(inputs);
             this.inputs = inputs;
             return this;
         }
 
-        public Builder addInput(CellInput... inputs) {
+        public Builder addInput(CellInput inputs) {
+            Objects.requireNonNull(inputs);
+            this.inputs.add(inputs);
+            return this;
+        }
+
+        public Builder addInput(Collection<CellInput> inputs) {
             for (CellInput input: inputs) {
-                this.inputs.add(input);
+                addInput(input);
             }
             return this;
         }
 
         public Builder addInput(byte[] txHash, int index) {
             CellInput cellInput = new CellInput(new OutPoint(txHash, index));
-            this.inputs.add(cellInput);
-            return this;
+            return addInput(cellInput);
         }
 
         public Builder addInput(String txHash, int index) {
@@ -188,38 +228,91 @@ public class Transaction {
         }
 
         public Builder setOutputs(List<Cell> outputs) {
+            Objects.requireNonNull(outputs);
             this.outputs = outputs;
             return this;
         }
 
-        public Builder addOutput(Cell... outputs) {
+        public Builder addOutput(Cell output) {
+            Objects.requireNonNull(output);
+            this.outputs.add(output);
+            if (output.getType() != null) {
+                addCellDep(network.getContract(output.getType()));
+            }
+            return this;
+        }
+
+        public Builder addOutput(Collection<Cell> outputs) {
             for (Cell output: outputs) {
                 this.outputs.add(output);
             }
             return this;
         }
 
+        public Builder addOutput(Address address, long shannon) {
+            if (address.getNetwork() != network) {
+                throw new IllegalArgumentException("Address network is not " + network);
+            }
+            Cell cell = Cell.builder()
+                    .setLock(address.getScript())
+                    .setCapacity(shannon)
+                    .build();
+            return addOutput(cell);
+        }
+
+        public Builder addOutput(String address, long capacity) {
+            return addOutput(Address.decode(address), capacity);
+        }
+
+        public Builder addOutputInBytes(Address address, double bytes) {
+            return addOutput(address, Capacity.bytesToShannon(bytes));
+        }
+
+        public Builder addOutputInBytes(String address, double bytes) {
+            return addOutput(address, Capacity.bytesToShannon(bytes));
+        }
+
         public Builder setWitnesses(List<byte[]> witnesses) {
+            Objects.requireNonNull(witnesses);
             this.witnesses = witnesses;
             return this;
         }
 
-        public Builder addWitness(byte[]... witnesses) {
-            for (byte[] witness: witnesses) {
-                this.witnesses.add(witness);
-            }
+        public Builder addWitness(byte[] witness) {
+            Objects.requireNonNull(witness);
+            this.witnesses.add(witness);
             return this;
         }
 
+        public Builder addWitness(String witness) {
+            return addWitness(Hex.toByteArray(witness));
+        }
+
         public Transaction build() {
+            for (int i = witnesses.size(); i < inputs.size(); i++) {
+                witnesses.add(new byte[0]);
+            }
+            removeDuplicateCellDeps();
             Transaction transaction = new Transaction();
             transaction.setVersion(version);
-            transaction.setCellDeps(cellDeps);
+            transaction.setCellDeps(new ArrayList<>(cellDeps));
             transaction.setHeaderDeps(headerDeps);
             transaction.setInputs(inputs);
             transaction.setOutputs(outputs);
             transaction.setWitnesses(witnesses);
             return transaction;
+        }
+
+        private void removeDuplicateCellDeps() {
+            Set<CellDep> unique = new HashSet<>();
+            List<CellDep> filter = new ArrayList<>();
+            for (CellDep cellDep: this.cellDeps) {
+                if (!unique.contains(cellDep)) {
+                    unique.add(cellDep);
+                    filter.add(cellDep);
+                }
+            }
+            this.cellDeps = filter;
         }
     }
 
