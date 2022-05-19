@@ -7,10 +7,10 @@ import org.ckbj.rpc.GsonFactory;
 import org.ckbj.type.Script;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,16 +25,19 @@ public enum Network {
 
     static {
         try {
-            MAINNET.loadContracts("/mainnet.json");
-            TESTNET.loadContracts("/testnet.json");
+            MAINNET.loadContracts("mainnet.json");
+            TESTNET.loadContracts("testnet.json");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private void loadContracts(String path) throws IOException {
-        Reader reader = Files.newBufferedReader(
-                Paths.get(Network.class.getResource(path).getPath()));
+        InputStream inputStream = Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream(path);
+        Reader reader = new InputStreamReader(inputStream);
+
         Gson gson = GsonFactory.create();
         Type type = new TypeToken<Map<Contract.Type, Contract>>() {}.getType();
 
