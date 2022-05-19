@@ -1,6 +1,5 @@
 package org.ckbj.chain;
 
-import org.ckbj.chain.contract.LockScriptFulfillment;
 import org.ckbj.type.Cell;
 import org.ckbj.type.Transaction;
 

@@ -1,6 +1,7 @@
 package org.ckbj.chain.contract;
 
 import org.ckbj.chain.Contract;
+import org.ckbj.chain.LockScriptFulfillment;
 import org.ckbj.chain.Network;
 import org.ckbj.molecule.Serializer;
 import org.ckbj.type.Script;

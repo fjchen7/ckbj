@@ -1,4 +1,4 @@
-package org.ckbj.chain.contract;
+package org.ckbj.chain;
 
 import org.ckbj.type.Cell;
 import org.ckbj.type.Script;
