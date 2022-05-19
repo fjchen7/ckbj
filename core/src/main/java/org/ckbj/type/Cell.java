@@ -1,5 +1,6 @@
 package org.ckbj.type;
 
+import org.ckbj.chain.address.Address;
 import org.ckbj.crypto.Blake2b;
 import org.ckbj.utils.Capacity;
 import org.ckbj.utils.Hex;
@@ -85,11 +86,19 @@ public class Cell {
             this.data = cell.data;
         }
 
-        public Builder setCapacity(long capacity) {
-            if (capacity < 0) {
+        public Builder setCapacity(long capacityInShannon) {
+            if (capacityInShannon < 0) {
                 throw new IllegalArgumentException("capacity must be positive");
             }
-            this.capacity = capacity;
+            this.capacity = capacityInShannon;
+            return this;
+        }
+
+        public Builder setCapacityInBytes(double capacityInBytes) {
+            if (capacityInBytes < 0) {
+                throw new IllegalArgumentException("capacity must be positive");
+            }
+            this.capacity = Capacity.bytesToShannon(capacityInBytes);
             return this;
         }
 
@@ -103,13 +112,18 @@ public class Cell {
             return this;
         }
 
+        public Builder setLock(Address address) {
+            this.lock = address.getScript();
+            return this;
+        }
+
         public Builder setData(byte[] data) {
             this.data = data;
             return this;
         }
 
         public Builder setData(String data) {
-            setData(Hex.toByteArray(data));
+            this.data = Hex.toByteArray(data);
             return this;
         }
 
