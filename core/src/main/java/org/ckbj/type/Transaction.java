@@ -5,12 +5,10 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.reflect.TypeToken;
 import org.ckbj.crypto.Blake2b;
 import org.ckbj.molecule.Serializer;
-import org.ckbj.utils.Capacity;
 import org.ckbj.utils.Hex;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -115,7 +113,7 @@ public class Transaction {
     }
 
     public static final class Builder {
-        private int version;
+        private int version = 0;
         private List<CellDep> cellDeps = new ArrayList<>();
         private List<byte[]> headerDeps = new ArrayList<>();
         private List<CellInput> inputs = new ArrayList<>();
@@ -135,13 +133,10 @@ public class Transaction {
             return this;
         }
 
-        public Builder addCellDeps(List<CellDep> cellDeps) {
-            this.cellDeps.addAll(cellDeps);
-            return this;
-        }
-
-        public Builder addCellDeps(CellDep... cellDeps) {
-            this.cellDeps.addAll(Arrays.asList(cellDeps));
+        public Builder addCellDep(CellDep... cellDeps) {
+            for (CellDep cellDep: cellDeps) {
+                this.cellDeps.add(cellDep);
+            }
             return this;
         }
 
@@ -154,7 +149,8 @@ public class Transaction {
                     .setDepType(depType)
                     .setOutPoint(new OutPoint(txHash, index))
                     .build();
-            return addCellDeps(cellDep);
+            this.cellDeps.add(cellDep);
+            return this;
         }
 
         public Builder setHeaderDeps(List<byte[]> headerDeps) {
@@ -162,14 +158,9 @@ public class Transaction {
             return this;
         }
 
-        public Builder addHeaderDeps(byte[]... headerDeps) {
-            this.headerDeps.addAll(Arrays.asList(headerDeps));
-            return this;
-        }
-
-        public Builder addHeaderDeps(String... headerDep) {
-            for (String header: headerDep) {
-                this.headerDeps.add(Hex.toByteArray(header));
+        public Builder addHeaderDep(byte[]... headerDeps) {
+            for (byte[] headerDep: headerDeps) {
+                this.headerDeps.add(headerDep);
             }
             return this;
         }
@@ -179,73 +170,33 @@ public class Transaction {
             return this;
         }
 
-        public Builder addInputs(CellInput... inputs) {
-            this.inputs.addAll(Arrays.asList(inputs));
+        public Builder addInput(CellInput... inputs) {
+            for (CellInput input: inputs) {
+                this.inputs.add(input);
+            }
             return this;
-        }
-
-        public Builder addInput(String txHash, int index) {
-            CellInput cellInput = new CellInput(new OutPoint(txHash, index));
-            return addInputs(cellInput);
         }
 
         public Builder addInput(byte[] txHash, int index) {
             CellInput cellInput = new CellInput(new OutPoint(txHash, index));
-            return addInputs(cellInput);
+            this.inputs.add(cellInput);
+            return this;
+        }
+
+        public Builder addInput(String txHash, int index) {
+            return addInput(Hex.toByteArray(txHash), index);
         }
 
         public Builder setOutputs(List<Cell> outputs) {
-            this.outputs = new ArrayList<>();
-            for (Cell output: outputs) {
-                addOutput(output);
-            }
+            this.outputs = outputs;
             return this;
         }
 
-        public Builder addOutput(Cell output) {
-            long capacity = output.getCapacity();
-            long occupation = Capacity.occupation(output, false);
-            if (capacity < occupation) {
-                throw new IllegalArgumentException("capacity " + capacity + " is less than output occupation " + occupation);
-            } else {
+        public Builder addOutput(Cell... outputs) {
+            for (Cell output: outputs) {
                 this.outputs.add(output);
             }
             return this;
-        }
-
-        public Builder addOutputs(Cell... outputs) {
-            for (Cell output: outputs) {
-                addOutput(output);
-            }
-            return this;
-        }
-
-        public Builder addOutput(Script lockScript, long capacity) {
-            Cell cell = Cell.builder()
-                    .setCapacity(capacity)
-                    .setLock(lockScript)
-                    .build();
-            return addOutputs(cell);
-        }
-
-        public Builder addOutput(Script lockScript, double capacityInBytes) {
-            return addOutput(lockScript, Capacity.bytesToShannon(capacityInBytes));
-        }
-
-        public Builder addOutput(Address address, long capacity) {
-            return addOutput(address.getScript(), capacity);
-        }
-
-        public Builder addOutput(Address address, double capacityInBytes) {
-            return addOutput(address.getScript(), Capacity.bytesToShannon(capacityInBytes));
-        }
-
-        public Builder addOutput(String address, long capacity) {
-            return addOutput(Address.decode(address), capacity);
-        }
-
-        public Builder addOutput(String address, double capacityInBytes) {
-            return addOutput(Address.decode(address), Capacity.bytesToShannon(capacityInBytes));
         }
 
         public Builder setWitnesses(List<byte[]> witnesses) {
@@ -253,16 +204,9 @@ public class Transaction {
             return this;
         }
 
-        public Builder addWitnesses(byte[]... witnesses) {
+        public Builder addWitness(byte[]... witnesses) {
             for (byte[] witness: witnesses) {
                 this.witnesses.add(witness);
-            }
-            return this;
-        }
-
-        public Builder addWitnesses(String... witnesses) {
-            for (String witness: witnesses) {
-                addWitnesses(Hex.toByteArray(witness));
             }
             return this;
         }
@@ -275,11 +219,6 @@ public class Transaction {
             transaction.setInputs(inputs);
             transaction.setOutputs(outputs);
             transaction.setWitnesses(witnesses);
-            if (witnesses.size() < inputs.size()) {
-                for (int i = witnesses.size(); i < inputs.size(); i++) {
-                    witnesses.add(new byte[0]);
-                }
-            }
             return transaction;
         }
     }
