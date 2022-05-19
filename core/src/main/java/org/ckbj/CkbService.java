@@ -22,7 +22,7 @@ public class CkbService {
         this(new DefaultHttpService(url));
     }
 
-    public static CkbService defaultInstance(Network network) {
+    public static CkbService getInstance(Network network) {
         switch (network) {
             case MAINNET:
                 if (LINA_SERVICE == null) {

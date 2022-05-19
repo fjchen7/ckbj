@@ -33,7 +33,7 @@ public class Example {
         Secp256k1Blake160SighashAll.fulfillment(keyPair).fulfill(tx, 0);
 
         // send transaction
-        CkbService service = CkbService.defaultInstance(network);
+        CkbService service = CkbService.getInstance(network);
         byte[] hash = service.sendTransaction(tx);
         System.out.println(Hex.toHexString(hash));
     }
@@ -72,7 +72,7 @@ public class Example {
                 .fulfill(tx, 0);
 
         // send transaction
-        CkbService service = CkbService.defaultInstance(Network.TESTNET);
+        CkbService service = CkbService.getInstance(Network.TESTNET);
         byte[] txHash = service.sendTransaction(tx);
         System.out.println(Hex.toHexString(txHash));
     }

@@ -11,7 +11,7 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CkbServiceTest {
-    private CkbService service = CkbService.defaultInstance(Network.TESTNET);
+    private CkbService service = CkbService.getInstance(Network.TESTNET);
 
     @Test
     public void testGetBlockHash() throws IOException {
