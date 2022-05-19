@@ -24,7 +24,7 @@ public abstract class StandardLockScriptFulfillment implements LockScriptFulfill
         }
     }
 
-    public static byte[] getWitnessPlaceHolder(byte[] originalWitness, byte[] lockPlaceholder) {
+    public static byte[] setWitnessArgsLock(byte[] originalWitness, byte[] lockPlaceholder) {
         WitnessArgs witnessArgs;
         if (originalWitness == null || originalWitness.length == 0) {
             witnessArgs = WitnessArgs

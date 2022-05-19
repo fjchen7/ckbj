@@ -20,7 +20,7 @@ public class TransactionFulfillment {
         Set<LockScriptFulfillment> matchedFulfillmentSet = new HashSet<>();
         for (LockScriptFulfillment fulfillment: lockScriptFulfillmentSet) {
             for (Cell cell: transaction.getOutputs()) {
-                if (fulfillment.match(cell.getType())) {
+                if (fulfillment.match(cell.getLock())) {
                     matchedFulfillmentSet.add(fulfillment);
                     break;
                 }

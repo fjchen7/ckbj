@@ -1,19 +1,27 @@
 package org.ckbj.chain.contract;
 
 import org.ckbj.chain.Contract;
+import org.ckbj.chain.Network;
+import org.ckbj.chain.address.Address;
 import org.ckbj.crypto.Blake2b;
 import org.ckbj.crypto.ECKeyPair;
 import org.ckbj.crypto.Sign;
 import org.ckbj.molecule.Serializer;
+import org.ckbj.type.Script;
 import org.ckbj.type.Transaction;
-import org.ckbj.type.WitnessArgs;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.ckbj.chain.contract.StandardLockScriptFulfillment.getWitnessPlaceHolder;
+import static org.ckbj.chain.contract.StandardLockScriptFulfillment.setWitnessArgsLock;
 
 public class Secp256k1Blake160SighashAll {
+    public static Address createAddress(Network network, ECKeyPair.Point publicKey) {
+        byte[] args = createArgs(publicKey);
+        Script script = network.getContract(Contract.Type.SECP256K1_BLAKE160_SIGHASH_ALL).createScript(args);
+        return new Address(script, network);
+    }
+
     public static byte[] createArgs(ECKeyPair.Point publicKey) {
         // CKB uses encoded public keys of compressed form (with prefix 0x04)
         // See https://en.bitcoin.it/wiki/Elliptic_Curve_Digital_Signature_Algorithm for details
@@ -51,12 +59,11 @@ public class Secp256k1Blake160SighashAll {
 
         @Override
         public void fulfill(Transaction transaction, int... inputGroup) {
+            byte[] lock = new Signer(keyPair).sign(transaction, inputGroup);
             List<byte[]> witnesses = transaction.getWitnesses();
             int firstIndex = inputGroup[0];
-            byte[] signature = new Signer(keyPair).sign(transaction, inputGroup);
-            WitnessArgs witnessArgs = Serializer.deserializeWitnessArgs(witnesses.get(firstIndex));
-            witnessArgs.setLock(signature);
-            witnesses.set(firstIndex, Serializer.serialize(witnessArgs));
+            byte[] witness = setWitnessArgsLock(witnesses.get(firstIndex), lock);
+            witnesses.set(firstIndex, witness);
         }
     }
 
@@ -98,9 +105,9 @@ public class Secp256k1Blake160SighashAll {
         }
 
         public byte[] sign(Transaction transaction, int... inputGroup) {
-            byte[] witnessPlaceholder = transaction.getWitness(inputGroup[0]);
-            witnessPlaceholder = getWitnessPlaceHolder(witnessPlaceholder, new byte[Sign.SIGNATURE_LENGTH]);
-            return sign(transaction, witnessPlaceholder, inputGroup);
+            byte[] witness = transaction.getWitness(inputGroup[0]);
+            witness = setWitnessArgsLock(witness, new byte[Sign.SIGNATURE_LENGTH]);
+            return sign(transaction, witness, inputGroup);
         }
     }
 }
