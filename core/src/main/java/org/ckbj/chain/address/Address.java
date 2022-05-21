@@ -54,9 +54,9 @@ public class Address {
             case SHORT:
                 return decodeShort(payload, network);
             case FULL_BECH32:
-                return decodeLongBech32(payload, network);
+                return decodeFullBech32(payload, network);
             case FULL_BECH32M:
-                return decodeLongBech32m(payload, network);
+                return decodeFullBech32m(payload, network);
             default:
                 return null;
         }
@@ -90,26 +90,32 @@ public class Address {
     }
 
     private static Address decodeShort(byte[] payload, Network network) {
-        // header (1) + codeHashIndex (1) + args (20) = 22
-        if (payload.length != 22) {
-            throw new AddressFormatException("Invalid payload length %d", payload.length);
-        }
         if (payload[0] != 0x01) {
             throw new AddressFormatException("Invalid payload header 0x%02x", payload[0]);
         }
         Contract contract;
         byte codeHashIndex = payload[1];
+        byte[] args = Arrays.copyOfRange(payload, 2, payload.length);
         if (codeHashIndex == 0x00) {
+            if (args.length != 20) {
+                throw new AddressFormatException("Invalid args length %d", args.length);
+            }
             contract = network.getContract(SECP256K1_BLAKE160_SIGHASH_ALL);
         } else if (codeHashIndex == 0x01) {
+            if (args.length != 20) {
+                throw new AddressFormatException("Invalid args length %d", args.length);
+            }
             contract = network.getContract(SECP256K1_BLAKE160_MULTISIG_ALL);
         } else if (codeHashIndex == 0x02) {
+            // https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md
+            if (args.length < 20 || args.length > 22) {
+                throw new AddressFormatException("Invalid args length %d", args.length);
+            }
             contract = network.getContract(ANYONE_CAN_PAY);
         } else {
             throw new AddressFormatException("Invalid code hash index 0x%02x", codeHashIndex);
         }
         byte[] codeHash = contract.getCodeHash();
-        byte[] args = Arrays.copyOfRange(payload, 2, payload.length);
         Script script = Script.builder()
                 .setCodeHash(codeHash)
                 .setArgs(args)
@@ -118,7 +124,7 @@ public class Address {
         return new Address(script, network);
     }
 
-    private static Address decodeLongBech32(byte[] payload, Network network) {
+    private static Address decodeFullBech32(byte[] payload, Network network) {
         Script.HashType hashType;
         if (payload[0] == 0x04) {
             hashType = Script.HashType.TYPE;
@@ -137,7 +143,7 @@ public class Address {
         return new Address(script, network);
     }
 
-    private static Address decodeLongBech32m(byte[] payload, Network network) {
+    private static Address decodeFullBech32m(byte[] payload, Network network) {
         if (payload[0] != 0x00) {
             throw new AddressFormatException("Invalid payload header 0x%02x", payload[0]);
         }

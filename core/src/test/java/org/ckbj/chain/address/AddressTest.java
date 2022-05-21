@@ -2,11 +2,11 @@ package org.ckbj.chain.address;
 
 import org.ckbj.chain.Network;
 import org.ckbj.type.Script;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.ckbj.chain.address.Address.Format.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AddressTest {
     private Script script = Script.builder()
@@ -50,16 +50,33 @@ public class AddressTest {
         // long bech32m format
         actual = Address.decode("ckb1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqdnnw7qkdnnclfkg59uzn8umtfd2kwxceqxwquc4");
         assertEquals(expected, actual);
+
+        // ACP address with 21 bytes ars
+        actual = Address.decode("ckb1qypylv479ewscx3ms620sv34pgeuz6zagaaqcehzz9g");
+        Script script = Script.builder()
+                .setCodeHash("0xd369597ff47f29fbc0d47d2e3775370d1250b85140c670e4718af712983a2354")
+                .setArgs("0x4fb2be2e5d0c1a3b8694f832350a33c1685d477a0c")
+                .setHashType(Script.HashType.TYPE)
+                .build();
+        expected = new Address(script, Network.MAINNET);
+        assertEquals(expected, actual);
     }
 
     @Test
     public void testValidDecode() {
-        // How to get the error address
-        // original address: ckb1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqgvf0k9sc40s3azmpfvhyuudhahpsj72tsr8cx3d
-        // change payload[0] to be 0x00 in Address#encodeFullBech32m, and then decode(FULL_BECH32M);
-        Assertions.assertThrows(AddressFormatException.class, () -> {
-            Address.decode("ckb1q2da0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqgvf0k9sc40s3azmpfvhyuudhahpsj72tsqsf9mm");
-        });
+        // These invalid addresses come form https://github.com/nervosnetwork/ckb-sdk-rust/pull/7/files
+        // INVALID bech32 encoding
+        assertThrows(AddressFormatException.class, () -> Address.decode("ckb1qyqylv479ewscx3ms620sv34pgeuz6zagaaqh0knz7"));
+        // INVALID data length
+        assertThrows(AddressFormatException.class, () -> Address.decode("ckb1qyqylv479ewscx3ms620sv34pgeuz6zagaarxdzvx03"));
+        // INVALID code hash index
+        assertThrows(AddressFormatException.class, () -> Address.decode("ckb1qyg5lv479ewscx3ms620sv34pgeuz6zagaaqajch0c"));
+        // INVALID bech32m encoding
+        assertThrows(AddressFormatException.class, () -> Address.decode("ckb1q2da0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsnajhch96rq68wrqn2tmhm"));
+        // Invalid ckb2021 format full address
+        assertThrows(AddressFormatException.class, () -> Address.decode("ckb1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsq20k2lzuhgvrgacv4tmr88"));
+        assertThrows(AddressFormatException.class, () -> Address.decode("ckb1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqz0k2lzuhgvrgacvhcym08"));
+        assertThrows(AddressFormatException.class, () -> Address.decode("ckb1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqj0k2lzuhgvrgacvnhnzl8"));
     }
 }
 
