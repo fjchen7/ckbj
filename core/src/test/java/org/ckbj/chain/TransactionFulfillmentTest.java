@@ -41,7 +41,7 @@ public class TransactionFulfillmentTest {
 
         TransactionFulfillment transactionFulfillment = new TransactionFulfillment();
         ECKeyPair ecKeyPair = ECKeyPair.create("0x6fc935dad260867c749cf1ba6602d5f5ed7fb1131f1beb65be2d342e912eaafe");
-        transactionFulfillment.register(Secp256k1Blake160SighashAll.fulfillment(ecKeyPair));
+        transactionFulfillment.register(Secp256k1Blake160SighashAll.newFulfillment(ecKeyPair));
 
         List<Cell> inputDetails = new ArrayList<>();
         inputDetails.add(Cell.builder()

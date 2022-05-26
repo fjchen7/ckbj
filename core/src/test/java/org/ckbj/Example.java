@@ -18,10 +18,12 @@ public class Example {
     @Disabled
     @Test
     // onchain tx: https://pudge.explorer.nervos.org/transaction/0xd66ea40920f875ed4e684032b8158bb90af39c6c35d2880691eab21f4e46a103
-    public void sigleSign() throws IOException {
+    public void singleSign() throws IOException {
         Network network = Network.TESTNET;
         ECKeyPair keyPair = ECKeyPair.create("0x4e3796fb07ef32553485f995ef6d63a66792f86ebfa431815282f3f81029adfb");
-        Address address = Secp256k1Blake160SighashAll.createAddress(network, keyPair.getPublicKey());
+        Address address = Secp256k1Blake160SighashAll
+                .newArgs(keyPair.getPublicKey())
+                .toAddress(network);
 
         Transaction tx = Transaction.builder(network)
                 .addCellDep(Contract.Type.SECP256K1_BLAKE160_SIGHASH_ALL)
@@ -30,7 +32,7 @@ public class Example {
                 .build();
 
         // sign tx and put signature into witnesses
-        Secp256k1Blake160SighashAll.fulfillment(keyPair).fulfill(tx, 0);
+        Secp256k1Blake160SighashAll.newFulfillment(keyPair).fulfill(tx, 0);
 
         // send transaction
         CkbService service = CkbService.getInstance(network);
@@ -45,12 +47,13 @@ public class Example {
         Network network = Network.TESTNET;
 
         // construct information of multisig script
-        Secp256k1Blake160MultisigAll.Rule rule = Secp256k1Blake160MultisigAll.Rule.builder()
+        Secp256k1Blake160MultisigAll.Args args = Secp256k1Blake160MultisigAll.newArgsBuilder()
                 .setThreshold(2)
-                .addKey("ckt1qyqw4ss6cmfhxs2242d6xnzxn7q96j9k97rqn7cn8m",
-                        "ckt1qyqz0c9vrrft28e47nlvf0wgtt0n5d4u8fhsghaylr")
+                .addKey("ckt1qyqw4ss6cmfhxs2242d6xnzxn7q96j9k97rqn7cn8m")
+                .addKey("ckt1qyqz0c9vrrft28e47nlvf0wgtt0n5d4u8fhsghaylr")
                 .build();
-        Address sender = Secp256k1Blake160MultisigAll.createAddress(network, rule);
+        Address sender = args.toAddress(network);
+        //        Address sender = Secp256k1Blake160MultisigAll.createAddress(network, args);
 
         Transaction tx = Transaction.builder(network)
                 .addCellDep(Contract.Type.SECP256K1_BLAKE160_MULTISIG_ALL)
@@ -62,13 +65,13 @@ public class Example {
         // sign tx separately by key pairs
         // ckt1qyqw4ss6cmfhxs2242d6xnzxn7q96j9k97rqn7cn8m
         ECKeyPair k1 = ECKeyPair.create("0x4e3796fb07ef32553485f995ef6d63a66792f86ebfa431815282f3f81029adfb");
-        byte[] signature1 = Secp256k1Blake160MultisigAll.signer(rule, k1).sign(tx, 0);
+        byte[] signature1 = Secp256k1Blake160MultisigAll.newSigner(args, k1).sign(tx, 0);
         // ckt1qyqz0c9vrrft28e47nlvf0wgtt0n5d4u8fhsghaylr
         ECKeyPair k2 = ECKeyPair.create("0x75f53e5b6290c5f349d8a91779f3c028658d49674cb1e24cb326d71829a65ec6");
-        byte[] signature2 = Secp256k1Blake160MultisigAll.signer(rule, k2).sign(tx, 0);
+        byte[] signature2 = Secp256k1Blake160MultisigAll.newSigner(args, k2).sign(tx, 0);
 
         // aggregate signatures and put it into witnesses in transaction
-        Secp256k1Blake160MultisigAll.fulfillment(rule, signature1, signature2)
+        Secp256k1Blake160MultisigAll.newFulfillment(args, signature1, signature2)
                 .fulfill(tx, 0);
 
         // send transaction

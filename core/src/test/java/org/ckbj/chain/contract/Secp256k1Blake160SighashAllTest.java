@@ -20,13 +20,13 @@ class Secp256k1Blake160SighashAllTest {
     public void testCreateArgs() {
         Address address = Address.decode("ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsq07fzlmn6p52hsqv24gaufdqdqfcj223ug92c4sg");
         ECKeyPair keyPair = ECKeyPair.create(new BigInteger("94792549824565121718037239626101186211400998112465652044858772198875205375860"));
-        byte[] args = Secp256k1Blake160SighashAll.createArgs(keyPair.getPublicKey());
+        byte[] args = Secp256k1Blake160SighashAll.newArgs(keyPair.getPublicKey()).getArgs();
         Assertions.assertArrayEquals(
                 Hex.toByteArray("0xfe48bfb9e83455e0062aa8ef12d03409c494a8f1"),
                 args);
         Assertions.assertEquals(
                 address,
-                Secp256k1Blake160SighashAll.createAddress(Network.TESTNET, keyPair.getPublicKey()));
+                Secp256k1Blake160SighashAll.newArgs(keyPair.getPublicKey()).toAddress(Network.TESTNET));
     }
 
     @Test
@@ -42,7 +42,7 @@ class Secp256k1Blake160SighashAllTest {
                                  .build());
 
         ECKeyPair ecKeyPair = ECKeyPair.create("0x6fc935dad260867c749cf1ba6602d5f5ed7fb1131f1beb65be2d342e912eaafe");
-        Secp256k1Blake160SighashAll.Fulfillment fulfillment = Secp256k1Blake160SighashAll.fulfillment(ecKeyPair);
+        Secp256k1Blake160SighashAll.Fulfillment fulfillment = Secp256k1Blake160SighashAll.newFulfillment(ecKeyPair);
         fulfillment.fulfill(tx, inputDetails);
         Assertions.assertEquals(
                 "0x550000001000000055000000550000004100000090b18cc17b8c67e20075ffcffe82d079e0b6a78cb3184157d78962bdd5a648d82c9bc8e1bbe87e7b8b0661440c1060f939be85d26742148e08dc58743a900df401",

@@ -1,7 +1,7 @@
 package org.ckbj.chain.contract;
 
 import org.ckbj.chain.Contract;
-import org.ckbj.chain.Network;
+import org.ckbj.chain.StandardLockContractArgs;
 import org.ckbj.chain.address.Address;
 import org.ckbj.crypto.Blake2b;
 import org.ckbj.crypto.ECKeyPair;
@@ -13,46 +13,29 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.ckbj.chain.contract.StandardLockScriptFulfillment.setWitnessArgsLock;
-
 public class Secp256k1Blake160MultisigAll {
-    public static Address createAddress(Network network, Rule rule) {
-        byte[] args = createArgs(rule);
-        Script script = network.getContract(Contract.Type.SECP256K1_BLAKE160_MULTISIG_ALL).createScript(args);
-        return new Address(script, network);
+    public static Args.Builder newArgsBuilder() {
+        return new Args.Builder();
     }
 
-    public static byte[] createArgs(int threshold, String... secp256k1Blake160Addresses) {
-        Rule rule = Rule.builder()
-                .setThreshold(threshold)
-                .addKey(secp256k1Blake160Addresses)
-                .build();
-        return createArgs(rule);
+    public static Fulfillment newFulfillment(Args args, byte[]... signatures) {
+        return new Fulfillment(args, signatures);
     }
 
-    public static byte[] createArgs(Rule rule) {
-        byte[] hash = Blake2b.digest(rule.encode());
-        return Arrays.copyOfRange(hash, 0, 20);
-    }
-
-    public static Fulfillment fulfillment(Rule rule, byte[]... signatures) {
-        return new Fulfillment(rule, signatures);
-    }
-
-    public static Signer signer(Rule rule, ECKeyPair keyPair) {
-        return new Signer(rule, keyPair);
+    public static Signer newSigner(Args args, ECKeyPair keyPair) {
+        return new Signer(args, keyPair);
     }
 
     /**
      * https://github.com/nervosnetwork/ckb-system-scripts/wiki/How-to-sign-transaction#multisig
      */
-    public static class Rule {
+    public static class Args implements StandardLockContractArgs {
         private byte s = 0x0;
         private int r;
         private int m;
         private List<byte[]> publicKeysHash;
 
-        private Rule() {
+        private Args() {
         }
 
         /**
@@ -87,10 +70,6 @@ public class Secp256k1Blake160MultisigAll {
             return publicKeysHash;
         }
 
-        public static Builder builder() {
-            return new Builder();
-        }
-
         public byte[] multisigScript() {
             return encode();
         }
@@ -109,31 +88,45 @@ public class Secp256k1Blake160MultisigAll {
             return out;
         }
 
-        public static Rule decode(byte[] in) {
+        public static Args decode(byte[] in) {
             if ((in.length - 4) % 20 != 0) {
                 throw new IllegalArgumentException("Invalid bytes length");
             }
             if ((in.length - 4) / 20 != in[3]) {
                 throw new IllegalArgumentException("Invalid public key list size");
             }
-            Rule rule = new Rule();
-            rule.s = in[0];
-            rule.r = in[1];
-            rule.m = in[2];
-            rule.publicKeysHash = new ArrayList<>();
+            Args args = new Args();
+            args.s = in[0];
+            args.r = in[1];
+            args.m = in[2];
+            args.publicKeysHash = new ArrayList<>();
             for (int i = 0; i < in[3]; i++) {
                 byte[] publicKeyHash = new byte[20];
                 System.arraycopy(in, 4 + i * 20, publicKeyHash, 0, 20);
-                rule.publicKeysHash.add(publicKeyHash);
+                args.publicKeysHash.add(publicKeyHash);
             }
-            return rule;
+            return args;
         }
 
-        public byte[] getWitnessLockPlaceHolder() {
+        @Override
+        public byte[] getWitnessPlaceholder(byte[] originalWitness) {
             byte[] multisigScript = this.encode();
-            byte[] lockPlaceholder = new byte[multisigScript.length + this.m * Sign.SIGNATURE_LENGTH];
-            System.arraycopy(multisigScript, 0, lockPlaceholder, 0, multisigScript.length);
-            return lockPlaceholder;
+            byte[] witnessLockPlaceholder = new byte[multisigScript.length + this.m * Sign.SIGNATURE_LENGTH];
+            System.arraycopy(multisigScript, 0, witnessLockPlaceholder, 0, multisigScript.length);
+            byte[] witnessPlaceholder = StandardLockContractArgs
+                    .setWitnessArgsLock(originalWitness, witnessLockPlaceholder);
+            return witnessPlaceholder;
+        }
+
+        @Override
+        public byte[] getArgs() {
+            byte[] hash = Blake2b.digest(encode());
+            return Arrays.copyOfRange(hash, 0, 20);
+        }
+
+        @Override
+        public Contract.Type getContractType() {
+            return Contract.Type.SECP256K1_BLAKE160_MULTISIG_ALL;
         }
 
         @Override
@@ -141,15 +134,15 @@ public class Secp256k1Blake160MultisigAll {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            Rule rule = (Rule) o;
+            Args args = (Args) o;
 
-            if (s != rule.s) return false;
-            if (r != rule.r) return false;
-            if (m != rule.m) return false;
+            if (s != args.s) return false;
+            if (r != args.r) return false;
+            if (m != args.m) return false;
 
-            if (publicKeysHash.size() != rule.publicKeysHash.size()) return false;
+            if (publicKeysHash.size() != args.publicKeysHash.size()) return false;
             for (int i = 0; i < publicKeysHash.size(); i++) {
-                if (!Arrays.equals(publicKeysHash.get(i), rule.publicKeysHash.get(i))) {
+                if (!Arrays.equals(publicKeysHash.get(i), args.publicKeysHash.get(i))) {
                     return false;
                 }
             }
@@ -201,47 +194,32 @@ public class Secp256k1Blake160MultisigAll {
                 return this;
             }
 
-            public Builder addKey(byte[]... publicKeyHashes) {
-                for (int i = 0; i < publicKeyHashes.length; i++) {
-                    byte[] publicKeyHash = publicKeyHashes[i];
-                    if (publicKeyHash.length != 20) {
-                        throw new IllegalArgumentException("Public key hash must be 20 bytes");
-                    }
-                    this.publicKeyHashes.add(publicKeyHash);
+            public Builder addKey(byte[] publicKeyHash) {
+                if (publicKeyHash.length != 20) {
+                    throw new IllegalArgumentException("Public key hash must be 20 bytes");
                 }
+                this.publicKeyHashes.add(publicKeyHash);
                 return this;
             }
 
-            public Builder addKey(ECKeyPair.Point... publicKeys) {
-                byte[][] publicKeyHashes = new byte[publicKeys.length][];
-                for (int i = 0; i < publicKeys.length; i++) {
-                    publicKeyHashes[i] = Secp256k1Blake160SighashAll.createArgs(publicKeys[i]);
-                }
-                return addKey(publicKeyHashes);
+            public Builder addKey(ECKeyPair.Point publicKeys) {
+                byte[] publicKeyHash = Secp256k1Blake160SighashAll.newArgs(publicKeys).getArgs();
+                return addKey(publicKeyHash);
             }
 
-            public Builder addKey(String... addresses) {
-                Address[] arr = new Address[addresses.length];
-                for (int i = 0; i < addresses.length; i++) {
-                    arr[i] = Address.decode(addresses[i]);
-                }
-                return addKey(arr);
+            public Builder addKey(String address) {
+                return addKey(Address.decode(address));
             }
 
-            public Builder addKey(Address... addresses) {
-                byte[][] arr = new byte[addresses.length][];
-                for (int i = 0; i < addresses.length; i++) {
-                    Address address = addresses[i];
-                    Script script = address.getScript();
-                    if (address.getNetwork().getContractType(script) != Contract.Type.SECP256K1_BLAKE160_SIGHASH_ALL) {
-                        throw new IllegalArgumentException("Address must be a secp256k1-blake160-sighash-all address");
-                    }
-                    arr[i] = script.getArgs();
+            public Builder addKey(Address address) {
+                Script script = address.getScript();
+                if (address.getNetwork().getContractType(script) != Contract.Type.SECP256K1_BLAKE160_SIGHASH_ALL) {
+                    throw new IllegalArgumentException("Address must be a secp256k1-blake160-sighash-all address");
                 }
-                return addKey(arr);
+                return addKey(script.getArgs());
             }
 
-            public Rule build() {
+            public Args build() {
                 if (m == -1) {
                     throw new IllegalArgumentException("Not set threshold");
                 }
@@ -254,23 +232,23 @@ public class Secp256k1Blake160MultisigAll {
                 if (r > m) {
                     throw new IllegalArgumentException("The firstN must be less than or equal to threshold");
                 }
-                Rule rule = new Rule();
-                rule.s = this.s;
-                rule.r = this.r;
-                rule.m = this.m;
-                rule.publicKeysHash = this.publicKeyHashes;
-                return rule;
+                Args args = new Args();
+                args.s = this.s;
+                args.r = this.r;
+                args.m = this.m;
+                args.publicKeysHash = this.publicKeyHashes;
+                return args;
             }
         }
     }
 
-    public static class Fulfillment extends StandardLockScriptFulfillment {
-        private final Rule rule;
+    public static class Fulfillment extends AbstractStandardLockScriptFulfillment {
+        private final Args args;
         private final byte[][] signatures;
 
-        public Fulfillment(Rule rule, byte[]... signatures) {
-            this.rule = rule;
-            if (signatures.length != rule.getThreshold()) {
+        protected Fulfillment(Args args, byte[]... signatures) {
+            this.args = args;
+            if (signatures.length != args.getThreshold()) {
                 throw new IllegalArgumentException("Number of signatures must be equal to multisig threshold");
             }
             this.signatures = signatures;
@@ -283,25 +261,27 @@ public class Secp256k1Blake160MultisigAll {
 
         @Override
         protected boolean doMatch(byte[] scriptArgs) {
-            byte[] args = createArgs(rule);
+            byte[] args = this.args.getArgs();
             return Arrays.equals(args, scriptArgs);
         }
 
         @Override
         public void fulfill(Transaction transaction, int... inputGroup) {
-            byte[] lock = aggregateSignatures(rule, signatures);
+            byte[] lock = aggregateSignatures(args, signatures);
 
             List<byte[]> witnesses = transaction.getWitnesses();
             int firstIndex = inputGroup[0];
-            byte[] witness = setWitnessArgsLock(witnesses.get(firstIndex), lock);
+            byte[] witness = StandardLockContractArgs.setWitnessArgsLock(witnesses.get(firstIndex), lock);
             witnesses.set(firstIndex, witness);
         }
 
-        public byte[] aggregateSignatures(Rule rule, byte[]... signatures) {
-            if (signatures == null || signatures.length != rule.getThreshold()) {
+        public byte[] aggregateSignatures(Args args, byte[]... signatures) {
+            if (signatures == null || signatures.length != args.getThreshold()) {
                 throw new IllegalArgumentException("Number of signatures must be equal to multisig threshold");
             }
-            byte[] aggregatedSignature = rule.getWitnessLockPlaceHolder();
+            byte[] multiScript = args.multisigScript();
+            byte[] aggregatedSignature = new byte[multiScript.length + Sign.SIGNATURE_LENGTH * signatures.length];
+            System.arraycopy(multiScript, 0, aggregatedSignature, 0, multiScript.length);
             int pos = 4 + 20 * signatures.length;
             for (int i = 0; i < signatures.length; i++) {
                 byte[] signature = signatures[i];
@@ -315,19 +295,18 @@ public class Secp256k1Blake160MultisigAll {
         }
     }
 
-
     public static class Signer {
-        private final Rule rule;
+        private final Args args;
         private final ECKeyPair keyPair;
 
-        protected Signer(Rule rule, ECKeyPair keyPair) {
-            this.rule = rule;
+        protected Signer(Args args, ECKeyPair keyPair) {
+            this.args = args;
             this.keyPair = keyPair;
         }
 
         public byte[] sign(Transaction transaction, int... inputGroup) {
             byte[] originalWitness = transaction.getWitness((inputGroup[0]));
-            byte[] witnessPlaceholder = setWitnessArgsLock(originalWitness, rule.getWitnessLockPlaceHolder());
+            byte[] witnessPlaceholder = args.getWitnessPlaceholder(originalWitness);
             Secp256k1Blake160SighashAll.Signer signer = new Secp256k1Blake160SighashAll.Signer(keyPair);
             return signer.sign(transaction, witnessPlaceholder, inputGroup);
         }

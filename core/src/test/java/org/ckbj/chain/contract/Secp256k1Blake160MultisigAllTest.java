@@ -15,13 +15,13 @@ class Secp256k1Blake160MultisigAllTest {
     public void testEncodeDecode() {
         byte[] encoded = Hex.toByteArray("0x000002029b41c025515b00c24e2e2042df7b221af5c1891fe732dcd15b7618eb1d7a11e6a68e4579b5be0114");
 
-        Secp256k1Blake160MultisigAll.Rule rule = Secp256k1Blake160MultisigAll.Rule.builder()
+        Secp256k1Blake160MultisigAll.Args args = Secp256k1Blake160MultisigAll.newArgsBuilder()
                 .addKey(Hex.toByteArray("0x9b41c025515b00c24e2e2042df7b221af5c1891f"))
                 .addKey(Hex.toByteArray("0xe732dcd15b7618eb1d7a11e6a68e4579b5be0114"))
                 .setThreshold(2)
                 .build();
-        Assertions.assertArrayEquals(encoded, rule.encode());
-        Assertions.assertEquals(rule, Secp256k1Blake160MultisigAll.Rule.decode(encoded));
+        Assertions.assertArrayEquals(encoded, args.encode());
+        Assertions.assertEquals(args, Secp256k1Blake160MultisigAll.Args.decode(encoded));
     }
 
     @Test
@@ -40,28 +40,27 @@ class Secp256k1Blake160MultisigAllTest {
          * - 0xe732dcd15b7618eb1d7a11e6a68e4579b5be0114
          * - bb3597c4daf5e2435fd47aeeb32847df32f1c710a6475f639e34b2275607eaa3
          */
-        Secp256k1Blake160MultisigAll.Rule rule = Secp256k1Blake160MultisigAll.Rule.builder()
+        Secp256k1Blake160MultisigAll.Args args = Secp256k1Blake160MultisigAll.newArgsBuilder()
                 .addKey(Hex.toByteArray("0x9b41c025515b00c24e2e2042df7b221af5c1891f"))
                 .addKey(Hex.toByteArray("0xe732dcd15b7618eb1d7a11e6a68e4579b5be0114"))
                 .setThreshold(2)
                 .build();
 
-        byte[] args = Secp256k1Blake160MultisigAll.createArgs(rule);
         Assertions.assertArrayEquals(
-                args,
+                args.getArgs(),
                 Hex.toByteArray("0x35ed7b939b4ac9cb447b82340fd8f26d344f7a62"));
     }
 
     @Test
     public void testSignerSign() {
         Transaction tx = getTransaction();
-        Secp256k1Blake160MultisigAll.Rule rule = Secp256k1Blake160MultisigAll.Rule.builder()
+        Secp256k1Blake160MultisigAll.Args args = Secp256k1Blake160MultisigAll.newArgsBuilder()
                 .addKey(Hex.toByteArray("0x9b41c025515b00c24e2e2042df7b221af5c1891f"))
                 .addKey(Hex.toByteArray("0xe732dcd15b7618eb1d7a11e6a68e4579b5be0114"))
                 .setThreshold(2)
                 .build();
         ECKeyPair keyPair = ECKeyPair.create("bb3597c4daf5e2435fd47aeeb32847df32f1c710a6475f639e34b2275607eaa3");
-        Secp256k1Blake160MultisigAll.Signer signer = new Secp256k1Blake160MultisigAll.Signer(rule, keyPair);
+        Secp256k1Blake160MultisigAll.Signer signer = new Secp256k1Blake160MultisigAll.Signer(args, keyPair);
         byte[] signature = signer.sign(tx, 0);
         Assertions.assertEquals(
                 "0x309f6a35043ee852c77d525ab8181115467db6161ab2f2916ce53af28d855c5d6d3ca6efeeb640cf2d5e54f6173dfe5e8b69e163e8a34b952cb1eb233247a10001",
@@ -71,14 +70,14 @@ class Secp256k1Blake160MultisigAllTest {
     @Test
     public void testFulfillment() {
         Transaction tx = getTransaction();
-        Secp256k1Blake160MultisigAll.Rule rule = Secp256k1Blake160MultisigAll.Rule.builder()
+        Secp256k1Blake160MultisigAll.Args args = Secp256k1Blake160MultisigAll.newArgsBuilder()
                 .addKey(Hex.toByteArray("0x9b41c025515b00c24e2e2042df7b221af5c1891f"))
                 .addKey(Hex.toByteArray("0xe732dcd15b7618eb1d7a11e6a68e4579b5be0114"))
                 .setThreshold(2)
                 .build();
 
         Secp256k1Blake160MultisigAll.Fulfillment fulfillment = new Secp256k1Blake160MultisigAll.Fulfillment(
-                rule,
+                args,
                 Hex.toByteArray("0x309f6a35043ee852c77d525ab8181115467db6161ab2f2916ce53af28d855c5d6d3ca6efeeb640cf2d5e54f6173dfe5e8b69e163e8a34b952cb1eb233247a10001"),
                 Hex.toByteArray("0xbf990766e3efa8253c58330f4366bef09f49cbe4efa47b2b491541ad919c90c33ca6763c5780693efd0efea89c1645e8992520e8e551c1dec50fc41fac14b3a401"));
         fulfillment.fulfill(tx, 0);
