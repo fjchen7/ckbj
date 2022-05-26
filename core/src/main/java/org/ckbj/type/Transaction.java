@@ -4,7 +4,7 @@ import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.reflect.TypeToken;
 import org.ckbj.chain.Contract;
-import org.ckbj.chain.Network;
+import org.ckbj.chain.ContractCollection;
 import org.ckbj.chain.address.Address;
 import org.ckbj.crypto.Blake2b;
 import org.ckbj.molecule.Serializer;
@@ -26,8 +26,8 @@ public class Transaction {
     private List<Cell> outputs = new ArrayList<>();
     private List<byte[]> witnesses = new ArrayList<>();
 
-    public static Builder builder(Network network) {
-        return new Builder(network);
+    public static Builder builder(ContractCollection contractCollection) {
+        return new Builder(contractCollection);
     }
 
     public int getVersion() {
@@ -116,7 +116,7 @@ public class Transaction {
     }
 
     public static final class Builder {
-        private Network network;
+        private ContractCollection contractCollection;
 
         private int version = 0;
         private List<CellDep> cellDeps = new ArrayList<>();
@@ -125,8 +125,8 @@ public class Transaction {
         private List<Cell> outputs = new ArrayList<>();
         private List<byte[]> witnesses = new ArrayList<>();
 
-        public Builder(Network network) {
-            this.network = network;
+        public Builder(ContractCollection contractCollection) {
+            this.contractCollection = contractCollection;
         }
 
         public Builder setVersion(int version) {
@@ -158,11 +158,11 @@ public class Transaction {
         }
 
         public Builder addCellDep(Contract.Type contractTypes) {
-            return addCellDep(network.getContract(contractTypes));
+            return addCellDep(contractCollection.getContract(contractTypes));
         }
 
         public Builder addCellDep(Script script) {
-            return addCellDep(network.getContract(script).getCellDeps());
+            return addCellDep(contractCollection.getContract(script).getCellDeps());
         }
 
         public Builder addCellDep(CellDep.DepType depType, String txHash, int index) {
@@ -237,7 +237,7 @@ public class Transaction {
             Objects.requireNonNull(output);
             this.outputs.add(output);
             if (output.getType() != null) {
-                addCellDep(network.getContract(output.getType()));
+                addCellDep(contractCollection.getContract(output.getType()));
             }
             return this;
         }
@@ -250,8 +250,8 @@ public class Transaction {
         }
 
         public Builder addOutput(Address address, long shannon) {
-            if (address.getNetwork() != network) {
-                throw new IllegalArgumentException("Address network is not " + network);
+            if (address.getNetwork() != contractCollection) {
+                throw new IllegalArgumentException("Address network is not " + contractCollection);
             }
             Cell cell = Cell.builder()
                     .setLock(address.getScript())

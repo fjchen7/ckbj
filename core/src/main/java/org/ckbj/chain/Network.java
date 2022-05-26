@@ -11,17 +11,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
-import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public enum Network {
+public enum Network implements ContractCollection {
     MAINNET,
     TESTNET;
 
-    private Map<Contract.Type, Contract> contractTypeContractMap = new EnumMap<>(Contract.Type.class);
-    private Map<Script, Contract.Type> scriptContractTypeMap = new HashMap<>();
+    private DefaultContractCollection contractCollection = new DefaultContractCollection();
 
     static {
         try {
@@ -32,7 +29,7 @@ public enum Network {
         }
     }
 
-    private void loadContracts(String path) throws IOException {
+    public void loadContracts(String path) throws IOException {
         InputStream inputStream = Thread.currentThread()
                 .getContextClassLoader()
                 .getResourceAsStream(path);
@@ -48,20 +45,18 @@ public enum Network {
         }
     }
 
-    private void register(Contract.Type contractType, Contract contract) {
-        Objects.requireNonNull(contractType);
-        Objects.requireNonNull(contract);
-        contractTypeContractMap.put(contractType, contract);
-        Script script = contract.createScript(new byte[0]);
-        scriptContractTypeMap.put(script, contractType);
+    public void register(Contract.Type contractType, Contract contract) {
+        contractCollection.register(contractType, contract);
     }
 
+    @Override
     public Contract getContract(Contract.Type contractType) {
-        return contractTypeContractMap.get(contractType);
+        return contractCollection.getContract(contractType);
     }
 
+    @Override
     public Contract getContract(Script script) {
-        return getContract(getContractType(script));
+        return contractCollection.getContract(script);
     }
 
     /**
@@ -71,19 +66,11 @@ public enum Network {
      * @return return contract type used by script, or null if not found
      */
     public Contract.Type getContractType(Script script) {
-        if (script == null) {
-            return null;
-        }
-        Script key = Script.builder()
-                .setArgs(new byte[0])
-                .setCodeHash(script.getCodeHash())
-                .setHashType(script.getHashType())
-                .build();
-        return scriptContractTypeMap.get(key);
+        return contractCollection.getContractType(script);
     }
 
     public Address createAddress(Contract.Type contractType, byte[] args) {
-        Script script = contractTypeContractMap.get(contractType).createScript(args);
+        Script script = getContract(contractType).createScript(args);
         return new Address(script, this);
     }
 }
