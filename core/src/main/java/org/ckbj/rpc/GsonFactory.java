@@ -4,10 +4,7 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.ToNumberPolicy;
-import org.ckbj.rpc.adapter.BigIntegerTypeAdapter;
-import org.ckbj.rpc.adapter.ByteArrayTypeAdapter;
-import org.ckbj.rpc.adapter.IntegerTypeAdapter;
-import org.ckbj.rpc.adapter.LongTypeAdapter;
+import org.ckbj.rpc.adapter.*;
 
 import java.math.BigInteger;
 
@@ -16,6 +13,7 @@ public class GsonFactory {
         return new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+                .registerTypeAdapterFactory(new CheckedEnumTypeAdapterFactory())
                 .registerTypeAdapter(byte[].class, new ByteArrayTypeAdapter())
                 .registerTypeAdapter(int.class, new IntegerTypeAdapter())
                 .registerTypeAdapter(Integer.class, new IntegerTypeAdapter())
