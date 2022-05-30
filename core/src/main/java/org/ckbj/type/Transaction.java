@@ -3,16 +3,13 @@ package org.ckbj.type;
 import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.reflect.TypeToken;
-import org.ckbj.chain.Contract;
 import org.ckbj.chain.ContractCollection;
-import org.ckbj.chain.address.Address;
 import org.ckbj.crypto.Blake2b;
 import org.ckbj.molecule.Serializer;
-import org.ckbj.utils.Capacity;
-import org.ckbj.utils.Hex;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Core CKB transaction data structure
@@ -26,8 +23,12 @@ public class Transaction {
     private List<Cell> outputs = new ArrayList<>();
     private List<byte[]> witnesses = new ArrayList<>();
 
-    public static Builder builder(ContractCollection contractCollection) {
-        return new Builder(contractCollection);
+    public static TransactionBuilder builder() {
+        return new TransactionBuilder();
+    }
+
+    public static SmartTransactionBuilder smartBuilder(ContractCollection contractCollection) {
+        return new SmartTransactionBuilder(contractCollection);
     }
 
     public int getVersion() {
@@ -113,207 +114,6 @@ public class Transaction {
     public byte[] hash() {
         byte[] serialization = Serializer.serialize(this, false);
         return Blake2b.digest(serialization);
-    }
-
-    public static final class Builder {
-        private ContractCollection contractCollection;
-
-        private int version = 0;
-        private List<CellDep> cellDeps = new ArrayList<>();
-        private List<byte[]> headerDeps = new ArrayList<>();
-        private List<CellInput> inputs = new ArrayList<>();
-        private List<Cell> outputs = new ArrayList<>();
-        private List<byte[]> witnesses = new ArrayList<>();
-
-        public Builder(ContractCollection contractCollection) {
-            this.contractCollection = contractCollection;
-        }
-
-        public Builder setVersion(int version) {
-            this.version = version;
-            return this;
-        }
-
-        public Builder setCellDep(List<CellDep> cellDeps) {
-            Objects.requireNonNull(cellDeps);
-            this.cellDeps = cellDeps;
-            return this;
-        }
-
-        public Builder addCellDep(CellDep cellDep) {
-            Objects.requireNonNull(cellDep);
-            this.cellDeps.add(cellDep);
-            return this;
-        }
-
-        public Builder addCellDep(Collection<CellDep> cellDeps) {
-            for (CellDep cellDep: cellDeps) {
-                addCellDep(cellDep);
-            }
-            return this;
-        }
-
-        public Builder addCellDep(Contract contract) {
-            return addCellDep(contract.getCellDeps());
-        }
-
-        public Builder addCellDep(Contract.Type contractTypes) {
-            return addCellDep(contractCollection.getContract(contractTypes));
-        }
-
-        public Builder addCellDep(Script script) {
-            return addCellDep(contractCollection.getContract(script).getCellDeps());
-        }
-
-        public Builder addCellDep(CellDep.DepType depType, String txHash, int index) {
-            return addCellDep(depType, Hex.toByteArray(txHash), index);
-        }
-
-        public Builder addCellDep(CellDep.DepType depType, byte[] txHash, int index) {
-            Objects.requireNonNull(depType);
-            CellDep cellDep = CellDep.builder()
-                    .setDepType(depType)
-                    .setOutPoint(new OutPoint(txHash, index))
-                    .build();
-            return addCellDep(cellDep);
-        }
-
-        public Builder setHeaderDeps(List<byte[]> headerDeps) {
-            Objects.requireNonNull(headerDeps);
-            this.headerDeps = headerDeps;
-            return this;
-        }
-
-        public Builder addHeaderDep(byte[] headerDep) {
-            if (headerDep.length != 32) {
-                throw new IllegalArgumentException("headerDep length must be 32");
-            }
-            this.headerDeps.add(headerDep);
-            return this;
-        }
-
-        public Builder addHeaderDep(Collection<byte[]> headerDeps) {
-            for (byte[] headerDep: headerDeps) {
-                addHeaderDep(headerDep);
-            }
-            return this;
-        }
-
-        public Builder setInputs(List<CellInput> inputs) {
-            Objects.requireNonNull(inputs);
-            this.inputs = inputs;
-            return this;
-        }
-
-        public Builder addInput(CellInput inputs) {
-            Objects.requireNonNull(inputs);
-            this.inputs.add(inputs);
-            return this;
-        }
-
-        public Builder addInput(Collection<CellInput> inputs) {
-            for (CellInput input: inputs) {
-                addInput(input);
-            }
-            return this;
-        }
-
-        public Builder addInput(byte[] txHash, int index) {
-            CellInput cellInput = new CellInput(new OutPoint(txHash, index));
-            return addInput(cellInput);
-        }
-
-        public Builder addInput(String txHash, int index) {
-            return addInput(Hex.toByteArray(txHash), index);
-        }
-
-        public Builder setOutputs(List<Cell> outputs) {
-            Objects.requireNonNull(outputs);
-            this.outputs = outputs;
-            return this;
-        }
-
-        public Builder addOutput(Cell output) {
-            Objects.requireNonNull(output);
-            this.outputs.add(output);
-            if (output.getType() != null) {
-                addCellDep(contractCollection.getContract(output.getType()));
-            }
-            return this;
-        }
-
-        public Builder addOutput(Collection<Cell> outputs) {
-            for (Cell output: outputs) {
-                this.outputs.add(output);
-            }
-            return this;
-        }
-
-        public Builder addOutput(Address address, long shannon) {
-            if (address.getNetwork() != contractCollection) {
-                throw new IllegalArgumentException("Address network is not " + contractCollection);
-            }
-            Cell cell = Cell.builder()
-                    .setLock(address.getScript())
-                    .setCapacity(shannon)
-                    .build();
-            return addOutput(cell);
-        }
-
-        public Builder addOutput(String address, long capacity) {
-            return addOutput(Address.decode(address), capacity);
-        }
-
-        public Builder addOutputInBytes(Address address, double bytes) {
-            return addOutput(address, Capacity.bytesToShannon(bytes));
-        }
-
-        public Builder addOutputInBytes(String address, double bytes) {
-            return addOutput(address, Capacity.bytesToShannon(bytes));
-        }
-
-        public Builder setWitnesses(List<byte[]> witnesses) {
-            Objects.requireNonNull(witnesses);
-            this.witnesses = witnesses;
-            return this;
-        }
-
-        public Builder addWitness(byte[] witness) {
-            Objects.requireNonNull(witness);
-            this.witnesses.add(witness);
-            return this;
-        }
-
-        public Builder addWitness(String witness) {
-            return addWitness(Hex.toByteArray(witness));
-        }
-
-        public Transaction build() {
-            for (int i = witnesses.size(); i < inputs.size(); i++) {
-                witnesses.add(new byte[0]);
-            }
-            removeDuplicateCellDeps();
-            Transaction transaction = new Transaction();
-            transaction.setVersion(version);
-            transaction.setCellDeps(new ArrayList<>(cellDeps));
-            transaction.setHeaderDeps(headerDeps);
-            transaction.setInputs(inputs);
-            transaction.setOutputs(outputs);
-            transaction.setWitnesses(witnesses);
-            return transaction;
-        }
-
-        private void removeDuplicateCellDeps() {
-            Set<CellDep> unique = new HashSet<>();
-            List<CellDep> filter = new ArrayList<>();
-            for (CellDep cellDep: this.cellDeps) {
-                if (!unique.contains(cellDep)) {
-                    unique.add(cellDep);
-                    filter.add(cellDep);
-                }
-            }
-            this.cellDeps = filter;
-        }
     }
 
     protected static class TypeAdapter implements JsonDeserializer<Transaction>, JsonSerializer<Transaction> {

@@ -79,14 +79,14 @@ public class Cell {
         private Builder() {
         }
 
-        public Builder(Cell cell) {
+        private Builder(Cell cell) {
             this.capacity = cell.capacity;
             this.type = cell.type;
             this.lock = cell.lock;
             this.data = cell.data;
         }
 
-        public Builder setCapacity(long capacityInShannon) {
+        public Builder setCapacityInShannon(long capacityInShannon) {
             if (capacityInShannon < 0) {
                 throw new IllegalArgumentException("capacity must be positive");
             }
@@ -115,6 +115,10 @@ public class Cell {
         public Builder setLock(Address address) {
             this.lock = address.getScript();
             return this;
+        }
+
+        public Builder setLock(String address) {
+            return setLock(Address.decode(address));
         }
 
         public Builder setData(byte[] data) {

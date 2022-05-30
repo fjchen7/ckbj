@@ -25,8 +25,8 @@ public class Example {
                 .newArgs(keyPair.getPublicKey())
                 .toAddress(network);
 
-        Transaction tx = Transaction.builder(network)
-                .addCellDep(Contract.Type.SECP256K1_BLAKE160_SIGHASH_ALL)
+        Transaction tx = Transaction.smartBuilder(network)
+                .addCellDeps(Contract.Type.SECP256K1_BLAKE160_SIGHASH_ALL)
                 .addInput("0xcd10217c1de6ed69d065db9f1af2d4f364fb7e8e402c6e1909e20abdf44d6975", 1)
                 .addOutputInBytes(address, 9899.0)
                 .build();
@@ -55,8 +55,8 @@ public class Example {
         Address sender = args.toAddress(network);
         //        Address sender = Secp256k1Blake160MultisigAll.createAddress(network, args);
 
-        Transaction tx = Transaction.builder(network)
-                .addCellDep(Contract.Type.SECP256K1_BLAKE160_MULTISIG_ALL)
+        Transaction tx = Transaction.smartBuilder(network)
+                .addCellDeps(Contract.Type.SECP256K1_BLAKE160_MULTISIG_ALL)
                 .addInput("0x0f32433ed5ad6f49885f76cbb3ebaa35d920003e15cffbed74e793374503cab7", 0)
                 .addOutputInBytes(sender, 99.9)
                 .addOutputInBytes(sender, 9900.0)

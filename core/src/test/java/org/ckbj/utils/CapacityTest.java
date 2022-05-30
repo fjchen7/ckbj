@@ -24,7 +24,7 @@ public class CapacityTest {
     @Test
     public void testOccupation() {
         Cell cell = Cell.builder()
-                .setCapacity(100000000000L)
+                .setCapacityInShannon(100000000000L)
                 .setLock(Script.builder()
                                  .setCodeHash("0x68d5438ac952d2f584abf879527946a537e82c7f3c1cbf6d8ebf9767437d8e88")
                                  .setArgs("0x59a27ef3ba84f061517d13f42cf44ed020610061")
