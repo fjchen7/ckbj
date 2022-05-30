@@ -23,14 +23,16 @@ public class CapacityTest {
 
     @Test
     public void testOccupation() {
-        Cell cell = Cell.builder()
-                .setCapacityInShannon(100000000000L)
-                .setLock(Script.builder()
-                                 .setCodeHash("0x68d5438ac952d2f584abf879527946a537e82c7f3c1cbf6d8ebf9767437d8e88")
-                                 .setArgs("0x59a27ef3ba84f061517d13f42cf44ed020610061")
-                                 .build())
-                .setData("0x68d5438ac952d2f584abf879527946a537e82c7f3c1cbf6d8ebf9767437d8e88")
-                .build();
+        Script lock = new Script();
+        lock.setCodeHash("0x68d5438ac952d2f584abf879527946a537e82c7f3c1cbf6d8ebf9767437d8e88");
+        lock.setArgs("0x59a27ef3ba84f061517d13f42cf44ed020610061");
+        lock.setHashType(Script.HashType.TYPE);
+
+        Cell cell = new Cell();
+        cell.setLock(lock);
+        cell.setCapacity(100000000000L);
+        cell.setData("0x68d5438ac952d2f584abf879527946a537e82c7f3c1cbf6d8ebf9767437d8e88");
+       
         Assertions.assertEquals(6100000000L, Capacity.occupation(cell, false));
         Assertions.assertEquals(9300000000L, Capacity.occupation(cell, true));
     }

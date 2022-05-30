@@ -13,8 +13,8 @@ public final class Script {
     private byte[] args = new byte[0];
     private HashType hashType = HashType.TYPE;
 
-    public static Builder builder() {
-        return new Builder();
+    public static ScriptBuilder builder() {
+        return new ScriptBuilder();
     }
 
     public byte[] getCodeHash() {
@@ -79,52 +79,6 @@ public final class Script {
         result = 31 * result + Arrays.hashCode(args);
         result = 31 * result + hashType.hashCode();
         return result;
-    }
-
-    public static final class Builder {
-        private byte[] codeHash;
-        private byte[] args = new byte[0];
-        private HashType hashType = HashType.TYPE;
-
-        private Builder() {
-        }
-
-        public Builder(Script script) {
-            this.codeHash = script.codeHash;
-            this.args = script.args;
-            this.hashType = script.hashType;
-        }
-
-        public Builder setCodeHash(byte[] codeHash) {
-            this.codeHash = codeHash;
-            return this;
-        }
-
-        public Builder setCodeHash(String codeHash) {
-            return setCodeHash(Hex.toByteArray(codeHash));
-        }
-
-        public Builder setArgs(byte[] args) {
-            this.args = args;
-            return this;
-        }
-
-        public Builder setArgs(String args) {
-            return setArgs(Hex.toByteArray(args));
-        }
-
-        public Builder setHashType(HashType hashType) {
-            this.hashType = hashType;
-            return this;
-        }
-
-        public Script build() {
-            Script script = new Script();
-            script.setCodeHash(codeHash);
-            script.setArgs(args);
-            script.setHashType(hashType);
-            return script;
-        }
     }
 
     public enum HashType {

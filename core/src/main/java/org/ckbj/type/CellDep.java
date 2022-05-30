@@ -9,10 +9,6 @@ public class CellDep {
     private DepType depType;
     private OutPoint outPoint;
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
     public DepType getDepType() {
         return depType;
     }
@@ -61,41 +57,6 @@ public class CellDep {
 
         public byte toByte() {
             return value;
-        }
-    }
-
-    public static final class Builder {
-        private DepType depType = DepType.DEP_GROUP;
-        private OutPoint outPoint;
-
-        private Builder() {
-        }
-
-        public Builder setDepType(DepType depType) {
-            this.depType = depType;
-            return this;
-        }
-
-        public Builder setOutPoint(OutPoint outPoint) {
-            this.outPoint = outPoint;
-            return this;
-        }
-
-        public Builder setOutPoint(byte[] txHash, int index) {
-            this.outPoint = new OutPoint(txHash, index);
-            return this;
-        }
-
-        public Builder setOutPoint(String txHash, int index) {
-            this.outPoint = new OutPoint(txHash, index);
-            return this;
-        }
-
-        public CellDep build() {
-            CellDep cellDep = new CellDep();
-            cellDep.outPoint = outPoint;
-            cellDep.depType = depType;
-            return cellDep;
         }
     }
 }

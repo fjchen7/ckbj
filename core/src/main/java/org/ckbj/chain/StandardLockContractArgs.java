@@ -22,9 +22,7 @@ public interface StandardLockContractArgs extends ContractArgs {
     static byte[] setWitnessArgsLock(byte[] originalWitness, byte[] lockPlaceholder) {
         WitnessArgs witnessArgs;
         if (originalWitness == null || originalWitness.length == 0) {
-            witnessArgs = WitnessArgs
-                    .builder()
-                    .build();
+            witnessArgs = new WitnessArgs();
         } else {
             witnessArgs = Serializer.deserializeWitnessArgs(originalWitness);
         }

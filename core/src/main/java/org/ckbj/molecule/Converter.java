@@ -207,10 +207,10 @@ class Converter {
     }
 
     protected static org.ckbj.type.WitnessArgs fromWitnessArgs(WitnessArgs in) {
-        return org.ckbj.type.WitnessArgs.builder()
-                .setLock(in.getLock() == null ? null : in.getLock().getItems())
-                .setInputType(in.getInputType() == null ? null : in.getInputType().getItems())
-                .setOutputType(in.getOutputType() == null ? null : in.getOutputType().getItems())
-                .build();
+        org.ckbj.type.WitnessArgs witnessArgs = new org.ckbj.type.WitnessArgs();
+        witnessArgs.setLock(in.getLock() == null ? null : in.getLock().getItems());
+        witnessArgs.setInputType(in.getInputType() == null ? null : in.getInputType().getItems());
+        witnessArgs.setOutputType(in.getOutputType() == null ? null : in.getOutputType().getItems());
+        return witnessArgs;
     }
 }

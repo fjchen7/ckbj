@@ -48,9 +48,8 @@ public class SerializerTest {
     @Test
     public void testWitnessArgs() {
         byte[] bytes = Hex.toByteArray("55000000100000005500000055000000410000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
-        WitnessArgs witnessArgs = WitnessArgs.builder()
-                .setLock(new byte[65])
-                .build();
+        WitnessArgs witnessArgs = new WitnessArgs();
+        witnessArgs.setLock(new byte[65]);
         Assertions.assertArrayEquals(bytes, Serializer.serialize(witnessArgs));
         Assertions.assertEquals(witnessArgs, Serializer.deserializeWitnessArgs(bytes));
     }

@@ -2,6 +2,7 @@ package org.ckbj.chain;
 
 import org.ckbj.type.CellDep;
 import org.ckbj.type.Script;
+import org.ckbj.utils.Hex;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,11 +41,15 @@ public class Contract {
     }
 
     public Script createScript(byte[] args) {
-        return Script.builder()
-                .setCodeHash(codeHash)
-                .setArgs(args)
-                .setHashType(hashType)
-                .build();
+        Script script = new Script();
+        script.setCodeHash(codeHash);
+        script.setArgs(args);
+        script.setHashType(hashType);
+        return script;
+    }
+
+    public Script createScript(String args) {
+        return createScript(Hex.toByteArray(args));
     }
 
     public enum Type {

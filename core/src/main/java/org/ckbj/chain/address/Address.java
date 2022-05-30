@@ -115,12 +115,10 @@ public class Address {
         } else {
             throw new AddressFormatException("Invalid code hash index 0x%02x", codeHashIndex);
         }
-        byte[] codeHash = contract.getCodeHash();
-        Script script = Script.builder()
-                .setCodeHash(codeHash)
-                .setArgs(args)
-                .setHashType(Script.HashType.TYPE)
-                .build();
+        Script script = new Script();
+        script.setCodeHash(contract.getCodeHash());
+        script.setArgs(args);
+        script.setHashType(Script.HashType.TYPE);
         return new Address(script, network);
     }
 
@@ -135,11 +133,10 @@ public class Address {
         }
         byte[] codeHash = Arrays.copyOfRange(payload, 1, 33);
         byte[] args = Arrays.copyOfRange(payload, 33, payload.length);
-        Script script = Script.builder()
-                .setCodeHash(codeHash)
-                .setArgs(args)
-                .setHashType(hashType)
-                .build();
+        Script script = new Script();
+        script.setCodeHash(codeHash);
+        script.setArgs(args);
+        script.setHashType(hashType);
         return new Address(script, network);
     }
 
@@ -150,11 +147,10 @@ public class Address {
         byte[] codeHash = Arrays.copyOfRange(payload, 1, 33);
         Script.HashType hashType = Script.HashType.valueOf(payload[33]);
         byte[] args = Arrays.copyOfRange(payload, 34, payload.length);
-        Script script = Script.builder()
-                .setCodeHash(codeHash)
-                .setArgs(args)
-                .setHashType(hashType)
-                .build();
+        Script script = new Script();
+        script.setCodeHash(codeHash);
+        script.setArgs(args);
+        script.setHashType(hashType);
         return new Address(script, network);
     }
 
