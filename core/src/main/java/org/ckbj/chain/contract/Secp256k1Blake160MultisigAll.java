@@ -30,10 +30,10 @@ public class Secp256k1Blake160MultisigAll {
      * https://github.com/nervosnetwork/ckb-system-scripts/wiki/How-to-sign-transaction#multisig
      */
     public static class Args implements StandardLockContractArgs {
-        private byte s = 0x0;
-        private int r;
-        private int m;
-        private List<byte[]> publicKeysHash;
+        private int version = 0x0;
+        private int firstN;
+        private int threshold;
+        private List<byte[]> keysHashes;
 
         private Args() {
         }
@@ -41,33 +41,33 @@ public class Secp256k1Blake160MultisigAll {
         /**
          * The format version
          */
-        public byte getVersion() {
-            return s;
+        public int getVersion() {
+            return version;
         }
 
         /**
          * The first R items in public key list whose signatures must be provided for.
          */
         public int getFirstN() {
-            return r;
+            return firstN;
         }
 
         /**
          * signature threshold
          */
         public int getThreshold() {
-            return m;
+            return threshold;
         }
 
         /**
          * Size of public key list
          */
         public int getKeySize() {
-            return publicKeysHash.size();
+            return keysHashes.size();
         }
 
-        public List<byte[]> getKeysHash() {
-            return publicKeysHash;
+        public List<byte[]> getKeysHashes() {
+            return keysHashes;
         }
 
         public byte[] multisigScript() {
@@ -75,13 +75,13 @@ public class Secp256k1Blake160MultisigAll {
         }
 
         public byte[] encode() {
-            byte[] out = new byte[4 + this.publicKeysHash.size() * 20];
-            out[0] = this.s;
-            out[1] = (byte) (this.r & 0xff);
-            out[2] = (byte) (this.m & 0xff);
-            out[3] = (byte) (this.publicKeysHash.size() & 0xff);
+            byte[] out = new byte[4 + this.keysHashes.size() * 20];
+            out[0] = (byte) (this.version & 0xff);
+            out[1] = (byte) (this.firstN & 0xff);
+            out[2] = (byte) (this.threshold & 0xff);
+            out[3] = (byte) (this.keysHashes.size() & 0xff);
             int pos = 4;
-            for (byte[] publicKeyHash: this.publicKeysHash) {
+            for (byte[] publicKeyHash: this.keysHashes) {
                 System.arraycopy(publicKeyHash, 0, out, pos, 20);
                 pos += 20;
             }
@@ -96,14 +96,14 @@ public class Secp256k1Blake160MultisigAll {
                 throw new IllegalArgumentException("Invalid public key list size");
             }
             Args args = new Args();
-            args.s = in[0];
-            args.r = in[1];
-            args.m = in[2];
-            args.publicKeysHash = new ArrayList<>();
+            args.version = in[0];
+            args.firstN = in[1];
+            args.threshold = in[2];
+            args.keysHashes = new ArrayList<>();
             for (int i = 0; i < in[3]; i++) {
                 byte[] publicKeyHash = new byte[20];
                 System.arraycopy(in, 4 + i * 20, publicKeyHash, 0, 20);
-                args.publicKeysHash.add(publicKeyHash);
+                args.keysHashes.add(publicKeyHash);
             }
             return args;
         }
@@ -111,7 +111,7 @@ public class Secp256k1Blake160MultisigAll {
         @Override
         public byte[] getWitnessPlaceholder(byte[] originalWitness) {
             byte[] multisigScript = this.encode();
-            byte[] witnessLockPlaceholder = new byte[multisigScript.length + this.m * Sign.SIGNATURE_LENGTH];
+            byte[] witnessLockPlaceholder = new byte[multisigScript.length + this.threshold * Sign.SIGNATURE_LENGTH];
             System.arraycopy(multisigScript, 0, witnessLockPlaceholder, 0, multisigScript.length);
             byte[] witnessPlaceholder = StandardLockContractArgs
                     .setWitnessArgsLock(originalWitness, witnessLockPlaceholder);
@@ -136,13 +136,13 @@ public class Secp256k1Blake160MultisigAll {
 
             Args args = (Args) o;
 
-            if (s != args.s) return false;
-            if (r != args.r) return false;
-            if (m != args.m) return false;
+            if (version != args.version) return false;
+            if (firstN != args.firstN) return false;
+            if (threshold != args.threshold) return false;
 
-            if (publicKeysHash.size() != args.publicKeysHash.size()) return false;
-            for (int i = 0; i < publicKeysHash.size(); i++) {
-                if (!Arrays.equals(publicKeysHash.get(i), args.publicKeysHash.get(i))) {
+            if (keysHashes.size() != args.keysHashes.size()) return false;
+            for (int i = 0; i < keysHashes.size(); i++) {
+                if (!Arrays.equals(keysHashes.get(i), args.keysHashes.get(i))) {
                     return false;
                 }
             }
@@ -151,46 +151,49 @@ public class Secp256k1Blake160MultisigAll {
 
         @Override
         public int hashCode() {
-            int result = s;
-            result = 31 * result + r;
-            result = 31 * result + m;
-            result = 31 * result + publicKeysHash.hashCode();
+            int result = version;
+            result = 31 * result + firstN;
+            result = 31 * result + threshold;
+            result = 31 * result + keysHashes.hashCode();
             return result;
         }
 
         public static final class Builder {
-            private byte s = 0x0;
-            private int r = 0;
-            private int m = -1;
-            private List<byte[]> publicKeyHashes = new ArrayList<>();
+            private byte version = 0x0;
+            private int firstN = 0;
+            private int threshold = -1;
+            private List<byte[]> keyHashes = new ArrayList<>();
 
             private Builder() {
             }
 
-            public Builder setVersion(byte s) {
-                this.s = s;
+            public Builder setVersion(byte version) {
+                if (version < 0 || version > 255) {
+                    throw new IllegalArgumentException("Out of version range [0, 255]");
+                }
+                this.version = version;
                 return this;
             }
 
             /**
-             * The first R items in public key list whose signatures must be provided for.
+             * The first N items in public key list whose signatures must be provided for.
              */
-            public Builder setFirstN(int r) {
-                if (r < 0) {
-                    throw new IllegalArgumentException("firstN must be greater than or equal to 0");
+            public Builder setFirstN(int firstN) {
+                if (firstN < 0 || firstN > 255) {
+                    throw new IllegalArgumentException("Out of firstN range [0, 255]");
                 }
-                this.r = r;
+                this.firstN = firstN;
                 return this;
             }
 
             /**
              * signature threshold
              */
-            public Builder setThreshold(int m) {
-                if (m <= 0) {
+            public Builder setThreshold(int threshold) {
+                if (threshold <= 0) {
                     throw new IllegalArgumentException("Threshold must be greater than 0");
                 }
-                this.m = m;
+                this.threshold = threshold;
                 return this;
             }
 
@@ -198,7 +201,7 @@ public class Secp256k1Blake160MultisigAll {
                 if (publicKeyHash.length != 20) {
                     throw new IllegalArgumentException("Public key hash must be 20 bytes");
                 }
-                this.publicKeyHashes.add(publicKeyHash);
+                this.keyHashes.add(publicKeyHash);
                 return this;
             }
 
@@ -220,23 +223,26 @@ public class Secp256k1Blake160MultisigAll {
             }
 
             public Args build() {
-                if (m == -1) {
+                if (threshold == -1) {
                     throw new IllegalArgumentException("Not set threshold");
                 }
-                if (publicKeyHashes.size() == 0) {
+                if (keyHashes.size() == 0) {
                     throw new IllegalArgumentException("Public key hashes must not be empty");
                 }
-                if (publicKeyHashes.size() < m) {
+                if (keyHashes.size() > 255) {
+                    throw new IllegalArgumentException("Public key hashes size must not be greater than 255");
+                }
+                if (keyHashes.size() < threshold) {
                     throw new IllegalArgumentException("Size of public key hashes must be greater than or equal to threshold");
                 }
-                if (r > m) {
+                if (firstN > threshold) {
                     throw new IllegalArgumentException("The firstN must be less than or equal to threshold");
                 }
                 Args args = new Args();
-                args.s = this.s;
-                args.r = this.r;
-                args.m = this.m;
-                args.publicKeysHash = this.publicKeyHashes;
+                args.version = this.version;
+                args.firstN = this.firstN;
+                args.threshold = this.threshold;
+                args.keysHashes = this.keyHashes;
                 return args;
             }
         }
