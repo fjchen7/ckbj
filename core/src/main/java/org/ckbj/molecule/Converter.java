@@ -6,21 +6,9 @@ import org.ckbj.utils.Hex;
 import java.math.BigInteger;
 import java.util.List;
 
+import static org.ckbj.utils.Hex.littleEndian;
+
 class Converter {
-    private static byte[] reverse(byte[] in) {
-        byte[] out = new byte[in.length];
-        for (int i = 0; i < in.length; i++) {
-            out[i] = in[in.length - i - 1];
-        }
-        return out;
-    }
-
-    private static byte[] littleEndian(BigInteger in, int length) {
-        byte[] arr = Hex.toByteArray(in, length);
-        arr = reverse(arr);
-        return arr;
-    }
-
     protected static Uint32 toUint32(BigInteger in) {
         byte[] arr = littleEndian(in, Uint32.SIZE);
         return Uint32.builder()
