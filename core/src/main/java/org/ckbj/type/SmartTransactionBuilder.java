@@ -86,18 +86,35 @@ public final class SmartTransactionBuilder {
         return this;
     }
 
-    public SmartTransactionBuilder addInput(CellInput input) {
+    public SmartTransactionBuilder addInput(CellInput input, byte[] witness) {
         builder.addInput(input);
+        builder.addWitness(witness);
         return this;
     }
 
-    public SmartTransactionBuilder addInput(byte[] txHash, int index) {
+    public SmartTransactionBuilder addInput(CellInput input, String witness) {
+        return addInput(input, Hex.toByteArray(witness));
+    }
+
+    public SmartTransactionBuilder addInput(CellInput input) {
+        return addInput(input, new byte[0]);
+    }
+
+    public SmartTransactionBuilder addInput(byte[] txHash, int index, byte[] witness) {
         CellInput cellInput = new CellInput(new OutPoint(txHash, index));
-        return addInput(cellInput);
+        return addInput(cellInput, witness);
+    }
+
+    public SmartTransactionBuilder addInput(byte[] txHash, int index) {
+        return addInput(txHash, index, new byte[0]);
     }
 
     public SmartTransactionBuilder addInput(String txHash, int index) {
         return addInput(Hex.toByteArray(txHash), index);
+    }
+
+    public SmartTransactionBuilder addInput(String txHash, int index, String witness) {
+        return addInput(Hex.toByteArray(txHash), index, Hex.toByteArray(witness));
     }
 
     public SmartTransactionBuilder setOutputs(List<Cell> outputs) {
@@ -139,19 +156,6 @@ public final class SmartTransactionBuilder {
 
     public OutputBuilder beginAddOutput() {
         return new OutputBuilder(this);
-    }
-
-    public SmartTransactionBuilder addWitness() {
-        return addWitness(new byte[0]);
-    }
-
-    public SmartTransactionBuilder addWitness(byte[] witness) {
-        builder.addWitness(witness);
-        return this;
-    }
-
-    public SmartTransactionBuilder addWitness(String witness) {
-        return addWitness(Hex.toByteArray(witness));
     }
 
     public Transaction build() {
