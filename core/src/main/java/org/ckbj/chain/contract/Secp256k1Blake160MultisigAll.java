@@ -46,7 +46,7 @@ public class Secp256k1Blake160MultisigAll {
         }
 
         /**
-         * The first R items in public key list whose signatures must be provided for.
+         * The first R items in public key list which signatures must be provided for.
          */
         public int getFirstN() {
             return firstN;
@@ -176,7 +176,7 @@ public class Secp256k1Blake160MultisigAll {
             }
 
             /**
-             * The first N items in public key list whose signatures must be provided for.
+             * The first N items in public key list which signatures must be provided for.
              */
             public Builder setFirstN(int firstN) {
                 if (firstN < 0 || firstN > 255) {
@@ -205,21 +205,44 @@ public class Secp256k1Blake160MultisigAll {
                 return this;
             }
 
-            public Builder addKey(ECKeyPair.Point publicKeys) {
-                byte[] publicKeyHash = Secp256k1Blake160SighashAll.newArgs(publicKeys).getArgs();
+            public Builder addKey(ECKeyPair keyPair) {
+                return addKey(keyPair.getPublicKey());
+            }
+
+            public Builder addKey(ECKeyPair.Point publicKey) {
+                byte[] publicKeyHash = new Secp256k1Blake160SighashAll.Args(publicKey).getArgs();
                 return addKey(publicKeyHash);
             }
 
+            /**
+             * Add public key hash by a address
+             *
+             * @param address a secp256-blake160-sighash-all or ACP (anyone can pay) address
+             * @return The builder itself
+             */
             public Builder addKey(String address) {
                 return addKey(Address.decode(address));
             }
 
+            /**
+             * Add public key hash by a address
+             *
+             * @param address a secp256-blake160-sighash-all or ACP (anyone can pay) address
+             * @return The builder itself
+             */
             public Builder addKey(Address address) {
                 Script script = address.getScript();
-                if (address.getNetwork().getContractType(script) != Contract.Type.SECP256K1_BLAKE160_SIGHASH_ALL) {
-                    throw new IllegalArgumentException("Address must be a secp256k1-blake160-sighash-all address");
+                Contract.Type contractType = address.getNetwork().getContractType(script);
+                byte[] publicKeyHash = new byte[20];
+                switch (contractType) {
+                    case SECP256K1_BLAKE160_SIGHASH_ALL:
+                    case ANYONE_CAN_PAY:
+                        System.arraycopy(script.getArgs(), 0, publicKeyHash, 0, 20);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Only accept secp256k1-blake160-sighash-all or ACP address");
                 }
-                return addKey(script.getArgs());
+                return addKey(publicKeyHash);
             }
 
             public Args build() {
