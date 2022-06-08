@@ -5,7 +5,9 @@ import org.ckbj.chain.Network;
 import org.ckbj.chain.address.Address;
 import org.ckbj.chain.contract.Secp256k1Blake160MultisigAll;
 import org.ckbj.chain.contract.Secp256k1Blake160SighashAll;
+import org.ckbj.chain.contract.Sudt;
 import org.ckbj.crypto.ECKeyPair;
+import org.ckbj.type.Script;
 import org.ckbj.type.Transaction;
 import org.ckbj.utils.Hex;
 import org.junit.jupiter.api.Disabled;
@@ -15,12 +17,12 @@ import java.io.IOException;
 
 public class Example {
 
-    @Disabled
     @Test
-    // onchain tx: https://pudge.explorer.nervos.org/transaction/0xd66ea40920f875ed4e684032b8158bb90af39c6c35d2880691eab21f4e46a103
+    // on-chain tx: https://pudge.explorer.nervos.org/transaction/0xd66ea40920f875ed4e684032b8158bb90af39c6c35d2880691eab21f4e46a103
     public void singleSign() throws IOException {
         Network network = Network.TESTNET;
         ECKeyPair keyPair = ECKeyPair.create("0x4e3796fb07ef32553485f995ef6d63a66792f86ebfa431815282f3f81029adfb");
+        // ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsq02cgdvd5mng9924xarf3rflqzafzmzlpsuhh83c
         Address address = Secp256k1Blake160SighashAll
                 .newArgs(keyPair.getPublicKey())
                 .toAddress(network);
@@ -42,7 +44,7 @@ public class Example {
 
     @Disabled
     @Test
-    // onchain tx: https://pudge.explorer.nervos.org/transaction/0x1935b1d79193b765b427cf4f7de53beddce7d585d85c7484744aadd1e0eb36ac
+    // on-chain tx: https://pudge.explorer.nervos.org/transaction/0x1935b1d79193b765b427cf4f7de53beddce7d585d85c7484744aadd1e0eb36ac
     public void multiSig() throws IOException {
         Network network = Network.TESTNET;
 
@@ -80,4 +82,66 @@ public class Example {
         System.out.println(Hex.toHexString(txHash));
     }
 
+    @Disabled
+    @Test
+    public void sendSudt() throws IOException {
+        Network network = Network.TESTNET;
+        Script sudtType = network.getContract(Contract.Type.SUDT)
+                .createScript("0x7c7f0ee1d582c385342367792946cff3767fe02f26fd7f07dba23ae3c65b28bc");
+        Transaction tx = Transaction.smartBuilder(network)
+                .addCellDeps(Contract.Type.SECP256K1_BLAKE160_SIGHASH_ALL)
+                .addCellDeps(Contract.Type.SUDT)
+                // output with sudt type
+                .addInput("0xc809e1010701cf64521170787aea1d19bd7a8793886cec5196add83c0c5bcc54", 2)
+                .beginAddOutput()
+                .setType(sudtType)
+                .setLock("ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsq02cgdvd5mng9924xarf3rflqzafzmzlpsuhh83c")
+                .setCapacityInBytes(142)
+                .setData(Sudt.toData(969999992760L))
+                .endAddOutput()
+                .build();
+
+        // sign tx and put signature into witnesses
+        // ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqd0pdquvfuq077aemn447shf4d8u5f4a0glzz2g4
+        ECKeyPair keyPair = ECKeyPair.create("9d8ca87d75d150692211fa62b0d30de4d1ee6c530d5678b40b8cedacf0750d0f");
+        Secp256k1Blake160SighashAll.newFulfillment(keyPair).fulfill(tx, 0);
+
+        // send transaction
+        CkbService service = CkbService.getInstance(network);
+        byte[] hash = service.sendTransaction(tx);
+        System.out.println(Hex.toHexString(hash));
+    }
+
+    @Test
+    // on-chain tx: https://pudge.explorer.nervos.org/transaction/0x293491e3c7763a8b03bf8eb7bad4a61c3951c09091f16765a38a8126a45764c2
+    public void issueSudt() throws IOException {
+        Network network = Network.TESTNET;
+        String sender = "ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsq02cgdvd5mng9924xarf3rflqzafzmzlpsuhh83c";
+        // args of sudt should be hash of input lock script
+        Script sudtType = network.getContract(Contract.Type.SUDT)
+                .createScript(Address.decode(sender).getScript().hash());
+        Transaction tx = Transaction.smartBuilder(network)
+                .addCellDeps(Contract.Type.SECP256K1_BLAKE160_SIGHASH_ALL)
+                .addCellDeps(Contract.Type.SUDT)
+                // plain output without any type
+                .addInput("0x4c0740007221f8c6baa7a6b9eb04f6db9af08b1fcdd720d6449e5f8f57ec6a7d", 0)
+                .beginAddOutput()
+                .setType(sudtType)
+                .setLock("ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsq02cgdvd5mng9924xarf3rflqzafzmzlpsuhh83c")
+                .setCapacityInBytes(199)
+                .setData(Sudt.toData(1000000000000L))
+                .endAddOutput()
+                .addOutputInBytes(sender, 9800)
+                .build();
+
+        // sign tx and put signature into witnesses
+        // ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqd0pdquvfuq077aemn447shf4d8u5f4a0glzz2g4
+        ECKeyPair keyPair = ECKeyPair.create("0x4e3796fb07ef32553485f995ef6d63a66792f86ebfa431815282f3f81029adfb");
+        Secp256k1Blake160SighashAll.newFulfillment(keyPair).fulfill(tx, 0);
+
+        // send transaction
+        CkbService service = CkbService.getInstance(network);
+        byte[] hash = service.sendTransaction(tx);
+        System.out.println(Hex.toHexString(hash));
+    }
 }
