@@ -8,7 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static org.ckbj.chain.Contract.Type.*;
+import static org.ckbj.chain.Contract.Name.*;
 
 public class Address {
     Script script;
@@ -180,15 +180,15 @@ public class Address {
     private String encodeShort() {
         byte[] payload = new byte[2 + script.getArgs().length];
         byte codeHashIndex;
-        Contract.Type contractType = network.getContractType(script);
-        if (contractType == SECP256K1_BLAKE160_SIGHASH_ALL) {
+        Contract.Name contractName = network.getContractName(script);
+        if (contractName == SECP256K1_BLAKE160_SIGHASH_ALL) {
             codeHashIndex = 0x00;
-        } else if (contractType == SECP256K1_BLAKE160_MULTISIG_ALL) {
+        } else if (contractName == SECP256K1_BLAKE160_MULTISIG_ALL) {
             codeHashIndex = 0x01;
-        } else if (contractType == ANYONE_CAN_PAY) {
+        } else if (contractName == ANYONE_CAN_PAY) {
             codeHashIndex = 0x02;
         } else {
-            throw new UnsupportedOperationException("Unsupported contract type " + contractType);
+            throw new UnsupportedOperationException("Unsupported contract type " + contractName);
         }
         payload[0] = 0x01;
         payload[1] = codeHashIndex;

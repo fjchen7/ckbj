@@ -9,29 +9,29 @@ import java.util.Objects;
 
 public class DefaultContractCollection implements ContractCollection {
 
-    private Map<Contract.Type, Contract> contractTypeContractMap = new EnumMap<>(Contract.Type.class);
-    private Map<Script, Contract.Type> scriptContractTypeMap = new HashMap<>();
+    private Map<Contract.Name, Contract> contractNameContractMap = new EnumMap<>(Contract.Name.class);
+    private Map<Script, Contract.Name> scriptContractNameMap = new HashMap<>();
 
-    public void register(Contract.Type contractType, Contract contract) {
-        Objects.requireNonNull(contractType);
+    public void register(Contract.Name contractName, Contract contract) {
+        Objects.requireNonNull(contractName);
         Objects.requireNonNull(contract);
-        contractTypeContractMap.put(contractType, contract);
+        contractNameContractMap.put(contractName, contract);
         Script script = contract.createScript(new byte[0]);
-        scriptContractTypeMap.put(script, contractType);
+        scriptContractNameMap.put(script, contractName);
     }
 
     @Override
-    public Contract getContract(Contract.Type contractType) {
-        return contractTypeContractMap.get(contractType);
+    public Contract getContract(Contract.Name contractName) {
+        return contractNameContractMap.get(contractName);
     }
 
     @Override
     public Contract getContract(Script script) {
-        return getContract(getContractType(script));
+        return getContract(getContractName(script));
     }
 
     @Override
-    public Contract.Type getContractType(Script script) {
+    public Contract.Name getContractName(Script script) {
         if (script == null) {
             return null;
         }
@@ -40,6 +40,6 @@ public class DefaultContractCollection implements ContractCollection {
                 .setCodeHash(script.getCodeHash())
                 .setHashType(script.getHashType())
                 .build();
-        return scriptContractTypeMap.get(key);
+        return scriptContractNameMap.get(key);
     }
 }

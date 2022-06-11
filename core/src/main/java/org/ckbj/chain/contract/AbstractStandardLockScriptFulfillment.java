@@ -11,12 +11,12 @@ public abstract class AbstractStandardLockScriptFulfillment implements LockScrip
 
     public abstract void fulfill(Transaction transaction, int... inputGroup);
 
-    public abstract Contract.Type getContractType();
+    public abstract Contract.Name getContractName();
 
     @Override
     public boolean match(Script script) {
-        if (Network.TESTNET.getContractType(script) == getContractType()
-                || Network.MAINNET.getContractType(script) == getContractType()) {
+        if (Network.TESTNET.getContractName(script) == getContractName()
+                || Network.MAINNET.getContractName(script) == getContractName()) {
             return doMatch(script.getArgs());
         } else {
             return false;

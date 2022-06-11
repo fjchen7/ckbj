@@ -52,7 +52,7 @@ public class Contract {
         return createScript(Hex.toByteArray(args));
     }
 
-    public enum Type {
+    public enum Name {
         SECP256K1_BLAKE160_SIGHASH_ALL(LOCK),
         SECP256K1_BLAKE160_MULTISIG_ALL(LOCK),
         ANYONE_CAN_PAY(LOCK),
@@ -64,7 +64,7 @@ public class Contract {
 
         private Script.Type scriptType;
 
-        Type(Script.Type scriptType) {
+        Name(Script.Type scriptType) {
             this.scriptType = scriptType;
         }
 

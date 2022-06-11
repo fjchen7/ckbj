@@ -48,8 +48,8 @@ public final class SmartTransactionBuilder {
         return this;
     }
 
-    public SmartTransactionBuilder addCellDeps(Contract.Type contractTypes) {
-        return addCellDeps(contractCollection.getContract(contractTypes));
+    public SmartTransactionBuilder addCellDeps(Contract.Name contractName) {
+        return addCellDeps(contractCollection.getContract(contractName));
     }
 
     public SmartTransactionBuilder addCellDeps(Script script) {
@@ -209,21 +209,21 @@ public final class SmartTransactionBuilder {
             return setType(Hex.toByteArray(codeHash), Hex.toByteArray(args), hashType);
         }
 
-        public OutputBuilder setType(Contract.Type contractType, byte[] args) {
-            if (contractType.getScriptType() != Script.Type.TYPE) {
-                throw new IllegalArgumentException("contractType must be TYPE");
+        public OutputBuilder setType(Contract.Name contractName, byte[] args) {
+            if (contractName.getScriptType() != Script.Type.TYPE) {
+                throw new IllegalArgumentException("contractName must be TYPE");
             }
-            Script type = contractCollection.getContract(contractType)
+            Script type = contractCollection.getContract(contractName)
                     .createScript(args);
             return setType(type);
         }
 
-        public OutputBuilder setType(Contract.Type contractType, ContractArgs args) {
-            return setType(contractType, args.getArgs());
+        public OutputBuilder setType(Contract.Name contractName, ContractArgs args) {
+            return setType(contractName, args.getArgs());
         }
 
-        public OutputBuilder setType(Contract.Type contractType, String args) {
-            return setType(contractType, Hex.toByteArray(args));
+        public OutputBuilder setType(Contract.Name contractName, String args) {
+            return setType(contractName, Hex.toByteArray(args));
         }
 
         public OutputBuilder setLock(Script lock) {
@@ -252,21 +252,21 @@ public final class SmartTransactionBuilder {
             return setLock(Address.decode(address));
         }
 
-        public OutputBuilder setLock(Contract.Type contractType, byte[] args) {
-            if (contractType.getScriptType() != Script.Type.LOCK) {
-                throw new IllegalArgumentException("contractType must be LOCK");
+        public OutputBuilder setLock(Contract.Name contractName, byte[] args) {
+            if (contractName.getScriptType() != Script.Type.LOCK) {
+                throw new IllegalArgumentException("contractName must be LOCK");
             }
-            Script lock = contractCollection.getContract(contractType)
+            Script lock = contractCollection.getContract(contractName)
                     .createScript(args);
             return setLock(lock);
         }
 
-        public OutputBuilder setLock(Contract.Type contractType, ContractArgs args) {
-            return setLock(contractType, args.getArgs());
+        public OutputBuilder setLock(Contract.Name contractName, ContractArgs args) {
+            return setLock(contractName, args.getArgs());
         }
 
-        public OutputBuilder setLock(Contract.Type contractType, String args) {
-            return setLock(contractType, Hex.toByteArray(args));
+        public OutputBuilder setLock(Contract.Name contractName, String args) {
+            return setLock(contractName, Hex.toByteArray(args));
         }
 
         public OutputBuilder setData(byte[] data) {

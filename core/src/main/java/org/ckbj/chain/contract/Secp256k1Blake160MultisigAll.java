@@ -126,8 +126,8 @@ public class Secp256k1Blake160MultisigAll {
         }
 
         @Override
-        public Contract.Type getContractType() {
-            return Contract.Type.SECP256K1_BLAKE160_MULTISIG_ALL;
+        public Contract.Name getContractName() {
+            return Contract.Name.SECP256K1_BLAKE160_MULTISIG_ALL;
         }
 
         @Override
@@ -233,9 +233,9 @@ public class Secp256k1Blake160MultisigAll {
              */
             public Builder addKey(Address address) {
                 Script script = address.getScript();
-                Contract.Type contractType = address.getNetwork().getContractType(script);
+                Contract.Name contractName = address.getNetwork().getContractName(script);
                 byte[] publicKeyHash = new byte[20];
-                switch (contractType) {
+                switch (contractName) {
                     case SECP256K1_BLAKE160_SIGHASH_ALL:
                     case ANYONE_CAN_PAY:
                         System.arraycopy(script.getArgs(), 0, publicKeyHash, 0, 20);
@@ -285,8 +285,8 @@ public class Secp256k1Blake160MultisigAll {
         }
 
         @Override
-        public Contract.Type getContractType() {
-            return Contract.Type.SECP256K1_BLAKE160_MULTISIG_ALL;
+        public Contract.Name getContractName() {
+            return Contract.Name.SECP256K1_BLAKE160_MULTISIG_ALL;
         }
 
         @Override

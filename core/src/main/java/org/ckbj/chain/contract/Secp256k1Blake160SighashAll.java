@@ -52,8 +52,8 @@ public class Secp256k1Blake160SighashAll {
         }
 
         @Override
-        public Contract.Type getContractType() {
-            return Contract.Type.SECP256K1_BLAKE160_SIGHASH_ALL;
+        public Contract.Name getContractName() {
+            return Contract.Name.SECP256K1_BLAKE160_SIGHASH_ALL;
         }
 
         @Override
@@ -73,8 +73,8 @@ public class Secp256k1Blake160SighashAll {
         }
 
         @Override
-        public Contract.Type getContractType() {
-            return Contract.Type.SECP256K1_BLAKE160_SIGHASH_ALL;
+        public Contract.Name getContractName() {
+            return Contract.Name.SECP256K1_BLAKE160_SIGHASH_ALL;
         }
 
         @Override

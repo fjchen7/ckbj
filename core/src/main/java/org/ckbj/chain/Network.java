@@ -2,7 +2,6 @@ package org.ckbj.chain;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.ckbj.chain.address.Address;
 import org.ckbj.rpc.GsonFactory;
 import org.ckbj.type.Script;
 
@@ -36,22 +35,22 @@ public enum Network implements ContractCollection {
         Reader reader = new InputStreamReader(inputStream);
 
         Gson gson = GsonFactory.create();
-        Type type = new TypeToken<Map<Contract.Type, Contract>>() {}.getType();
+        Type type = new TypeToken<Map<Contract.Name, Contract>>() {}.getType();
 
-        Map<Contract.Type, Contract> contracts = gson.fromJson(reader, type);
-        for (Map.Entry<Contract.Type, Contract> entry: contracts.entrySet()) {
+        Map<Contract.Name, Contract> contracts = gson.fromJson(reader, type);
+        for (Map.Entry<Contract.Name, Contract> entry: contracts.entrySet()) {
             Objects.requireNonNull(entry.getKey());
             register(entry.getKey(), entry.getValue());
         }
     }
 
-    public void register(Contract.Type contractType, Contract contract) {
-        contractCollection.register(contractType, contract);
+    public void register(Contract.Name contractName, Contract contract) {
+        contractCollection.register(contractName, contract);
     }
 
     @Override
-    public Contract getContract(Contract.Type contractType) {
-        return contractCollection.getContract(contractType);
+    public Contract getContract(Contract.Name contractName) {
+        return contractCollection.getContract(contractName);
     }
 
     @Override
@@ -65,12 +64,7 @@ public enum Network implements ContractCollection {
      * @param script
      * @return return contract type used by script, or null if not found
      */
-    public Contract.Type getContractType(Script script) {
-        return contractCollection.getContractType(script);
-    }
-
-    public Address createAddress(Contract.Type contractType, byte[] args) {
-        Script script = getContract(contractType).createScript(args);
-        return new Address(script, this);
+    public Contract.Name getContractName(Script script) {
+        return contractCollection.getContractName(script);
     }
 }

@@ -7,10 +7,10 @@ import org.ckbj.type.Script;
  */
 public interface ContractCollection {
 
-    Contract getContract(Contract.Type contractType);
+    Contract getContract(Contract.Name contractName);
 
     default Contract getContract(Script script) {
-        return getContract(getContractType(script));
+        return getContract(getContractName(script));
     }
 
     /**
@@ -19,5 +19,5 @@ public interface ContractCollection {
      * @param script
      * @return return contract type used by script, or null if not found
      */
-    Contract.Type getContractType(Script script);
+    Contract.Name getContractName(Script script);
 }

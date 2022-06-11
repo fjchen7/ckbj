@@ -7,12 +7,12 @@ import org.ckbj.type.WitnessArgs;
 public interface StandardLockContractArgs extends ContractArgs {
     byte[] getArgs();
 
-    Contract.Type getContractType();
+    Contract.Name getContractName();
 
     default Address toAddress(Network network) {
-        Contract.Type contractType = getContractType();
+        Contract.Name contractName = getContractName();
         byte[] args = getArgs();
-        Script script = network.getContract(contractType).createScript(args);
+        Script script = network.getContract(contractName).createScript(args);
         return new Address(script, network);
     }
 
