@@ -1,5 +1,6 @@
 package org.ckbj.type;
 
+import org.ckbj.molecule.Serializer;
 import org.ckbj.utils.Hex;
 
 import java.util.Arrays;
@@ -50,6 +51,17 @@ public final class WitnessArgs {
 
     public void setOutputType(String outputType) {
         this.outputType = Hex.toByteArray(outputType);
+    }
+
+    public static WitnessArgs decode(byte[] witness) {
+        if (witness == null || witness.length == 0) {
+            return new WitnessArgs();
+        }
+        return Serializer.deserializeWitnessArgs(witness);
+    }
+
+    public byte[] encode() {
+        return Serializer.serialize(this);
     }
 
     @Override
