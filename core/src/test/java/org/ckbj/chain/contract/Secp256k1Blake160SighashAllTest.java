@@ -46,7 +46,7 @@ class Secp256k1Blake160SighashAllTest {
         fulfillment.fulfill(tx, inputDetails);
         Assertions.assertEquals(
                 "0x550000001000000055000000550000004100000090b18cc17b8c67e20075ffcffe82d079e0b6a78cb3184157d78962bdd5a648d82c9bc8e1bbe87e7b8b0661440c1060f939be85d26742148e08dc58743a900df401",
-                Hex.toHexString(tx.getWitnesses().get(0)));
+                Hex.toHexString(tx.getWitness(0)));
     }
 
     @Test

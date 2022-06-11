@@ -8,6 +8,7 @@ import org.ckbj.crypto.ECKeyPair;
 import org.ckbj.crypto.Sign;
 import org.ckbj.type.Script;
 import org.ckbj.type.Transaction;
+import org.ckbj.type.WitnessArgs;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,11 +112,11 @@ public class Secp256k1Blake160MultisigAll {
         @Override
         public byte[] getWitnessPlaceholder(byte[] originalWitness) {
             byte[] multisigScript = this.encode();
-            byte[] witnessLockPlaceholder = new byte[multisigScript.length + this.threshold * Sign.SIGNATURE_LENGTH];
-            System.arraycopy(multisigScript, 0, witnessLockPlaceholder, 0, multisigScript.length);
-            byte[] witnessPlaceholder = StandardLockContractArgs
-                    .setWitnessArgsLock(originalWitness, witnessLockPlaceholder);
-            return witnessPlaceholder;
+            byte[] lockPlaceholder = new byte[multisigScript.length + this.threshold * Sign.SIGNATURE_LENGTH];
+            System.arraycopy(multisigScript, 0, lockPlaceholder, 0, multisigScript.length);
+            WitnessArgs witnessArgs = WitnessArgs.decode(originalWitness);
+            witnessArgs.setLock(lockPlaceholder);
+            return witnessArgs.encode();
         }
 
         @Override
@@ -297,11 +298,10 @@ public class Secp256k1Blake160MultisigAll {
         @Override
         public void fulfill(Transaction transaction, int... inputGroup) {
             byte[] lock = aggregateSignatures(args, signatures);
-
-            List<byte[]> witnesses = transaction.getWitnesses();
-            int firstIndex = inputGroup[0];
-            byte[] witness = StandardLockContractArgs.setWitnessArgsLock(witnesses.get(firstIndex), lock);
-            witnesses.set(firstIndex, witness);
+            int index = inputGroup[0];
+            WitnessArgs witnessArgs = WitnessArgs.decode(transaction.getWitness(index));
+            witnessArgs.setLock(lock);
+            transaction.setWitness(index, witnessArgs.encode());
         }
 
         public byte[] aggregateSignatures(Args args, byte[]... signatures) {

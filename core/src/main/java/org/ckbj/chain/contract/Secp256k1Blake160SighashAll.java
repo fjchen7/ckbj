@@ -7,6 +7,7 @@ import org.ckbj.crypto.ECKeyPair;
 import org.ckbj.crypto.Sign;
 import org.ckbj.molecule.Serializer;
 import org.ckbj.type.Transaction;
+import org.ckbj.type.WitnessArgs;
 
 import java.util.Arrays;
 import java.util.List;
@@ -57,9 +58,9 @@ public class Secp256k1Blake160SighashAll {
 
         @Override
         public byte[] getWitnessPlaceholder(byte[] originalWitness) {
-            byte[] witnessPlaceholder = StandardLockContractArgs
-                    .setWitnessArgsLock(originalWitness, new byte[Sign.SIGNATURE_LENGTH]);
-            return witnessPlaceholder;
+            WitnessArgs witnessArgs = WitnessArgs.decode(originalWitness);
+            witnessArgs.setLock(new byte[Sign.SIGNATURE_LENGTH]);
+            return witnessArgs.encode();
         }
     }
 
@@ -85,10 +86,10 @@ public class Secp256k1Blake160SighashAll {
         @Override
         public void fulfill(Transaction transaction, int... inputGroup) {
             byte[] lock = new Signer(keyPair).sign(transaction, inputGroup);
-            List<byte[]> witnesses = transaction.getWitnesses();
-            int firstIndex = inputGroup[0];
-            byte[] witness = StandardLockContractArgs.setWitnessArgsLock(witnesses.get(firstIndex), lock);
-            witnesses.set(firstIndex, witness);
+            int index = inputGroup[0];
+            WitnessArgs witnessArgs = WitnessArgs.decode(transaction.getWitness(index));
+            witnessArgs.setLock(lock);
+            transaction.setWitness(index, witnessArgs.encode());
         }
     }
 

@@ -111,6 +111,10 @@ public class Transaction {
         this.witnesses = witnesses;
     }
 
+    public void setWitness(int i, byte[] witness) {
+        witnesses.set(i, witness);
+    }
+
     public byte[] hash() {
         byte[] serialization = Serializer.serialize(this, false);
         return Blake2b.digest(serialization);
