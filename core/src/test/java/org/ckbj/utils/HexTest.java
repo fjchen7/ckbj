@@ -3,6 +3,7 @@ package org.ckbj.utils;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
+import java.nio.ByteOrder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -60,5 +61,14 @@ public class HexTest {
     public void testToBigInteger() {
         assertEquals(new BigInteger("234807695289199110200921978552702164240"),
                      Hex.toBigInteger("0xb0a65130f06c64071d3c47901a375d10"));
+    }
+
+    @Test
+    public void testLittleEndian() {
+        ByteOrder order = ByteOrder.LITTLE_ENDIAN;
+        assertArrayEquals(new byte[]{0x39, 0x30}, Hex.toByteArray(new BigInteger("12345"), -1, order));
+        assertArrayEquals(new byte[]{0x39, 0x30, 0x0, 0x0}, Hex.toByteArray(new BigInteger("12345"), 4, order));
+
+        assertEquals(new BigInteger("1684861104"), Hex.toBigInteger("0xb0f06c64", order));
     }
 }

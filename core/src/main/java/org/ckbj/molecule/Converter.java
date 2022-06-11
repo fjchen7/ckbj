@@ -6,11 +6,11 @@ import org.ckbj.utils.Hex;
 import java.math.BigInteger;
 import java.util.List;
 
-import static org.ckbj.utils.Hex.littleEndian;
+import static java.nio.ByteOrder.LITTLE_ENDIAN;
 
 class Converter {
     protected static Uint32 toUint32(BigInteger in) {
-        byte[] arr = littleEndian(in, Uint32.SIZE);
+        byte[] arr = Hex.toByteArray(in, Uint32.SIZE, LITTLE_ENDIAN);
         return Uint32.builder()
                 .set(arr)
                 .build();
@@ -21,7 +21,7 @@ class Converter {
     }
 
     protected static Uint64 toUint64(BigInteger in) {
-        byte[] arr = littleEndian(in, Uint64.SIZE);
+        byte[] arr = Hex.toByteArray(in, Uint64.SIZE, LITTLE_ENDIAN);
         return Uint64.builder()
                 .set(arr)
                 .build();
@@ -36,7 +36,7 @@ class Converter {
     }
 
     protected static Uint128 toUnit128(BigInteger in) {
-        byte[] arr = littleEndian(in, Uint128.SIZE);
+        byte[] arr = Hex.toByteArray(in, Uint128.SIZE, LITTLE_ENDIAN);
         return Uint128.builder()
                 .set(arr)
                 .build();
