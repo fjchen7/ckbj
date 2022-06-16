@@ -1,7 +1,7 @@
 package org.ckbj.chain.contract;
 
 import org.ckbj.chain.Contract;
-import org.ckbj.chain.StandardLockContractArgs;
+import org.ckbj.chain.LockScriptArgs;
 import org.ckbj.crypto.Blake2b;
 import org.ckbj.crypto.ECKeyPair;
 import org.ckbj.crypto.Sign;
@@ -29,7 +29,7 @@ public class Secp256k1Blake160SighashAll {
         return new Signer(ecKeyPair);
     }
 
-    public static class Args implements StandardLockContractArgs {
+    public static class Args implements LockScriptArgs {
         private byte[] publicKeyHash;
 
         public Args(ECKeyPair.Point publicKey) {

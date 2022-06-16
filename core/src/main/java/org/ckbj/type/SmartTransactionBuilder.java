@@ -1,8 +1,8 @@
 package org.ckbj.type;
 
 import org.ckbj.chain.Contract;
-import org.ckbj.chain.ContractArgs;
 import org.ckbj.chain.ContractCollection;
+import org.ckbj.chain.ScriptArgs;
 import org.ckbj.chain.address.Address;
 import org.ckbj.utils.Capacity;
 import org.ckbj.utils.Hex;
@@ -218,7 +218,7 @@ public final class SmartTransactionBuilder {
             return setType(type);
         }
 
-        public OutputBuilder setType(Contract.Name contractName, ContractArgs args) {
+        public OutputBuilder setType(Contract.Name contractName, ScriptArgs args) {
             return setType(contractName, args.getArgs());
         }
 
@@ -261,7 +261,7 @@ public final class SmartTransactionBuilder {
             return setLock(lock);
         }
 
-        public OutputBuilder setLock(Contract.Name contractName, ContractArgs args) {
+        public OutputBuilder setLock(Contract.Name contractName, ScriptArgs args) {
             return setLock(contractName, args.getArgs());
         }
 

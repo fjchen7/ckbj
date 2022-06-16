@@ -17,6 +17,7 @@ import java.io.IOException;
 
 public class Example {
 
+    @Disabled
     @Test
     // on-chain tx: https://pudge.explorer.nervos.org/transaction/0xd66ea40920f875ed4e684032b8158bb90af39c6c35d2880691eab21f4e46a103
     public void singleSign() throws IOException {
@@ -28,7 +29,7 @@ public class Example {
                 .toAddress(network);
 
         Transaction tx = Transaction.smartBuilder(network)
-                .addCellDeps(Contract.Type.SECP256K1_BLAKE160_SIGHASH_ALL)
+                .addCellDeps(Contract.Name.SECP256K1_BLAKE160_SIGHASH_ALL)
                 .addInput("0xcd10217c1de6ed69d065db9f1af2d4f364fb7e8e402c6e1909e20abdf44d6975", 1)
                 .addOutputInBytes(address, 9899.0)
                 .build();
@@ -58,7 +59,7 @@ public class Example {
         //        Address sender = Secp256k1Blake160MultisigAll.createAddress(network, args);
 
         Transaction tx = Transaction.smartBuilder(network)
-                .addCellDeps(Contract.Type.SECP256K1_BLAKE160_MULTISIG_ALL)
+                .addCellDeps(Contract.Name.SECP256K1_BLAKE160_MULTISIG_ALL)
                 .addInput("0x0f32433ed5ad6f49885f76cbb3ebaa35d920003e15cffbed74e793374503cab7", 0)
                 .addOutputInBytes(sender, 99.9)
                 .addOutputInBytes(sender, 9900.0)
@@ -86,11 +87,12 @@ public class Example {
     @Test
     public void sendSudt() throws IOException {
         Network network = Network.TESTNET;
-        Script sudtType = network.getContract(Contract.Type.SUDT)
+
+        Script sudtType = network.getContract(Contract.Name.SUDT)
                 .createScript("0x7c7f0ee1d582c385342367792946cff3767fe02f26fd7f07dba23ae3c65b28bc");
         Transaction tx = Transaction.smartBuilder(network)
-                .addCellDeps(Contract.Type.SECP256K1_BLAKE160_SIGHASH_ALL)
-                .addCellDeps(Contract.Type.SUDT)
+                .addCellDeps(Contract.Name.SECP256K1_BLAKE160_SIGHASH_ALL)
+                .addCellDeps(Contract.Name.SUDT)
                 // output with sudt type
                 .addInput("0xc809e1010701cf64521170787aea1d19bd7a8793886cec5196add83c0c5bcc54", 2)
                 .beginAddOutput()
@@ -112,17 +114,18 @@ public class Example {
         System.out.println(Hex.toHexString(hash));
     }
 
+    @Disabled
     @Test
     // on-chain tx: https://pudge.explorer.nervos.org/transaction/0x293491e3c7763a8b03bf8eb7bad4a61c3951c09091f16765a38a8126a45764c2
     public void issueSudt() throws IOException {
         Network network = Network.TESTNET;
         String sender = "ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsq02cgdvd5mng9924xarf3rflqzafzmzlpsuhh83c";
         // args of sudt should be hash of input lock script
-        Script sudtType = network.getContract(Contract.Type.SUDT)
+        Script sudtType = network.getContract(Contract.Name.SUDT)
                 .createScript(Address.decode(sender).getScript().hash());
         Transaction tx = Transaction.smartBuilder(network)
-                .addCellDeps(Contract.Type.SECP256K1_BLAKE160_SIGHASH_ALL)
-                .addCellDeps(Contract.Type.SUDT)
+                .addCellDeps(Contract.Name.SECP256K1_BLAKE160_SIGHASH_ALL)
+                .addCellDeps(Contract.Name.SUDT)
                 // plain output without any type
                 .addInput("0x4c0740007221f8c6baa7a6b9eb04f6db9af08b1fcdd720d6449e5f8f57ec6a7d", 0)
                 .beginAddOutput()

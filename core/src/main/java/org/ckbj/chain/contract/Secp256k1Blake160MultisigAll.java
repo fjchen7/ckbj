@@ -1,7 +1,7 @@
 package org.ckbj.chain.contract;
 
 import org.ckbj.chain.Contract;
-import org.ckbj.chain.StandardLockContractArgs;
+import org.ckbj.chain.LockScriptArgs;
 import org.ckbj.chain.address.Address;
 import org.ckbj.crypto.Blake2b;
 import org.ckbj.crypto.ECKeyPair;
@@ -30,7 +30,7 @@ public class Secp256k1Blake160MultisigAll {
     /**
      * https://github.com/nervosnetwork/ckb-system-scripts/wiki/How-to-sign-transaction#multisig
      */
-    public static class Args implements StandardLockContractArgs {
+    public static class Args implements LockScriptArgs {
         private int version = 0x0;
         private int firstN;
         private int threshold;
