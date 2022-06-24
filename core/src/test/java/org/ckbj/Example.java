@@ -99,7 +99,7 @@ public class Example {
                 .setType(sudtType)
                 .setLock("ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsq02cgdvd5mng9924xarf3rflqzafzmzlpsuhh83c")
                 .setCapacityInBytes(142)
-                .setData(Sudt.toData(969999992760L))
+                .setData(Sudt.amountToData(969999992760L))
                 .endAddOutput()
                 .build();
 
@@ -121,8 +121,7 @@ public class Example {
         Network network = Network.TESTNET;
         String sender = "ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsq02cgdvd5mng9924xarf3rflqzafzmzlpsuhh83c";
         // args of sudt should be hash of input lock script
-        Script sudtType = network.getContract(Contract.Name.SUDT)
-                .createScript(Address.decode(sender).getScript().hash());
+        Script sudtType = new Sudt.Args(sender).toScript(Network.TESTNET);
         Transaction tx = Transaction.smartBuilder(network)
                 .addCellDeps(Contract.Name.SECP256K1_BLAKE160_SIGHASH_ALL)
                 .addCellDeps(Contract.Name.SUDT)
@@ -132,7 +131,7 @@ public class Example {
                 .setType(sudtType)
                 .setLock("ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsq02cgdvd5mng9924xarf3rflqzafzmzlpsuhh83c")
                 .setCapacityInBytes(199)
-                .setData(Sudt.toData(1000000000000L))
+                .setData(Sudt.amountToData(1000000000000L))
                 .endAddOutput()
                 .addOutputInBytes(sender, 9800)
                 .build();
