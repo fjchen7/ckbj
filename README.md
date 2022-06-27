@@ -1,11 +1,5 @@
-ckbj is proof of concept (still in work-in-process) of CKB SDK for JAVA. 
+Ckbj is a lightweight and modular Java library for building transaction and interacting
+with [CKB client](https://github.com/nervosnetwork/ckb) on CKB network.
 
-ckbj's responsibility
-
-- fiexible and easy construction of new transaction.
-- transaction signing abstraction.
-- extensibility for signing method and other operations of new script.
-- configuration support for different network.
-
-However, under this idea ckbj needs a powerful service to query data on CKB chain. This service should be able to provide an efficient and flexible data querying ability. The biggest benefit of such layer structure is decoupling: data querying service does not need to care about any business logic and should only focus on providing stable data-querying APIs with good performance, while ckbj is mainly in charge of all user-oriented interfaces including construcing, sigining and sending transaction, to meet ever-changing business requirement.
-
+Ckbj hides the details about tedious data conversion, and provides friendly interfaces for users.
+Check [Example.java](./core/src/test/java/io/github/fjchen7/ckbj/Example.java) to see how to build and send transaction.

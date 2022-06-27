@@ -56,7 +56,6 @@ public class Example {
                 .addKey("ckt1qyqz0c9vrrft28e47nlvf0wgtt0n5d4u8fhsghaylr")
                 .build();
         Address sender = args.toAddress(network);
-        //        Address sender = Secp256k1Blake160MultisigAll.createAddress(network, args);
 
         Transaction tx = Transaction.smartBuilder(network)
                 .addCellDeps(Contract.Name.SECP256K1_BLAKE160_MULTISIG_ALL)
